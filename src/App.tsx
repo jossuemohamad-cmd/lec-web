@@ -84,6 +84,30 @@ export function App() {
     }
   }, [loading, currentPage]);
 
+  // Light scroll-triggered entrance animations
+  useEffect(() => {
+    if (loading) return;
+    const targets = document.querySelectorAll<HTMLElement>(
+      '.reveal-item, .reveal-fade, .reveal-scale, .reveal-from-top, .reveal-from-bottom, .reveal-from-left, .reveal-from-right'
+    );
+    targets.forEach((el) => el.classList.remove('is-revealed'));
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-revealed');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.05, rootMargin: '0px 0px -20px 0px' }
+    );
+
+    targets.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [loading, currentPage]);
+
   return (
     <div className="font-instrument-sans min-h-full flex flex-col text-body bg-white selection:bg-primary selection:text-white">
       {/* 0. PRELOADER */}
@@ -396,7 +420,7 @@ export function App() {
                   className="object-cover object-top w-full h-full"
                   src="/lecasu/hero-energy-v2.jpg"
                 />
-                <div className="absolute inset-0 bg-darker/70 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-b from-[#0f0f0f]/45 via-[#0f0f0f]/35 to-[#0f0f0f]/55 transition-opacity duration-300"></div>
               </div>
 
               <div className="container">

@@ -24,18 +24,73 @@ body {
   padding: 0;
 }
 
-/* Ensure ALL content is clearly visible immediately across all sections and subpages */
+/* Light, smooth entrance animations */
 .reveal-item,
 .reveal-fade,
 .reveal-scale,
-.reveal-stagger,
 .reveal-from-top,
 .reveal-from-bottom,
 .reveal-from-left,
 .reveal-from-right {
-  opacity: 1 !important;
-  visibility: visible !important;
-  transform: none !important;
+  opacity: 0;
+  transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1), transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-item,
+.reveal-from-bottom {
+  transform: translateY(18px);
+}
+
+.reveal-from-top {
+  transform: translateY(-14px);
+}
+
+.reveal-from-left {
+  transform: translateX(-18px);
+}
+
+.reveal-from-right {
+  transform: translateX(18px);
+}
+
+.reveal-scale {
+  transform: scale(0.97);
+}
+
+.reveal-fade {
+  transform: none;
+}
+
+.reveal-item.is-revealed,
+.reveal-fade.is-revealed,
+.reveal-scale.is-revealed,
+.reveal-from-top.is-revealed,
+.reveal-from-bottom.is-revealed,
+.reveal-from-left.is-revealed,
+.reveal-from-right.is-revealed {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+.reveal-delay-100 { transition-delay: 80ms; }
+.reveal-delay-150 { transition-delay: 120ms; }
+.reveal-delay-200 { transition-delay: 160ms; }
+.reveal-delay-250 { transition-delay: 200ms; }
+.reveal-delay-300 { transition-delay: 240ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-item,
+  .reveal-fade,
+  .reveal-scale,
+  .reveal-from-top,
+  .reveal-from-bottom,
+  .reveal-from-left,
+  .reveal-from-right {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }
 
 /* Text wrap helper */

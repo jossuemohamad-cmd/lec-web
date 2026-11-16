@@ -71,7 +71,7 @@ export function ServicePage({ onNavigate, onOpenVideo, onOpenQuote }: ServicePag
             className="object-cover object-top w-full h-full"
             src="/lecasu/hero-energy-v2.jpg"
           />
-          <div className="absolute inset-0 bg-[#0f0f0f]/70"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0f0f0f]/45 via-[#0f0f0f]/35 to-[#0f0f0f]/55"></div>
         </div>
         <div className="relative z-10 py-12 lg:py-20 xl:py-28">
           <div className="container">
