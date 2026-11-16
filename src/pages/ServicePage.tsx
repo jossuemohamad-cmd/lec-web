@@ -308,7 +308,7 @@ export function ServicePage({ onNavigate, onOpenVideo, onOpenQuote }: ServicePag
             <div className="container">
               <div className="reveal-item reveal-from-bottom">
                 <div className="bg-darker p-8 sm:p-12 md:p-16 xl:p-20 flex flex-wrap items-center justify-between xl:gap-x-15 gap-y-7 rounded-[1.25rem]">
-                  <h2 className="text-white font-bold text-3xl lg:text-4xl xl:text-5xl leading-[1.27] uppercase text-pretty max-w-md">
+                  <h2 className="text-white font-bold text-2xl sm:text-3xl lg:text-4xl xl:text-[2.65rem] leading-[1.2] uppercase max-w-3xl">
                     Power your facility with reliable energy infrastructure
                   </h2>
                   <a
