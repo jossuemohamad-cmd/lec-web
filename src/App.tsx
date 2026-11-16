@@ -10,8 +10,6 @@ export function App() {
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [homeDropdown, setHomeDropdown] = useState(false);
-  const [pagesDropdown, setPagesDropdown] = useState(false);
   const [videoModalOpen, setVideoModalOpen] = useState(false);
   const [quoteModalOpen, setQuoteModalOpen] = useState(false);
 
@@ -50,8 +48,6 @@ export function App() {
     window.location.hash = page === 'home' ? '' : page;
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setMobileMenuOpen(false);
-    setHomeDropdown(false);
-    setPagesDropdown(false);
   };
 
   // Preloader
@@ -141,8 +137,8 @@ export function App() {
             {/* Desktop Navigation */}
             <nav className="items-center hidden w-full gap-6 lg:flex">
               <ul className="flex items-center gap-1 mx-auto lg:gap-2">
-                {/* Home Dropdown */}
-                <li className="relative" onMouseEnter={() => setHomeDropdown(true)} onMouseLeave={() => setHomeDropdown(false)}>
+                {/* Home */}
+                <li className="relative">
                   <button
                     type="button"
                     onClick={() => navigateTo('home')}
@@ -150,45 +146,8 @@ export function App() {
                       currentPage === 'home' ? 'text-primary' : 'text-white hover:text-primary'
                     }`}
                   >
-                    <span className="flex-1 text-start lg:text-center">Home</span>
-                    <svg className="transition-transform duration-300 h-4 w-4 lg:h-3.5 lg:w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                    </svg>
+                    Home
                   </button>
-                  {homeDropdown && (
-                    <div className="absolute top-full w-50 pt-3 transition-all duration-250 opacity-100 scale-100 start-0 origin-top-left z-50">
-                      <div className="w-full rounded-xl border border-white/10 bg-dark/95 backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,.5)]" role="menu">
-                        <ul className="p-1.5 flex flex-col gap-0.5">
-                          <li>
-                            <button
-                              onClick={() => navigateTo('home')}
-                              className={`w-full text-left flex items-center gap-3 rounded-lg px-3.5 py-2.5 text-sm font-medium transition-all duration-200 ${
-                                currentPage === 'home' ? 'text-primary' : 'text-white hover:text-primary hover:ps-4'
-                              }`}
-                            >
-                              Home 1
-                            </button>
-                          </li>
-                          <li>
-                            <button
-                              onClick={() => navigateTo('service')}
-                              className="w-full text-left flex items-center gap-3 rounded-lg px-3.5 py-2.5 text-sm font-medium transition-all duration-200 text-white hover:text-primary hover:ps-4"
-                            >
-                              Home 2 (Services)
-                            </button>
-                          </li>
-                          <li>
-                            <button
-                              onClick={() => navigateTo('project')}
-                              className="w-full text-left flex items-center gap-3 rounded-lg px-3.5 py-2.5 text-sm font-medium transition-all duration-200 text-white hover:text-primary hover:ps-4"
-                            >
-                              Home 3 (Projects)
-                            </button>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  )}
                 </li>
 
                 <li className="relative">
@@ -213,67 +172,17 @@ export function App() {
                   </button>
                 </li>
 
-                {/* Pages Dropdown */}
-                <li className="relative" onMouseEnter={() => setPagesDropdown(true)} onMouseLeave={() => setPagesDropdown(false)}>
+                {/* Project */}
+                <li className="relative">
                   <button
                     type="button"
+                    onClick={() => navigateTo('project')}
                     className={`relative flex items-center px-4 py-2 gap-1.5 justify-between text-base font-medium rounded-lg transition-all duration-200 cursor-pointer ${
-                      ['project', 'packages', 'faqs', 'blog'].includes(currentPage) ? 'text-primary' : 'text-white hover:text-primary'
+                      currentPage === 'project' ? 'text-primary' : 'text-white hover:text-primary'
                     }`}
                   >
-                    <span className="flex-1 text-start lg:text-center">Pages</span>
-                    <svg className="transition-transform duration-300 h-4 w-4 lg:h-3.5 lg:w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                    </svg>
+                    Project
                   </button>
-                  {pagesDropdown && (
-                    <div className="absolute top-full w-50 pt-3 transition-all duration-250 opacity-100 scale-100 start-0 origin-top-left z-50">
-                      <div className="w-full rounded-xl border border-white/10 bg-dark/95 backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,.5)]" role="menu">
-                        <ul className="p-1.5 flex flex-col gap-0.5">
-                          <li>
-                            <button
-                              onClick={() => navigateTo('project')}
-                              className={`w-full text-left flex items-center gap-3 rounded-lg px-3.5 py-2.5 text-sm font-medium transition-all duration-200 ${
-                                currentPage === 'project' ? 'text-primary' : 'text-white hover:text-primary hover:ps-4'
-                              }`}
-                            >
-                              Project
-                            </button>
-                          </li>
-                          <li>
-                            <button
-                              onClick={() => navigateTo('packages')}
-                              className={`w-full text-left flex items-center gap-3 rounded-lg px-3.5 py-2.5 text-sm font-medium transition-all duration-200 ${
-                                currentPage === 'packages' ? 'text-primary' : 'text-white hover:text-primary hover:ps-4'
-                              }`}
-                            >
-                              Pricing / Packages
-                            </button>
-                          </li>
-                          <li>
-                            <button
-                              onClick={() => navigateTo('faqs')}
-                              className={`w-full text-left flex items-center gap-3 rounded-lg px-3.5 py-2.5 text-sm font-medium transition-all duration-200 ${
-                                currentPage === 'faqs' ? 'text-primary' : 'text-white hover:text-primary hover:ps-4'
-                              }`}
-                            >
-                              FAQ
-                            </button>
-                          </li>
-                          <li>
-                            <button
-                              onClick={() => navigateTo('blog')}
-                              className={`w-full text-left flex items-center gap-3 rounded-lg px-3.5 py-2.5 text-sm font-medium transition-all duration-200 ${
-                                currentPage === 'blog' ? 'text-primary' : 'text-white hover:text-primary hover:ps-4'
-                              }`}
-                            >
-                              Blog
-                            </button>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  )}
                 </li>
 
                 <li className="relative">
@@ -289,13 +198,14 @@ export function App() {
               </ul>
 
               {/* Get in touch CTA */}
-              <button
-                type="button"
-                onClick={() => setQuoteModalOpen(true)}
+              <a
+                href="https://simulador.lecasu.co.mz"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-10 lg:h-12 gap-4 px-6 font-medium rounded-full text-base shadow-lg hover:shadow-primary/30"
               >
                 Request a Proposal
-              </button>
+              </a>
             </nav>
 
             {/* Mobile Hamburger Button */}
@@ -403,13 +313,15 @@ export function App() {
               </button>
             </li>
           </ul>
-          <button
-            type="button"
-            onClick={() => { setMobileMenuOpen(false); setQuoteModalOpen(true); }}
+          <a
+            href="https://simulador.lecasu.co.mz"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setMobileMenuOpen(false)}
             className="w-full mt-6 py-3 rounded-full bg-primary text-white font-medium text-center shadow-lg"
           >
             Request a Proposal
-          </button>
+          </a>
         </nav>
       </aside>
 
