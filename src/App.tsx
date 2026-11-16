@@ -1197,26 +1197,43 @@ export function App() {
 
               <div className="sm:column-6 md:column-3 lg:column-2">
                 <div className="reveal-item reveal-delay-200">
-                  <div className="text-xl/8 font-bold text-white mb-6">Pages</div>
+                  <div className="text-xl/8 font-bold text-white mb-6">Quick Links</div>
                   <ul className="flex flex-col gap-4">
-                    <li><button onClick={() => navigateTo('service')} className="text-lg/7.5 text-white/80 hover:text-primary transition-colors text-left cursor-pointer">Services</button></li>
+                    <li><button onClick={() => navigateTo('home')} className="text-lg/7.5 text-white/80 hover:text-primary transition-colors text-left cursor-pointer">Home</button></li>
                     <li><button onClick={() => navigateTo('about')} className="text-lg/7.5 text-white/80 hover:text-primary transition-colors text-left cursor-pointer">About</button></li>
-                    <li><button onClick={() => navigateTo('packages')} className="text-lg/7.5 text-white/80 hover:text-primary transition-colors text-left cursor-pointer">Pricing</button></li>
-                    <li><button onClick={() => navigateTo('blog')} className="text-lg/7.5 text-white/80 hover:text-primary transition-colors text-left cursor-pointer">Blog</button></li>
-                    <li><button onClick={() => navigateTo('faqs')} className="text-lg/7.5 text-white/80 hover:text-primary transition-colors text-left cursor-pointer">FAQ</button></li>
+                    <li><button onClick={() => navigateTo('service')} className="text-lg/7.5 text-white/80 hover:text-primary transition-colors text-left cursor-pointer">Services</button></li>
+                    <li><button onClick={() => navigateTo('project')} className="text-lg/7.5 text-white/80 hover:text-primary transition-colors text-left cursor-pointer">Projects</button></li>
+                    <li><button onClick={() => navigateTo('contact')} className="text-lg/7.5 text-white/80 hover:text-primary transition-colors text-left cursor-pointer">Contact</button></li>
                   </ul>
                 </div>
               </div>
 
               <div className="sm:column-6 md:column-3 lg:column-2">
                 <div className="reveal-item reveal-delay-250">
-                  <div className="text-xl/8 font-bold text-white mb-6">Utility Pages</div>
-                  <ul className="flex flex-col gap-4">
-                    <li><button onClick={() => navigateTo('home')} className="text-lg/7.5 text-white/80 hover:text-primary transition-colors text-left cursor-pointer">Styleguide</button></li>
-                    <li><button onClick={() => navigateTo('contact')} className="text-lg/7.5 text-white/80 hover:text-primary transition-colors text-left cursor-pointer">Login</button></li>
-                    <li><button onClick={() => navigateTo('contact')} className="text-lg/7.5 text-white/80 hover:text-primary transition-colors text-left cursor-pointer">Sign up</button></li>
-                    <li><button onClick={() => navigateTo('contact')} className="text-lg/7.5 text-white/80 hover:text-primary transition-colors text-left cursor-pointer">Reset Password</button></li>
-                    <li><button onClick={() => navigateTo('home')} className="text-lg/7.5 text-white/80 hover:text-primary transition-colors text-left cursor-pointer">404 Not Found</button></li>
+                  <div className="text-xl/8 font-bold text-white mb-6">Working Hours</div>
+                  <ul className="flex flex-col gap-4 text-lg/7.5 text-white/80">
+                    <li>
+                      <span className="block text-sm text-white/50">Mon – Fri</span>
+                      <span>08:00 – 17:00</span>
+                    </li>
+                    <li>
+                      <span className="block text-sm text-white/50">Saturday</span>
+                      <span>08:00 – 12:00</span>
+                    </li>
+                    <li>
+                      <span className="block text-sm text-white/50">Sunday</span>
+                      <span>Closed</span>
+                    </li>
+                    <li>
+                      <a
+                        href="https://simulador.lecasu.co.mz"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline font-medium"
+                      >
+                        Solar Simulator &rarr;
+                      </a>
+                    </li>
                   </ul>
                 </div>
               </div>
