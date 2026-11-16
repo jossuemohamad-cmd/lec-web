@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { applyLanguageToDom, type Lang } from './i18n/pt';
 import { AboutPage } from './pages/AboutPage';
 import { ServicePage } from './pages/ServicePage';
 import { ProjectPage } from './pages/ProjectPage';
@@ -12,9 +13,21 @@ export function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [videoModalOpen, setVideoModalOpen] = useState(false);
   const [quoteModalOpen, setQuoteModalOpen] = useState(false);
+  const [lang, setLang] = useState<Lang>(() => (localStorage.getItem('lecasu_lang') === 'pt' ? 'pt' : 'en'));
+
+  const toggleLanguage = () => {
+    setLang((prev) => (prev === 'en' ? 'pt' : 'en'));
+  };
 
   // Router state
   const [currentPage, setCurrentPage] = useState<string>('home');
+
+  useEffect(() => {
+    localStorage.setItem('lecasu_lang', lang);
+    if (!loading) {
+      applyLanguageToDom(lang);
+    }
+  }, [lang, currentPage, loading, mobileMenuOpen]);
 
   // Scroll detection for sticky header legibility
   const [scrolled, setScrolled] = useState(false);
@@ -221,6 +234,20 @@ export function App() {
                 </li>
               </ul>
 
+              {/* Language Toggle Button */}
+              <button
+                type="button"
+                onClick={toggleLanguage}
+                title={lang === 'en' ? 'Traduzir para Português' : 'Switch to English'}
+                className="inline-flex shrink-0 items-center gap-1.5 px-3.5 h-10 lg:h-11 rounded-full border border-white/25 bg-white/10 text-white hover:bg-white/20 hover:border-primary/60 text-sm font-semibold tracking-wide transition-all cursor-pointer"
+              >
+                <svg className="size-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.6 9h16.8M3.6 15h16.8M12 3a14.5 14.5 0 0 1 0 18M12 3a14.5 14.5 0 0 0 0 18" />
+                </svg>
+                <span>{lang === 'en' ? 'PT' : 'EN'}</span>
+              </button>
+
               {/* Get in touch CTA */}
               <a
                 href="https://simulador.lecasu.co.mz"
@@ -337,6 +364,18 @@ export function App() {
               </button>
             </li>
           </ul>
+          <button
+            type="button"
+            onClick={toggleLanguage}
+            className="w-full mt-4 py-2.5 rounded-full border border-white/20 bg-white/10 text-white font-semibold text-sm flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <svg className="size-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3.6 9h16.8M3.6 15h16.8M12 3a14.5 14.5 0 0 1 0 18M12 3a14.5 14.5 0 0 0 0 18" />
+            </svg>
+            <span>{lang === 'en' ? 'Traduzir para Português (PT)' : 'Switch to English (EN)'}</span>
+          </button>
+
           <a
             href="https://simulador.lecasu.co.mz"
             target="_blank"
@@ -640,11 +679,11 @@ export function App() {
                     <div className="lg:column-6 2xl:column-5 relative z-20">
                       <div className="reveal-item reveal-delay-300 xl:ps-5 2xl:ps-0 pe-13.5 2xl:-ms-15 relative h-full">
                         <img
-                          alt="Service Cover"
+                          alt="Solar Panel Grid Solution"
                           width={764}
                           height={738}
                           className="w-full max-lg:max-h-120 lg:min-h-full object-cover rounded-2xl border-b-4 border-primary shadow-lg"
-                          src="/solurax/service-cover.07dh_0dc1wtuz.jpg"
+                          src="/lecasu/solar-site.jpeg"
                         />
                         <div className="absolute z-20 inset-e-2 bottom-15.5 p-8 rounded-2xl bg-white border-b-4 border-primary flex flex-col items-center gap-4.5 shadow-[0_0_20px_0_rgba(0,0,0,.08)]">
                           <div className="bg-primary rounded-full size-15.5 flex items-center justify-center">
