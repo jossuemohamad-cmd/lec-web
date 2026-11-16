@@ -341,13 +341,14 @@ export function AboutPage({ onNavigate, onOpenVideo, onOpenQuote }: AboutPagePro
                   <h2 className="text-white font-bold text-3xl lg:text-4xl xl:text-5xl leading-[1.27] uppercase text-pretty max-w-md">
                     Power your facility with reliable energy infrastructure
                   </h2>
-                  <button
-                    type="button"
-                    onClick={() => (onOpenQuote ? onOpenQuote() : onNavigate('contact'))}
+                  <a
+                    href="https://simulador.lecasu.co.mz/"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-12 lg:h-15 gap-4 px-7.5 text-base font-medium rounded-full shadow-lg"
                   >
                     Request a Proposal
-                  </button>
+                  </a>
                 </div>
               </div>
             </div>
