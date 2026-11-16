@@ -1,0 +1,9 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/mwxntafa/public_html
+    - export PATH=/home/mwxntafa/nodevenv/public_html/erp.lecasu.co.mz/20/bin:$PATH
+    - /home/mwxntafa/nodevenv/public_html/erp.lecasu.co.mz/20/bin/npm install --no-audit --no-fund
+    - /home/mwxntafa/nodevenv/public_html/erp.lecasu.co.mz/20/bin/npm run build
+    - /bin/tar -cf - -C dist . | /bin/tar --no-same-permissions -xf - -C $DEPLOYPATH
+    - /bin/chmod 755 $DEPLOYPATH

@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+:root {
+  --font-instrument-sans: 'Instrument Sans', sans-serif;
+  --font-sans: 'Instrument Sans', sans-serif;
+  --color-primary: #ff8000;
+  --color-primary-lighter: #fff7ed;
+  --color-primary-light: #ff9a3d;
+  --color-primary-dark: #e06f00;
+  --color-dark: #1a1a1a;
+  --color-darker: #0f0f0f;
+  --color-secondary: #ffc72c;
+  --color-body: #4b545d;
+  --color-white: #ffffff;
+  --menubar-height: 122px;
+}
+
+body {
+  font-family: var(--font-instrument-sans), sans-serif;
+  color: var(--color-body);
+  background-color: #ffffff;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+/* Ensure ALL content is clearly visible immediately across all sections and subpages */
+.reveal-item,
+.reveal-fade,
+.reveal-scale,
+.reveal-stagger,
+.reveal-from-top,
+.reveal-from-bottom,
+.reveal-from-left,
+.reveal-from-right {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+}
+
+/* Text wrap helper */
+.text-pretty {
+  text-wrap: pretty;
+}
