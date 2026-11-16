@@ -62,6 +62,7 @@ export const PT_TRANSLATIONS: Record<string, string> = {
   'Services': 'Serviços',
   'Working Hours': 'Horário de Funcionamento',
   'Mon – Fri': 'Seg – Sex',
+  'Sat – Sun': 'Sáb – Dom',
   'Saturday': 'Sábado',
   'Sunday': 'Domingo',
   'Closed': 'Encerrado',

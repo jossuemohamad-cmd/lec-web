@@ -1284,14 +1284,10 @@ export function App() {
                   <ul className="flex flex-col gap-4 text-lg/7.5 text-white/80">
                     <li>
                       <span className="block text-sm text-white/50">Mon – Fri</span>
-                      <span>08:00 – 17:00</span>
+                      <span>08:00 – 17:30</span>
                     </li>
                     <li>
-                      <span className="block text-sm text-white/50">Saturday</span>
-                      <span>08:00 – 12:00</span>
-                    </li>
-                    <li>
-                      <span className="block text-sm text-white/50">Sunday</span>
+                      <span className="block text-sm text-white/50">Sat – Sun</span>
                       <span>Closed</span>
                     </li>
                     <li>
