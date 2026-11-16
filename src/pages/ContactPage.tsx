@@ -99,7 +99,7 @@ export function ContactPage({ onNavigate, onOpenVideo, onOpenQuote }: ContactPag
                       </div>
                       <div>
                         <h5 className="text-darker text-xl font-semibold mb-0.5">Our Address</h5>
-                        <p className="text-body text-base/normal">Maputo, Mozambique</p>
+                        <p className="text-body text-base/normal">Rua da Mozal, Matola-Rio, 1115</p>
                       </div>
                     </li>
 
@@ -266,10 +266,10 @@ export function ContactPage({ onNavigate, onOpenVideo, onOpenQuote }: ContactPag
                 <div className="lg:column-8 xl:column-7">
                   <div className="reveal-item reveal-delay-100 2xl:px-8">
                     <h2 className="text-darker font-bold text-3xl lg:text-4xl xl:text-5xl leading-[1.166] mb-5">
-                      Our Headquarters in Maputo
+                      Our Headquarters in Matola-Rio
                     </h2>
                     <p className="text-base xl:text-lg leading-relaxed text-body">
-                      Visit our headquarters and regional energy technology laboratories to consult directly with certified engineers and discover cutting-edge photovoltaic hardware.
+                      Visit our headquarters and regional energy technology laboratories at Rua da Mozal, Matola-Rio, 1115 to consult directly with certified engineers and discover cutting-edge photovoltaic hardware.
                     </p>
                   </div>
                 </div>
@@ -281,12 +281,14 @@ export function ContactPage({ onNavigate, onOpenVideo, onOpenQuote }: ContactPag
             <div className="container">
               <div className="reveal-item reveal-delay-100 reveal-from-bottom relative w-full overflow-hidden border shadow-xl h-90 md:h-161.25 rounded-2xl border-primary/15">
                 <iframe
-                  title="Interactive Map"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d158858.47340002633!2d-0.24168144921176767!3d51.528558241761614!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47d8a00baf21de75%3A0x52963a5addd52a99!2sLondon%2C%20UK!5e0!3m2!1sen!2s!4v1700000000000!5m2!1sen!2s"
+                  title="LECASU, Lda. — Rua da Mozal, Matola-Rio, 1115"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d780.2717749928828!2d32.41686735902873!3d-25.9629144242314!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1ee68b707a0cc5c5%3A0x4f2ec28037582062!2sLECASU%2C%20Lda.%20-%20Solu%C3%A7%C3%B5es%20em%20Energia%20Solar%20%26%20Engenharia!5e1!3m2!1spt-PT!2smz!4v1794834394021!5m2!1spt-PT!2smz"
                   width="100%"
                   height="100%"
+                  style={{ border: 0 }}
                   allowFullScreen={true}
-                  referrerPolicy="no-referrer-when-downgrade"
+                  loading="lazy"
+                  referrerPolicy="strict-origin-when-cross-origin"
                   className="transition-all duration-500 ease-in-out size-full"
                 ></iframe>
               </div>
