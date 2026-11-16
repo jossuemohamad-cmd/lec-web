@@ -4,7 +4,7 @@ deployment:
     - export DEPLOYPATH=/home/mwxntafa/public_html
     - export PATH=/opt/alt/alt-nodejs20/root/usr/bin:$PATH
     - export NODE_ENV=development
-    - /opt/alt/alt-nodejs20/root/usr/bin/npm install --include=dev --no-audit --no-fund
+    - /opt/alt/alt-nodejs20/root/usr/bin/npm ci --include=dev --no-audit --no-fund
     - /opt/alt/alt-nodejs20/root/usr/bin/npm run build
     - /bin/tar -cf - -C dist . | /bin/tar --no-same-permissions -xf - -C $DEPLOYPATH
     - /bin/chmod 755 $DEPLOYPATH
