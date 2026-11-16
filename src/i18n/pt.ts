@@ -116,23 +116,25 @@ export function applyLanguageToDom(lang: Lang): void {
   }
 
   for (const textNode of nodes) {
-    if (!originalTextMap.has(textNode)) {
-      originalTextMap.set(textNode, textNode.nodeValue ?? '');
-    }
-    const original = originalTextMap.get(textNode) ?? '';
+    const currentText = textNode.nodeValue ?? '';
+    const original = originalTextMap.get(textNode);
 
     if (lang === 'en') {
-      if (textNode.nodeValue !== original) {
+      if (original !== undefined && currentText !== original) {
         textNode.nodeValue = original;
       }
       continue;
     }
 
-    const normalized = normalizeText(original);
+    const base = original ?? currentText;
+    const normalized = normalizeText(base);
     const translated = PT_TRANSLATIONS[normalized];
     if (translated) {
-      const leading = original.match(/^\s*/)?.[0] ?? '';
-      const trailing = original.match(/\s*$/)?.[0] ?? '';
+      if (original === undefined) {
+        originalTextMap.set(textNode, currentText);
+      }
+      const leading = base.match(/^\s*/)?.[0] ?? '';
+      const trailing = base.match(/\s*$/)?.[0] ?? '';
       textNode.nodeValue = `${leading}${translated}${trailing}`;
     }
   }

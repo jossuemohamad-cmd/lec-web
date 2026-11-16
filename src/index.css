@@ -62,13 +62,13 @@ body {
   transform: none;
 }
 
-.reveal-item.is-revealed,
-.reveal-fade.is-revealed,
-.reveal-scale.is-revealed,
-.reveal-from-top.is-revealed,
-.reveal-from-bottom.is-revealed,
-.reveal-from-left.is-revealed,
-.reveal-from-right.is-revealed {
+.reveal-item[data-revealed="true"],
+.reveal-fade[data-revealed="true"],
+.reveal-scale[data-revealed="true"],
+.reveal-from-top[data-revealed="true"],
+.reveal-from-bottom[data-revealed="true"],
+.reveal-from-left[data-revealed="true"],
+.reveal-from-right[data-revealed="true"] {
   opacity: 1;
   transform: translate3d(0, 0, 0) scale(1);
 }

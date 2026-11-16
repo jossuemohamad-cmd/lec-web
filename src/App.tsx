@@ -97,19 +97,18 @@ export function App() {
     }
   }, [loading, currentPage]);
 
-  // Light scroll-triggered entrance animations
+  // Light scroll-triggered entrance animations (use data-revealed so React re-renders never reset it)
   useEffect(() => {
     if (loading) return;
     const targets = document.querySelectorAll<HTMLElement>(
       '.reveal-item, .reveal-fade, .reveal-scale, .reveal-from-top, .reveal-from-bottom, .reveal-from-left, .reveal-from-right'
     );
-    targets.forEach((el) => el.classList.remove('is-revealed'));
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add('is-revealed');
+            entry.target.setAttribute('data-revealed', 'true');
             observer.unobserve(entry.target);
           }
         });
@@ -117,7 +116,11 @@ export function App() {
       { threshold: 0.05, rootMargin: '0px 0px -20px 0px' }
     );
 
-    targets.forEach((el) => observer.observe(el));
+    targets.forEach((el) => {
+      if (el.getAttribute('data-revealed') !== 'true') {
+        observer.observe(el);
+      }
+    });
     return () => observer.disconnect();
   }, [loading, currentPage]);
 
