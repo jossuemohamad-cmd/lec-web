@@ -3,7 +3,6 @@ import { useLanguage } from '../i18n/LanguageContext';
 
 interface FaqsPageProps {
   onNavigate: (page: string) => void;
-  onOpenVideo?: () => void;
   onOpenQuote?: () => void;
 }
 
@@ -12,8 +11,7 @@ interface FaqItem {
   a: string;
 }
 
-export function FaqsPage({ onNavigate, onOpenVideo, onOpenQuote }: FaqsPageProps) {
-  void onOpenVideo;
+export function FaqsPage({ onNavigate, onOpenQuote }: FaqsPageProps) {
   void onOpenQuote;
   const { lang, t } = useLanguage();
 

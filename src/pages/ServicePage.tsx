@@ -2,11 +2,10 @@ import { useLanguage } from '../i18n/LanguageContext';
 
 interface ServicePageProps {
   onNavigate: (page: string) => void;
-  onOpenVideo?: () => void;
   onOpenQuote?: () => void;
 }
 
-export function ServicePage({ onNavigate, onOpenVideo, onOpenQuote }: ServicePageProps) {
+export function ServicePage({ onNavigate, onOpenQuote }: ServicePageProps) {
   const { lang, t } = useLanguage();
 
   const services = [
@@ -281,16 +280,6 @@ export function ServicePage({ onNavigate, onOpenVideo, onOpenQuote }: ServicePag
                             src={story.image}
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-darker/70 via-transparent to-transparent"></div>
-                          <button
-                            type="button"
-                            onClick={onOpenVideo}
-                            aria-label={`Watch ${story.title}`}
-                            className="absolute bottom-4 right-4 size-11 bg-primary hover:bg-primary-dark rounded-full flex justify-center items-center cursor-pointer shadow-lg transition-colors"
-                          >
-                            <svg viewBox="0 0 24 24" className="size-5 fill-white translate-x-0.5">
-                              <path d="M18.055 11.168l-9-6c-0.156-0.105-0.348-0.168-0.555-0.168-0.552 0-1 0.448-1 1v0 12c0 0.552 0.448 1 1 1 0.207 0 0.399-0.063 0.558-0.17l-0.004 0.002 9-6c0.27-0.182 0.445-0.486 0.445-0.832s-0.175-0.65-0.442-0.83l-0.004-0.002z"></path>
-                            </svg>
-                          </button>
                         </div>
                       ))}
                     </div>

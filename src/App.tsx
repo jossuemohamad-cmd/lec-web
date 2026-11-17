@@ -10,7 +10,6 @@ import { BlogPage } from './pages/BlogPage';
 
 export function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [videoModalOpen, setVideoModalOpen] = useState(false);
   const [quoteModalOpen, setQuoteModalOpen] = useState(false);
   const { lang, toggleLanguage, t } = useLanguage();
 
@@ -366,7 +365,6 @@ export function App() {
         {currentPage === 'about' && (
           <AboutPage
             onNavigate={navigateTo}
-            onOpenVideo={() => setVideoModalOpen(true)}
             onOpenQuote={() => setQuoteModalOpen(true)}
           />
         )}
@@ -374,7 +372,6 @@ export function App() {
         {currentPage === 'service' && (
           <ServicePage
             onNavigate={navigateTo}
-            onOpenVideo={() => setVideoModalOpen(true)}
             onOpenQuote={() => setQuoteModalOpen(true)}
           />
         )}
@@ -382,7 +379,6 @@ export function App() {
         {currentPage === 'project' && (
           <ProjectPage
             onNavigate={navigateTo}
-            onOpenVideo={() => setVideoModalOpen(true)}
             onOpenQuote={() => setQuoteModalOpen(true)}
           />
         )}
@@ -390,7 +386,6 @@ export function App() {
         {currentPage === 'contact' && (
           <ContactPage
             onNavigate={navigateTo}
-            onOpenVideo={() => setVideoModalOpen(true)}
             onOpenQuote={() => setQuoteModalOpen(true)}
           />
         )}
@@ -398,7 +393,6 @@ export function App() {
         {currentPage === 'packages' && (
           <PackagesPage
             onNavigate={navigateTo}
-            onOpenVideo={() => setVideoModalOpen(true)}
             onOpenQuote={() => setQuoteModalOpen(true)}
           />
         )}
@@ -406,7 +400,6 @@ export function App() {
         {currentPage === 'faqs' && (
           <FaqsPage
             onNavigate={navigateTo}
-            onOpenVideo={() => setVideoModalOpen(true)}
             onOpenQuote={() => setQuoteModalOpen(true)}
           />
         )}
@@ -414,7 +407,6 @@ export function App() {
         {currentPage === 'blog' && (
           <BlogPage
             onNavigate={navigateTo}
-            onOpenVideo={() => setVideoModalOpen(true)}
             onOpenQuote={() => setQuoteModalOpen(true)}
           />
         )}
@@ -1339,30 +1331,7 @@ export function App() {
         </div>
       </footer>
 
-      {/* 4. VIDEO MODAL (Interactive for play buttons across all pages) */}
-      {videoModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 backdrop-blur-md p-4">
-          <div className="relative w-full max-w-4xl bg-darker rounded-2xl overflow-hidden shadow-2xl border border-white/10">
-            <button
-              onClick={() => setVideoModalOpen(false)}
-              className="absolute top-4 right-4 text-white hover:text-primary text-3xl font-bold z-10 p-2 cursor-pointer"
-            >
-              &times;
-            </button>
-            <div className="aspect-video w-full bg-black">
-              <iframe
-                className="w-full h-full"
-                src="https://www.youtube.com/embed/1kUE0BZtTRc?autoplay=1"
-                title="Solar & Renewable Energy Video"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 5. QUOTE MODAL (Interactive for all Quote buttons) */}
+      {/* 4. QUOTE MODAL (Interactive for all Quote buttons) */}
       {quoteModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
           <div className="relative w-full max-w-lg bg-white rounded-2xl p-8 shadow-2xl border border-gray-100 text-darker">

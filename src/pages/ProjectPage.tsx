@@ -3,7 +3,6 @@ import { useLanguage } from '../i18n/LanguageContext';
 
 interface ProjectPageProps {
   onNavigate: (page: string) => void;
-  onOpenVideo?: () => void;
   onOpenQuote?: () => void;
 }
 
@@ -20,8 +19,7 @@ interface Project {
   stat3Label: string;
 }
 
-export function ProjectPage({ onNavigate, onOpenVideo, onOpenQuote }: ProjectPageProps) {
-  void onOpenVideo;
+export function ProjectPage({ onNavigate, onOpenQuote }: ProjectPageProps) {
   void onOpenQuote;
   const { lang, t } = useLanguage();
   const [currentPageNum, setCurrentPageNum] = useState<number>(1);

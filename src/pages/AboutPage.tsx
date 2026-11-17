@@ -2,11 +2,10 @@ import { useLanguage } from '../i18n/LanguageContext';
 
 interface AboutPageProps {
   onNavigate: (page: string) => void;
-  onOpenVideo?: () => void;
   onOpenQuote?: () => void;
 }
 
-export function AboutPage({ onNavigate, onOpenVideo, onOpenQuote }: AboutPageProps) {
+export function AboutPage({ onNavigate, onOpenQuote }: AboutPageProps) {
   void onOpenQuote;
   const { t } = useLanguage();
 
@@ -257,16 +256,6 @@ export function AboutPage({ onNavigate, onOpenVideo, onOpenQuote }: AboutPagePro
                         className="absolute inset-0 w-full h-full object-cover object-center"
                         src="/lecasu/official-project-skm.jpg"
                       />
-                      <button
-                        type="button"
-                        onClick={onOpenVideo}
-                        aria-label="Play presentation video"
-                        className="absolute bottom-7 right-7.5 size-14 bg-primary hover:bg-primary-dark rounded-full flex justify-center items-center cursor-pointer shadow-lg transition-colors z-20"
-                      >
-                        <svg viewBox="0 0 24 24" className="size-7 fill-white translate-x-0.5">
-                          <path d="M18.055 11.168l-9-6c-0.156-0.105-0.348-0.168-0.555-0.168-0.552 0-1 0.448-1 1v0 12c0 0.552 0.448 1 1 1 0.207 0 0.399-0.063 0.558-0.17l-0.004 0.002 9-6c0.27-0.182 0.445-0.486 0.445-0.832s-0.175-0.65-0.442-0.83l-0.004-0.002z"></path>
-                        </svg>
-                      </button>
                     </div>
                   </div>
                 </div>

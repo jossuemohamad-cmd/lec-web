@@ -3,12 +3,10 @@ import { useLanguage } from '../i18n/LanguageContext';
 
 interface PackagesPageProps {
   onNavigate: (page: string) => void;
-  onOpenVideo?: () => void;
   onOpenQuote?: () => void;
 }
 
-export function PackagesPage({ onNavigate, onOpenVideo, onOpenQuote }: PackagesPageProps) {
-  void onOpenVideo;
+export function PackagesPage({ onNavigate, onOpenQuote }: PackagesPageProps) {
   const { lang, t } = useLanguage();
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
 

@@ -3,7 +3,6 @@ import { useLanguage } from '../i18n/LanguageContext';
 
 interface BlogPageProps {
   onNavigate: (page: string) => void;
-  onOpenVideo?: () => void;
   onOpenQuote?: () => void;
 }
 
@@ -14,8 +13,7 @@ interface BlogPost {
   image: string;
 }
 
-export function BlogPage({ onNavigate, onOpenVideo, onOpenQuote }: BlogPageProps) {
-  void onOpenVideo;
+export function BlogPage({ onNavigate, onOpenQuote }: BlogPageProps) {
   void onOpenQuote;
   const { lang, t } = useLanguage();
   const [currentPageNum, setCurrentPageNum] = useState<number>(1);

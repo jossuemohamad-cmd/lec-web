@@ -3,12 +3,10 @@ import { useLanguage } from '../i18n/LanguageContext';
 
 interface ContactPageProps {
   onNavigate: (page: string) => void;
-  onOpenVideo?: () => void;
   onOpenQuote?: () => void;
 }
 
-export function ContactPage({ onNavigate, onOpenVideo, onOpenQuote }: ContactPageProps) {
-  void onOpenVideo;
+export function ContactPage({ onNavigate, onOpenQuote }: ContactPageProps) {
   void onOpenQuote;
   const { lang, t } = useLanguage();
 
