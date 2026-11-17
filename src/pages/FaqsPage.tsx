@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface FaqsPageProps {
   onNavigate: (page: string) => void;
@@ -14,8 +15,26 @@ interface FaqItem {
 export function FaqsPage({ onNavigate, onOpenVideo, onOpenQuote }: FaqsPageProps) {
   void onOpenVideo;
   void onOpenQuote;
+  const { lang, t } = useLanguage();
 
-  const generalFaqs: FaqItem[] = [
+  const generalFaqs: FaqItem[] = lang === 'pt' ? [
+    {
+      q: 'Quanto pode a nossa empresa poupar com sistemas solares e híbridos da LECASU?',
+      a: 'A poupança depende do perfil de carga e da dependência de geradores a diesel, mas as instalações C&I típicas da LECASU reduzem custos de energia entre 50% e 70%. Em sistemas híbridos sincronizados com geradores, a substituição de diesel atinge com regularidade até 65%. Na nossa avaliação inicial, fornecemos uma análise de retorno e viabilidade técnica completa.'
+    },
+    {
+      q: 'O que é a Injeção na Rede / Compensação e quais os seus benefícios?',
+      a: 'Trata-se de um mecanismo em que o excedente de energia solar gerado é injetado na rede local ou compensado no consumo. Durante as horas de pico solar, o excesso de produção compensa o consumo nos períodos de menor geração.'
+    },
+    {
+      q: 'Os painéis solares geram energia à noite ou em dias nublados?',
+      a: 'Os painéis dependem da radiação solar, não produzindo eletricidade à noite. Em dias encobertos, os módulos modernos Tier-1 continuam a captar radiação difusa, produzindo entre 25% e 40% da capacidade de pico. Com sistemas de baterias integrados, a energia limpa fica garantida mesmo após o anoitecer.'
+    },
+    {
+      q: 'A minha cobertura é adequada para instalação de painéis solares?',
+      a: 'A grande maioria das coberturas industriais, comerciais e residenciais (chapa metálica, telha, lajes de betão) é compatível com estruturas de fixação solar. Os nossos engenheiros avaliam a orientação, inclinação, estado estrutural e sombreamento para conceber uma solução segura e estanque.'
+    }
+  ] : [
     {
       q: 'How much can our commercial facility save with LECASU solar and hybrid systems?',
       a: 'Savings depend on your facility load profile and diesel reliance, but typical LECASU commercial and industrial installations cut electricity and fuel expenses by 50% to 70%. In hybrid systems synchronized with diesel generators, fuel displacement routinely reaches up to 65%. During our initial technical assessment, we provide a complete engineering yield analysis and ROI projection.'
@@ -34,7 +53,24 @@ export function FaqsPage({ onNavigate, onOpenVideo, onOpenQuote }: FaqsPageProps
     }
   ];
 
-  const projectFaqs: FaqItem[] = [
+  const projectFaqs: FaqItem[] = lang === 'pt' ? [
+    {
+      q: 'Qual é a vida útil média e a garantia de um sistema solar?',
+      a: 'Os painéis solares modernos são concebidos para alta durabilidade, operando por 25 a 30 anos. Os sistemas incluem garantia de desempenho linear de 25 anos dos fabricantes Tier-1, assegurando pelo menos 80-85% da eficiência original.'
+    },
+    {
+      q: 'Quanto tempo demora o processo de engenharia e instalação?',
+      a: 'A montagem física no terreno depende da dimensão, variando habitualmente entre 2 dias (residencial) e poucas semanas (médio porte C&I). O processo completo, incluindo levantamento técnico, engenharia de detalhe, licenciamento e comissionamento, decorre de forma ágil e estruturada.'
+    },
+    {
+      q: 'Que tipo de manutenção os painéis solares requerem?',
+      a: 'Os sistemas fotovoltaicos não têm peças móveis e requerem manutenção reduzida. Recomendamos limpezas periódicas para remoção de poeiras e inspeções preventivas regulares. A LECASU disponibiliza planos de O&M com telemetria SCADA 24/7.'
+    },
+    {
+      q: 'Os painéis solares funcionam durante falhas da rede elétrica pública?',
+      a: 'Sistemas solares convencionais ligados à rede desligam-se por segurança durante falhas de rede (anti-ilhamento). Contudo, quando equipados com baterias ou comissionados em modo híbrido com geradores, o sistema isola-se e mantém o fornecimento ininterrupto às cargas essenciais.'
+    }
+  ] : [
     {
       q: 'What is the average lifespan and warranty of a solar system?',
       a: 'Modern solar panels are engineered for durability, typically boasting a lifespan of 25 to 30 years or more. Most systems include a 25-year performance warranty ensuring panels maintain at least 80-85% of their original efficiency.'
@@ -89,18 +125,18 @@ export function FaqsPage({ onNavigate, onOpenVideo, onOpenQuote }: FaqsPageProps
                         onClick={() => onNavigate('home')}
                         className="transition-colors text-base text-white/70 hover:text-white cursor-pointer"
                       >
-                        Home
+                        {t('Home')}
                       </button>
                     </li>
                     <li className="text-white/90 text-sm">/</li>
                     <li className="inline-flex items-center gap-1">
-                      <span className="font-normal text-sm text-white">FAQ</span>
+                      <span className="font-normal text-sm text-white">{t('FAQ')}</span>
                     </li>
                   </ol>
                 </nav>
               </div>
               <h2 className="text-3xl font-bold text-center text-white md:text-4xl lg:text-5xl leading-[1.1] xl:text-6xl 2xl:text-[5rem]">
-                Frequently Asked Questions
+                {t('Frequently Asked Questions')}
               </h2>
             </div>
           </div>
@@ -117,9 +153,11 @@ export function FaqsPage({ onNavigate, onOpenVideo, onOpenQuote }: FaqsPageProps
                 <div className="reveal-item reveal-delay-300 flex flex-col gap-12.5">
                   {/* Category 1: General Questions */}
                   <div>
-                    <h4 className="text-3xl font-bold text-darker mb-3">General questions</h4>
+                    <h4 className="text-3xl font-bold text-darker mb-3">{lang === 'pt' ? 'Perguntas Gerais' : 'General questions'}</h4>
                     <p className="mb-8 text-base/relaxed text-body">
-                      Clear answers to common inquiries, helping you understand services, processes, pricing, timelines, and support for a smooth experience.
+                      {lang === 'pt' 
+                        ? 'Respostas claras para as dúvidas mais comuns sobre serviços, processos, prazos e apoio técnico.' 
+                        : 'Clear answers to common inquiries, helping you understand services, processes, pricing, timelines, and support for a smooth experience.'}
                     </p>
                     <div className="flex flex-col gap-4">
                       {generalFaqs.map((faq, idx) => {
@@ -164,9 +202,11 @@ export function FaqsPage({ onNavigate, onOpenVideo, onOpenQuote }: FaqsPageProps
 
                   {/* Category 2: Project & Process */}
                   <div>
-                    <h4 className="text-3xl font-bold text-darker mb-3">Project &amp; process</h4>
+                    <h4 className="text-3xl font-bold text-darker mb-3">{lang === 'pt' ? 'Projetos & Processos' : 'Project & process'}</h4>
                     <p className="mb-8 text-base/relaxed text-body">
-                      Detailed explanations covering engineering workflows, permitting, safety, hardware warranties, and utility integration.
+                      {lang === 'pt'
+                        ? 'Explicações detalhadas sobre fluxo de engenharia, licenciamento, segurança, garantias e ligação à rede.'
+                        : 'Detailed explanations covering engineering workflows, permitting, safety, hardware warranties, and utility integration.'}
                     </p>
                     <div className="flex flex-col gap-4">
                       {projectFaqs.map((faq, idx) => {
@@ -215,21 +255,23 @@ export function FaqsPage({ onNavigate, onOpenVideo, onOpenQuote }: FaqsPageProps
               <div className="xl:column-5">
                 <div className="reveal-item reveal-delay-100 p-8 lg:p-10 rounded-2xl bg-primary-lighter/40 border border-primary/20 sticky top-28">
                   <h2 className="text-3xl md:text-4xl leading-tight font-bold text-darker text-pretty mb-5">
-                    Do you have more questions?
+                    {lang === 'pt' ? 'Tem mais perguntas?' : 'Do you have more questions?'}
                   </h2>
                   <p className="text-base leading-relaxed text-body text-pretty mb-8">
-                    We believe in providing our clients with personalized, transparent, and efficient clean energy solutions tailored to their exact roof and energy profile.
+                    {lang === 'pt'
+                      ? 'Acreditamos em fornecer aos nossos clientes soluções de energia limpa personalizadas, transparentes e eficientes, adaptadas às suas necessidades específicas.'
+                      : 'We believe in providing our clients with personalized, transparent, and efficient clean energy solutions tailored to their exact roof and energy profile.'}
                   </p>
-                  <h5 className="text-2xl text-darker font-bold mb-3">Have a specific question?</h5>
+                  <h5 className="text-2xl text-darker font-bold mb-3">{t('Have a specific question?')}</h5>
                   <p className="text-base/relaxed text-body text-pretty mb-8">
-                    Need help with something? Our engineering team is here to assist you every step of the way. Don’t hesitate to reach out.
+                    {t('Need help with something? Our engineering team is here to assist you every step of the way. Don’t hesitate to reach out.')}
                   </p>
                   <button
                     type="button"
                     onClick={() => onNavigate('contact')}
-                    className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-12 lg:h-14 gap-4 rounded-lg px-7 text-sm font-medium uppercase shadow-md"
+                    className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-12 lg:h-14 gap-4 rounded-full px-7 text-sm font-medium uppercase shadow-md"
                   >
-                    Contact Us
+                    {t('Contact Us')}
                   </button>
                 </div>
               </div>

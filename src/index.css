@@ -24,7 +24,9 @@ body {
   padding: 0;
 }
 
-/* Light, smooth entrance animations */
+/* ==========================================================================
+   FLUID ELEMENT ENTRANCE ANIMATIONS (SMOOTH REVEAL ON SITE ENTRANCE & SCROLL)
+   ========================================================================== */
 .reveal-item,
 .reveal-fade,
 .reveal-scale,
@@ -33,44 +35,193 @@ body {
 .reveal-from-left,
 .reveal-from-right {
   opacity: 0;
-  transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1), transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translateY(22px);
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity, transform;
 }
 
-.reveal-item,
-.reveal-from-bottom {
-  transform: translateY(18px);
-}
-
 .reveal-from-top {
-  transform: translateY(-14px);
+  transform: translateY(-22px);
 }
 
 .reveal-from-left {
-  transform: translateX(-18px);
+  transform: translateX(-24px);
 }
 
 .reveal-from-right {
-  transform: translateX(18px);
+  transform: translateX(24px);
 }
 
 .reveal-scale {
-  transform: scale(0.97);
+  transform: scale(0.96);
 }
 
 .reveal-fade {
-  transform: none;
+  transform: translateY(0);
 }
 
-.reveal-item[data-revealed="true"],
-.reveal-fade[data-revealed="true"],
-.reveal-scale[data-revealed="true"],
-.reveal-from-top[data-revealed="true"],
-.reveal-from-bottom[data-revealed="true"],
-.reveal-from-left[data-revealed="true"],
-.reveal-from-right[data-revealed="true"] {
-  opacity: 1;
-  transform: translate3d(0, 0, 0) scale(1);
+/* Permanent revealed state once element enters view */
+.reveal-item.is-revealed,
+.reveal-fade.is-revealed,
+.reveal-scale.is-revealed,
+.reveal-from-top.is-revealed,
+.reveal-from-bottom.is-revealed,
+.reveal-from-left.is-revealed,
+.reveal-from-right.is-revealed,
+[data-revealed="true"] {
+  opacity: 1 !important;
+  transform: translate3d(0, 0, 0) scale(1) !important;
+}
+
+.reveal-delay-100 { transition-delay: 80ms; }
+.reveal-delay-150 { transition-delay: 120ms; }
+.reveal-delay-200 { transition-delay: 160ms; }
+.reveal-delay-250 { transition-delay: 200ms; }
+.reveal-delay-300 { transition-delay: 240ms; }
+.reveal-delay-400 { transition-delay: 320ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-item,
+  .reveal-fade,
+  .reveal-scale,
+  .reveal-from-top,
+  .reveal-from-bottom,
+  .reveal-from-left,
+  .reveal-from-right {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* Smooth, fluid site entrance animation on initial load */
+@keyframes siteEntranceFade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+#root {
+  animation: siteEntranceFade 0.5s ease-out 1;
+}
+
+/* Hero Fluid Entrance Stagger (Active only on initial site load) */
+@keyframes heroEntranceSlideDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes heroEntranceSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes heroEntranceBg {
+  0% {
+    opacity: 0.65;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.hero-enter-nav {
+  animation: heroEntranceSlideDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.hero-enter-bg {
+  animation: heroEntranceBg 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.hero-enter-title {
+  animation: heroEntranceSlideUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both;
+}
+
+.hero-enter-desc {
+  animation: heroEntranceSlideUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.22s both;
+}
+
+.hero-enter-cta {
+  animation: heroEntranceSlideUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.36s both;
+}
+
+.hero-enter-stats {
+  animation: heroEntranceSlideUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.50s both;
+}
+
+/* ==========================================================================
+   SOFT, REDUCED SHADOW SYSTEM ACROSS THE ENTIRE SITE
+   ========================================================================== */
+.shadow-2xl,
+[class*="shadow-2xl"] {
+  box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.06), 0 3px 6px -2px rgba(0, 0, 0, 0.03) !important;
+}
+
+.shadow-xl,
+[class*="shadow-xl"] {
+  box-shadow: 0 6px 14px -3px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.02) !important;
+}
+
+.shadow-lg,
+[class*="shadow-lg"] {
+  box-shadow: 0 4px 10px -2px rgba(0, 0, 0, 0.04), 0 2px 3px -1px rgba(0, 0, 0, 0.02) !important;
+}
+
+.shadow-md,
+[class*="shadow-md"] {
+  box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.02) !important;
+}
+
+/* Border Beam traveling light animation for buttons */
+@keyframes borderBeamRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-border-beam {
+  animation: borderBeamRotate 3.5s linear infinite;
+}
+
+/* ==========================================================================
+   REMOVE HOVER EFFECTS ON IMAGES AND CARDS
+   ========================================================================== */
+/* Disable zoom and hover scale transforms on all images */
+img,
+img:hover,
+.group:hover img,
+[class*="group"]:hover img {
+  transform: none !important;
+  transition: none !important;
+}
+
+/* Disable hover jumps/translations on cards */
+.reveal-item:hover,
+[class*="rounded-xl"]:hover,
+[class*="rounded-2xl"]:hover,
+[class*="rounded-3xl"]:hover,
+.card-hover:hover {
+  transform: none !important;
 }
 
 .reveal-delay-100 { transition-delay: 80ms; }
@@ -96,4 +247,77 @@ body {
 /* Text wrap helper */
 .text-pretty {
   text-wrap: pretty;
+}
+
+/* ==========================================================================
+   RESPONSIVE CONTAINER SYSTEM (Optimized for balanced lateral margins across
+   all screen types: mobile, tablets, notebooks/laptops, and wide monitors)
+   ========================================================================== */
+:root {
+  --container-sm: 540px;
+  --container-md: 720px;
+  --container-lg: 940px;
+  --container-xl: 1120px;
+  --container-2xl: 1200px;
+}
+
+.container {
+  width: 100% !important;
+  margin-inline: auto !important;
+  box-sizing: border-box !important;
+  padding-inline: 1.25rem !important; /* 20px on mobile */
+}
+
+@media (min-width: 576px) {
+  .container {
+    max-width: 540px !important;
+    padding-inline: 1.5rem !important; /* 24px */
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 720px !important;
+    padding-inline: 2rem !important; /* 32px */
+  }
+}
+
+@media (min-width: 992px) {
+  .container {
+    max-width: 940px !important;
+    padding-inline: 2.25rem !important; /* 36px */
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1120px !important;
+    padding-inline: 2.5rem !important; /* 40px */
+  }
+}
+
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1200px !important;
+    padding-inline: 3rem !important; /* 48px */
+  }
+}
+
+@media (min-width: 1600px) {
+  .container {
+    max-width: 1260px !important;
+    padding-inline: 3.5rem !important; /* 56px */
+  }
+}
+
+/* ==========================================================================
+   GLOBAL BUTTON RADIUS (100% / rounded-full for all action & interactive buttons)
+   ========================================================================== */
+.group\/button,
+[class*="group/button"],
+a[class*="group/button"],
+button[type="submit"],
+.btn-primary,
+.btn {
+  border-radius: 9999px !important;
 }

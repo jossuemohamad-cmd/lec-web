@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { applyLanguageToDom, type Lang } from './i18n/pt';
+import { useLanguage } from './i18n/LanguageContext';
 import { AboutPage } from './pages/AboutPage';
 import { ServicePage } from './pages/ServicePage';
 import { ProjectPage } from './pages/ProjectPage';
@@ -7,27 +7,25 @@ import { ContactPage } from './pages/ContactPage';
 import { PackagesPage } from './pages/PackagesPage';
 import { FaqsPage } from './pages/FaqsPage';
 import { BlogPage } from './pages/BlogPage';
+
 export function App() {
-  const [loading, setLoading] = useState(true);
-  const [progress, setProgress] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [videoModalOpen, setVideoModalOpen] = useState(false);
   const [quoteModalOpen, setQuoteModalOpen] = useState(false);
-  const [lang, setLang] = useState<Lang>(() => (localStorage.getItem('lecasu_lang') === 'pt' ? 'pt' : 'en'));
-
-  const toggleLanguage = () => {
-    setLang((prev) => (prev === 'en' ? 'pt' : 'en'));
-  };
+  const { lang, toggleLanguage, t } = useLanguage();
 
   // Router state
   const [currentPage, setCurrentPage] = useState<string>('home');
 
+  // One-time fluid entrance animation for the initial site load
+  const [initialEntrance, setInitialEntrance] = useState(true);
+
   useEffect(() => {
-    localStorage.setItem('lecasu_lang', lang);
-    if (!loading) {
-      applyLanguageToDom(lang);
-    }
-  }, [lang, currentPage, loading, mobileMenuOpen]);
+    const timer = setTimeout(() => {
+      setInitialEntrance(false);
+    }, 1600);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Scroll detection for sticky header legibility
   const [scrolled, setScrolled] = useState(false);
@@ -63,28 +61,13 @@ export function App() {
     setMobileMenuOpen(false);
   };
 
-  // Preloader
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(timer);
-          setTimeout(() => setLoading(false), 250);
-          return 100;
-        }
-        return prev + 5;
-      });
-    }, 20);
-    return () => clearInterval(timer);
-  }, []);
-
   // Hero Counter animations
   const [installedCount, setInstalledCount] = useState(0);
   const [savingsCount, setSavingsCount] = useState(0);
   const [ratingCount, setRatingCount] = useState(0);
 
   useEffect(() => {
-    if (!loading && currentPage === 'home') {
+    if (currentPage === 'home') {
       let current = 0;
       const interval = setInterval(() => {
         current += 1;
@@ -95,83 +78,94 @@ export function App() {
       }, 40);
       return () => clearInterval(interval);
     }
-  }, [loading, currentPage]);
+  }, [currentPage]);
 
-  // Light scroll-triggered entrance animations (use data-revealed so React re-renders never reset it)
+  // Entrance and scroll reveal animation for elements entering the site
   useEffect(() => {
-    if (loading) return;
-    const targets = document.querySelectorAll<HTMLElement>(
-      '.reveal-item, .reveal-fade, .reveal-scale, .reveal-from-top, .reveal-from-bottom, .reveal-from-left, .reveal-from-right'
-    );
+    const checkReveals = () => {
+      const targets = document.querySelectorAll<HTMLElement>(
+        '.reveal-item:not([data-revealed="true"]), .reveal-fade:not([data-revealed="true"]), .reveal-scale:not([data-revealed="true"]), .reveal-from-top:not([data-revealed="true"]), .reveal-from-bottom:not([data-revealed="true"]), .reveal-from-left:not([data-revealed="true"]), .reveal-from-right:not([data-revealed="true"])'
+      );
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.setAttribute('data-revealed', 'true');
-            observer.unobserve(entry.target);
+      if (!targets.length) return;
+
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                const el = entry.target as HTMLElement;
+                el.setAttribute('data-revealed', 'true');
+                el.classList.add('is-revealed');
+                observer.unobserve(el);
+              }
+            });
+          },
+          {
+            threshold: 0.02,
+            rootMargin: '60px 0px -20px 0px'
+          }
+        );
+
+        targets.forEach((el) => {
+          // Immediately reveal elements that are already within or near the viewport on entrance
+          const rect = el.getBoundingClientRect();
+          if (rect.top < window.innerHeight + 60 && rect.bottom > -60) {
+            el.setAttribute('data-revealed', 'true');
+            el.classList.add('is-revealed');
+          } else {
+            observer.observe(el);
           }
         });
-      },
-      { threshold: 0.05, rootMargin: '0px 0px -20px 0px' }
-    );
-
-    targets.forEach((el) => {
-      if (el.getAttribute('data-revealed') !== 'true') {
-        observer.observe(el);
+      } else {
+        targets.forEach((el) => {
+          el.setAttribute('data-revealed', 'true');
+          el.classList.add('is-revealed');
+        });
       }
-    });
-    return () => observer.disconnect();
-  }, [loading, currentPage]);
+    };
+
+    checkReveals();
+    const timer1 = setTimeout(checkReveals, 80);
+    const timer2 = setTimeout(checkReveals, 400);
+
+    // Guaranteed fallback: reveal any remaining unrevealed elements after 2.5s
+    const fallbackTimer = setTimeout(() => {
+      document
+        .querySelectorAll<HTMLElement>(
+          '.reveal-item:not([data-revealed="true"]), .reveal-fade:not([data-revealed="true"]), .reveal-scale:not([data-revealed="true"]), .reveal-from-top:not([data-revealed="true"]), .reveal-from-bottom:not([data-revealed="true"]), .reveal-from-left:not([data-revealed="true"]), .reveal-from-right:not([data-revealed="true"])'
+        )
+        .forEach((el) => {
+          el.setAttribute('data-revealed', 'true');
+          el.classList.add('is-revealed');
+        });
+    }, 2500);
+
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      clearTimeout(fallbackTimer);
+    };
+  }, [currentPage]);
 
   return (
     <div className="font-instrument-sans min-h-full flex flex-col text-body bg-white selection:bg-primary selection:text-white">
-      {/* 0. PRELOADER */}
-      {loading && (
-        <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-darker transition-opacity duration-700 ease-out opacity-100">
-          <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-125 h-125 rounded-full bg-primary/15 blur-[120px] animate-pulse"></div>
-          </div>
-          <div className="relative z-10 flex flex-col items-center gap-8 max-w-xs w-full px-6">
-            <div className="relative">
-              <img
-                alt="LECASU Logo"
-                width={302}
-                height={72}
-                className="w-auto h-12 object-contain"
-                src="/lecasu/lecasu-logo.png"
-              />
-            </div>
-            <div className="w-full space-y-3">
-              <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden relative">
-                <div
-                  className="h-full bg-primary rounded-full transition-all duration-75 ease-out shadow-[0_0_12px_rgba(255, 128, 0,0.8)]"
-                  style={{ width: `${progress}%` }}
-                ></div>
-              </div>
-              <div className="flex justify-between items-center text-xs font-medium tracking-widest text-white/50 uppercase">
-                <span>Loading</span>
-                <span className="tabular-nums text-primary font-semibold">{progress}%</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* 1. FLOATING HEADER / NAVBAR */}
-      <div className="reveal-item reveal-delay-100 reveal-from-top fixed top-0 left-0 w-full z-50 pt-3 lg:pt-4 transition-all duration-300">
+      <div className={`fixed top-0 left-0 w-full z-50 pt-3 lg:pt-4 transition-colors duration-300 ${
+        initialEntrance ? 'hero-enter-nav' : ''
+      }`}>
         <div className="container">
-          <div className={`border flex items-center rounded-full transition-all duration-300 min-[1470px]:-mx-10 mx-auto px-6 py-3 lg:py-3.5 ${
+          <div className={`border flex items-center rounded-full transition-all duration-300 w-full mx-auto px-5 sm:px-6 lg:px-8 py-2.5 lg:py-3.5 shadow-none ${
             scrolled 
-              ? 'border-white/20 bg-[#12161a]/85 backdrop-blur-xl shadow-[0_10px_35px_rgba(0,0,0,0.35)]' 
-              : 'border-white/15 bg-black/30 backdrop-blur-md shadow-sm'
+              ? 'border-white/20 bg-[#12161a]/85 backdrop-blur-xl shadow-none' 
+              : 'border-white/15 bg-black/30 backdrop-blur-md shadow-none'
           }`}>
             <button
               onClick={() => navigateTo('home')}
               className="group flex items-center gap-2.5 shrink-0 cursor-pointer"
               aria-label="LECASU Home"
             >
-              <img alt="LECASU" width={302} height={72} className="w-auto h-9 lg:h-10 transition-transform duration-300 group-hover:scale-105" src="/lecasu/lecasu-logo.png" />
+              <img alt="LECASU" width={302} height={72} className="w-auto h-9 lg:h-10" src="/lecasu/lecasu-logo.png" />
             </button>
 
             {/* Desktop Navigation */}
@@ -182,33 +176,33 @@ export function App() {
                   <button
                     type="button"
                     onClick={() => navigateTo('home')}
-                    className={`relative flex items-center px-4 py-2 gap-1.5 justify-between text-base font-medium rounded-lg transition-all duration-200 cursor-pointer ${
+                    className={`relative flex items-center px-4 py-2 gap-1.5 justify-between text-base font-medium rounded-lg transition-colors duration-200 cursor-pointer ${
                       currentPage === 'home' ? 'text-primary' : 'text-white hover:text-primary'
                     }`}
                   >
-                    Home
+                    {t('Home')}
                   </button>
                 </li>
 
                 <li className="relative">
                   <button
                     onClick={() => navigateTo('about')}
-                    className={`relative flex items-center px-4 py-2 gap-1.5 justify-between text-base font-medium rounded-lg transition-all duration-200 cursor-pointer ${
+                    className={`relative flex items-center px-4 py-2 gap-1.5 justify-between text-base font-medium rounded-lg transition-colors duration-200 cursor-pointer ${
                       currentPage === 'about' ? 'text-primary' : 'text-white hover:text-primary'
                     }`}
                   >
-                    About
+                    {t('About')}
                   </button>
                 </li>
 
                 <li className="relative">
                   <button
                     onClick={() => navigateTo('service')}
-                    className={`relative flex items-center px-4 py-2 gap-1.5 justify-between text-base font-medium rounded-lg transition-all duration-200 cursor-pointer ${
+                    className={`relative flex items-center px-4 py-2 gap-1.5 justify-between text-base font-medium rounded-lg transition-colors duration-200 cursor-pointer ${
                       currentPage === 'service' ? 'text-primary' : 'text-white hover:text-primary'
                     }`}
                   >
-                    Service
+                    {t('Service')}
                   </button>
                 </li>
 
@@ -217,22 +211,22 @@ export function App() {
                   <button
                     type="button"
                     onClick={() => navigateTo('project')}
-                    className={`relative flex items-center px-4 py-2 gap-1.5 justify-between text-base font-medium rounded-lg transition-all duration-200 cursor-pointer ${
+                    className={`relative flex items-center px-4 py-2 gap-1.5 justify-between text-base font-medium rounded-lg transition-colors duration-200 cursor-pointer ${
                       currentPage === 'project' ? 'text-primary' : 'text-white hover:text-primary'
                     }`}
                   >
-                    Project
+                    {t('Project')}
                   </button>
                 </li>
 
                 <li className="relative">
                   <button
                     onClick={() => navigateTo('contact')}
-                    className={`relative flex items-center px-4 py-2 gap-1.5 justify-between text-base font-medium rounded-lg transition-all duration-200 cursor-pointer ${
+                    className={`relative flex items-center px-4 py-2 gap-1.5 justify-between text-base font-medium rounded-lg transition-colors duration-200 cursor-pointer ${
                       currentPage === 'contact' ? 'text-primary' : 'text-white hover:text-primary'
                     }`}
                   >
-                    Contact
+                    {t('Contact')}
                   </button>
                 </li>
               </ul>
@@ -242,7 +236,7 @@ export function App() {
                 type="button"
                 onClick={toggleLanguage}
                 title={lang === 'en' ? 'Traduzir para Português' : 'Switch to English'}
-                className="inline-flex shrink-0 items-center gap-1.5 px-3.5 h-10 lg:h-11 rounded-full border border-white/25 bg-white/10 text-white hover:bg-white/20 hover:border-primary/60 text-sm font-semibold tracking-wide transition-all cursor-pointer"
+                className="inline-flex shrink-0 items-center gap-1.5 px-3.5 h-10 lg:h-11 rounded-full border border-white/25 bg-white/10 text-white hover:bg-white/20 hover:border-primary/60 text-sm font-semibold tracking-wide transition-colors cursor-pointer"
               >
                 <svg className="size-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" />
@@ -256,9 +250,9 @@ export function App() {
                 href="https://simulador.lecasu.co.mz"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-10 lg:h-12 gap-4 px-6 font-medium rounded-full text-base shadow-lg hover:shadow-primary/30"
+                className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-colors outline-none select-none cursor-pointer tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-10 lg:h-12 gap-4 px-6 font-medium rounded-full text-base shadow-none hover:shadow-none"
               >
-                Request a Proposal
+                {t('Request a Proposal')}
               </a>
             </nav>
 
@@ -307,7 +301,7 @@ export function App() {
                 onClick={() => navigateTo('home')}
                 className={`w-full text-left py-2 font-medium ${currentPage === 'home' ? 'text-primary' : 'text-white'}`}
               >
-                Home
+                {t('Home')}
               </button>
             </li>
             <li>
@@ -315,7 +309,7 @@ export function App() {
                 onClick={() => navigateTo('about')}
                 className={`w-full text-left py-2 font-medium ${currentPage === 'about' ? 'text-primary' : 'text-white hover:text-primary'}`}
               >
-                About Us
+                {t('About Us')}
               </button>
             </li>
             <li>
@@ -323,7 +317,7 @@ export function App() {
                 onClick={() => navigateTo('service')}
                 className={`w-full text-left py-2 font-medium ${currentPage === 'service' ? 'text-primary' : 'text-white hover:text-primary'}`}
               >
-                Our Services
+                {t('Services')}
               </button>
             </li>
             <li>
@@ -331,31 +325,7 @@ export function App() {
                 onClick={() => navigateTo('project')}
                 className={`w-full text-left py-2 font-medium ${currentPage === 'project' ? 'text-primary' : 'text-white hover:text-primary'}`}
               >
-                Projects
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => navigateTo('packages')}
-                className={`w-full text-left py-2 font-medium ${currentPage === 'packages' ? 'text-primary' : 'text-white hover:text-primary'}`}
-              >
-                Pricing / Packages
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => navigateTo('faqs')}
-                className={`w-full text-left py-2 font-medium ${currentPage === 'faqs' ? 'text-primary' : 'text-white hover:text-primary'}`}
-              >
-                FAQ
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => navigateTo('blog')}
-                className={`w-full text-left py-2 font-medium ${currentPage === 'blog' ? 'text-primary' : 'text-white hover:text-primary'}`}
-              >
-                Blog
+                {t('Projects')}
               </button>
             </li>
             <li>
@@ -363,7 +333,7 @@ export function App() {
                 onClick={() => navigateTo('contact')}
                 className={`w-full text-left py-2 font-medium ${currentPage === 'contact' ? 'text-primary' : 'text-white hover:text-primary'}`}
               >
-                Contact Us
+                {t('Contact Us')}
               </button>
             </li>
           </ul>
@@ -386,179 +356,200 @@ export function App() {
             onClick={() => setMobileMenuOpen(false)}
             className="w-full mt-6 py-3 rounded-full bg-primary text-white font-medium text-center shadow-lg"
           >
-            Request a Proposal
+            {t('Request a Proposal')}
           </a>
         </nav>
       </aside>
 
       {/* 2. DYNAMIC PAGE ROUTER */}
-      {currentPage === 'about' && (
-        <AboutPage
-          onNavigate={navigateTo}
-          onOpenVideo={() => setVideoModalOpen(true)}
-          onOpenQuote={() => setQuoteModalOpen(true)}
-        />
-      )}
+      <div>
+        {currentPage === 'about' && (
+          <AboutPage
+            onNavigate={navigateTo}
+            onOpenVideo={() => setVideoModalOpen(true)}
+            onOpenQuote={() => setQuoteModalOpen(true)}
+          />
+        )}
 
-      {currentPage === 'service' && (
-        <ServicePage
-          onNavigate={navigateTo}
-          onOpenVideo={() => setVideoModalOpen(true)}
-          onOpenQuote={() => setQuoteModalOpen(true)}
-        />
-      )}
+        {currentPage === 'service' && (
+          <ServicePage
+            onNavigate={navigateTo}
+            onOpenVideo={() => setVideoModalOpen(true)}
+            onOpenQuote={() => setQuoteModalOpen(true)}
+          />
+        )}
 
-      {currentPage === 'project' && (
-        <ProjectPage
-          onNavigate={navigateTo}
-          onOpenVideo={() => setVideoModalOpen(true)}
-          onOpenQuote={() => setQuoteModalOpen(true)}
-        />
-      )}
+        {currentPage === 'project' && (
+          <ProjectPage
+            onNavigate={navigateTo}
+            onOpenVideo={() => setVideoModalOpen(true)}
+            onOpenQuote={() => setQuoteModalOpen(true)}
+          />
+        )}
 
-      {currentPage === 'contact' && (
-        <ContactPage
-          onNavigate={navigateTo}
-          onOpenVideo={() => setVideoModalOpen(true)}
-          onOpenQuote={() => setQuoteModalOpen(true)}
-        />
-      )}
+        {currentPage === 'contact' && (
+          <ContactPage
+            onNavigate={navigateTo}
+            onOpenVideo={() => setVideoModalOpen(true)}
+            onOpenQuote={() => setQuoteModalOpen(true)}
+          />
+        )}
 
-      {currentPage === 'packages' && (
-        <PackagesPage
-          onNavigate={navigateTo}
-          onOpenVideo={() => setVideoModalOpen(true)}
-          onOpenQuote={() => setQuoteModalOpen(true)}
-        />
-      )}
+        {currentPage === 'packages' && (
+          <PackagesPage
+            onNavigate={navigateTo}
+            onOpenVideo={() => setVideoModalOpen(true)}
+            onOpenQuote={() => setQuoteModalOpen(true)}
+          />
+        )}
 
-      {currentPage === 'faqs' && (
-        <FaqsPage
-          onNavigate={navigateTo}
-          onOpenVideo={() => setVideoModalOpen(true)}
-          onOpenQuote={() => setQuoteModalOpen(true)}
-        />
-      )}
+        {currentPage === 'faqs' && (
+          <FaqsPage
+            onNavigate={navigateTo}
+            onOpenVideo={() => setVideoModalOpen(true)}
+            onOpenQuote={() => setQuoteModalOpen(true)}
+          />
+        )}
 
-      {currentPage === 'blog' && (
-        <BlogPage
-          onNavigate={navigateTo}
-          onOpenVideo={() => setVideoModalOpen(true)}
-          onOpenQuote={() => setQuoteModalOpen(true)}
-        />
-      )}
+        {currentPage === 'blog' && (
+          <BlogPage
+            onNavigate={navigateTo}
+            onOpenVideo={() => setVideoModalOpen(true)}
+            onOpenQuote={() => setQuoteModalOpen(true)}
+          />
+        )}
+      </div>
 
       {/* HOME PAGE */}
       {currentPage === 'home' && (
-        <>
+        <div>
           {/* SECÇÃO 1 & 2 — HEADER, HERO E INDICADOR DE RESULTADOS */}
-          <header className="relative flex flex-col pt-[var(--menubar-height)] bg-[#0f0f0f]">
-            <div className="flex-1 flex items-center pt-12 md:pt-16 xl:pt-22 2xl:pt-35 z-20 relative">
-              <div className="absolute -top-[var(--menubar-height)] inset-x-0 bottom-0 pointer-events-none overflow-hidden -z-10 bg-darker parallax-bg">
+          <header className="relative flex flex-col bg-[#0f0f0f]">
+            <div className="relative z-20 flex flex-col justify-center min-h-screen min-h-[100vh] min-h-[100dvh] pt-[calc(var(--menubar-height)-1rem)] pb-8">
+              {/* Background image covering the full 100vh */}
+              <div className="absolute inset-0 pointer-events-none overflow-hidden -z-10 bg-darker parallax-bg">
                 <img
                   alt="Hero background"
                   width={1920}
                   height={1010}
-                  className="object-cover object-top w-full h-full"
+                  className={`object-cover object-top w-full h-full ${initialEntrance ? 'hero-enter-bg' : ''}`}
                   src="/lecasu/hero-energy-v2.jpg"
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-[#0f0f0f]/45 via-[#0f0f0f]/35 to-[#0f0f0f]/55 transition-opacity duration-300"></div>
+                {/* Gradiente direcional suave para visualização clara da imagem de fundo */}
+                <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-black/20 to-transparent pointer-events-none"></div>
+                <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/25 pointer-events-none"></div>
               </div>
 
-              <div className="container">
-                <div className="row">
-                  {/* Lado Esquerdo do Hero expandido */}
-                  <div className="lg:column-10 xl:column-9 2xl:column-8">
-                    <div className="reveal-stagger">
-                      
-                      <h1 className="reveal-item reveal-delay-150 text-white font-bold text-4xl md:text-5xl lg:text-6xl 2xl:text-[4.875rem] leading-[1.15] mb-8">
-                        Powering Africa with Reliable Energy Infrastructure.
+              {/* Main Hero Content com divisão de 50% / 50% */}
+              <div className="container py-4 sm:py-6 lg:py-8">
+                <div className="row items-center">
+                  {/* Lado Esquerdo — 50% */}
+                  <div className="column-12 lg:column-6 xl:column-6">
+                    <div className="max-w-2xl">
+                      <h1 className={`text-white font-bold text-4xl sm:text-5xl lg:text-[3.15rem] xl:text-[3.5rem] leading-[1.14] mb-5 sm:mb-6 drop-shadow-[0_2px_10px_rgba(0,0,0,0.85)] ${
+                        initialEntrance ? 'hero-enter-title' : ''
+                      }`}>
+                        {lang === 'pt' ? (
+                          <>
+                            <span>Energia que</span> <br />
+                            <span className="whitespace-nowrap">faz diferença</span>
+                          </>
+                        ) : (
+                          <>
+                            <span>Energy that</span> <br />
+                            <span className="whitespace-nowrap">makes a difference</span>
+                          </>
+                        )}
                       </h1>
-                      <p className="reveal-item reveal-delay-200 text-lg/relaxed text-white/80 mb-11 max-w-2xl">
-                        We design, build and operate high-performance solar and hybrid energy systems tailored for African conditions. From first assessment to long-term operation, we deliver resilient infrastructure through one accountable engineering partner.
+                      <p className={`text-base sm:text-lg leading-relaxed text-white mb-7 sm:mb-9 max-w-lg text-pretty drop-shadow-[0_1px_8px_rgba(0,0,0,0.85)] ${
+                        initialEntrance ? 'hero-enter-desc' : ''
+                      }`}>
+                        {t('Acreditamos que a energia pode transformar vidas. Por isso, trabalhamos para levar soluções energéticas a empresas, famílias e comunidades, contribuindo para novas oportunidades e um futuro mais digno.')}
                       </p>
 
-                      <ul className="reveal-item reveal-delay-250 flex flex-wrap gap-4">
+                      <ul className={`flex flex-wrap items-center gap-4 mb-8 sm:mb-10 ${
+                        initialEntrance ? 'hero-enter-cta' : ''
+                      }`}>
                         <li>
+                          {/* Botão com feixe de luz animado caminhando na borda e ícone em círculo preto */}
                           <a
                             href="https://simulador.lecasu.co.mz/"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding outline-none select-none cursor-pointer tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-12 lg:h-14 gap-4 rounded-lg px-7 text-sm font-medium uppercase shadow-lg hover:shadow-primary/25 transition-all"
+                            className="relative inline-flex items-center justify-center p-[2px] rounded-full overflow-hidden group/beam shadow-sm hover:shadow transition-all cursor-pointer select-none active:scale-[0.98]"
                           >
-                            Request a Proposal
+                            {/* Feixe de luz caminhando sobre a borda */}
+                            <span
+                              aria-hidden="true"
+                              className="absolute inset-[-150%] m-auto aspect-square w-[350%] animate-border-beam bg-[conic-gradient(from_0deg,transparent_0_65%,rgba(255,163,71,0.3)_72%,#ff8000_82%,#ffffff_91%,#ff8000_96%,transparent_100%)] pointer-events-none"
+                            />
+
+                            {/* Botão interno com ícone de seta dentro de círculo preto */}
+                            <span className="relative z-10 inline-flex shrink-0 items-center justify-center whitespace-nowrap bg-primary text-white group-hover/beam:bg-primary-dark fill-white h-12 lg:h-14 gap-3.5 rounded-full pl-7 pr-2.5 sm:pr-3 text-sm font-semibold uppercase tracking-[0.5px] transition-colors">
+                              <span>{t('Request a Proposal')}</span>
+                              <span className="size-8 sm:size-9 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover/beam:translate-x-0.5">
+                                <svg
+                                  className="size-4"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth={2.5}
+                                >
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                                </svg>
+                              </span>
+                            </span>
                           </a>
                         </li>
                         <li>
                           <button
                             type="button"
                             onClick={() => navigateTo('project')}
-                            className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-white text-white hover:bg-white/10 fill-white h-12 lg:h-14 gap-4 rounded-lg px-7 text-sm font-medium uppercase backdrop-blur-md"
+                            className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-white/80 text-white hover:bg-white/15 fill-white h-12 lg:h-14 gap-4 rounded-full px-7 text-sm font-medium uppercase backdrop-blur-md"
                           >
-                            View Projects
+                            {t('View Projects')}
                           </button>
                         </li>
                       </ul>
 
-                      {/* Indicadores numéricos na parte inferior */}
-                      <ul className="reveal-item reveal-delay-300 flex flex-wrap gap-4 sm:gap-0 mt-12 lg:mt-16 2xl:mt-24 pb-8 xl:pb-12 pt-4.5 border-t border-white/20">
-                        <li>
-                          <div className="text-3xl font-semibold text-white mb-2.5">
-                            <span className="tabular-nums inline-block">{installedCount}+</span>
-                          </div>
-                          <div className="text-xs/normal tracking-[1px] font-medium uppercase text-white/65">
-                            Projects <br /> Delivered
-                          </div>
-                        </li>
-                        <li className="my-5 min-[420px]:my-0 min-[420px]:mx-4 sm:mx-10 md:mx-20 xl:mx-14 2xl:mx-20 sm:border-l border-white/20 hidden sm:block"></li>
-                        <li>
-                          <div className="text-3xl font-semibold text-white mb-2.5">
-                            <span className="tabular-nums inline-block">{savingsCount}+</span>
-                          </div>
-                          <div className="text-xs/normal tracking-[1px] font-medium uppercase text-white/65">
-                            Hybrid &amp; Off-Grid <br /> Specialists
-                          </div>
-                        </li>
-                        <li className="my-5 min-[420px]:my-0 min-[420px]:mx-4 sm:mx-10 md:mx-20 xl:mx-14 2xl:mx-20 sm:border-l border-white/20 hidden sm:block"></li>
-                        <li>
-                          <div className="text-3xl font-semibold text-white mb-2.5">
-                            <span className="tabular-nums inline-block">{ratingCount}+</span>
-                          </div>
-                          <div className="text-xs/normal tracking-[1px] font-medium uppercase text-white/65">
-                            Operations Across <br /> Mozambique
-                          </div>
-                        </li>
-                      </ul>
+                      {/* Contadores no modelo anterior (sem cards, sem pontinhos, com divisores elegantes) */}
+                      <div className={`pt-6 border-t border-white/20 ${
+                        initialEntrance ? 'hero-enter-stats' : ''
+                      }`}>
+                        <ul className="flex items-center gap-4 sm:gap-6 lg:gap-8">
+                          <li>
+                            <div className="text-3xl lg:text-4xl font-bold text-white mb-1.5">
+                              <span className="tabular-nums inline-block">{installedCount}+</span>
+                            </div>
+                            <div className="text-xs tracking-[1px] font-medium uppercase text-white/70 leading-snug">
+                              {lang === 'pt' ? <>Projetos <br /> Entregues</> : <>Projects <br /> Delivered</>}
+                            </div>
+                          </li>
+                          <li className="h-10 border-l border-white/20"></li>
+                          <li>
+                            <div className="text-3xl lg:text-4xl font-bold text-white mb-1.5">
+                              <span className="tabular-nums inline-block">{savingsCount}+</span>
+                            </div>
+                            <div className="text-xs tracking-[1px] font-medium uppercase text-white/70 leading-snug">
+                              {lang === 'pt' ? <>Especialistas <br /> Híbridos &amp; Off-Grid</> : <>Hybrid &amp; Off-Grid <br /> Specialists</>}
+                            </div>
+                          </li>
+                          <li className="h-10 border-l border-white/20"></li>
+                          <li>
+                            <div className="text-3xl lg:text-4xl font-bold text-white mb-1.5">
+                              <span className="tabular-nums inline-block">{ratingCount}+</span>
+                            </div>
+                            <div className="text-xs tracking-[1px] font-medium uppercase text-white/70 leading-snug">
+                              {lang === 'pt' ? <>Operações em <br /> Moçambique</> : <>Operations Across <br /> Mozambique</>}
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            </div>
 
-            {/* BRANDS / PARTNERS BAR */}
-            <div className="bg-white py-10 lg:py-14 flex items-center relative z-10 border-b border-gray-100">
-              <div className="container">
-                <div className="w-full">
-                  <div className="reveal-item flex flex-col md:flex-row md:items-center gap-6 reveal-delay-250">
-                    <div className="text-sm/6 font-semibold text-darker uppercase self-start md:self-center shrink-0">
-                      Trusted by leading <br /> organizations
-                    </div>
-                    <div className="hidden md:block shrink-0 grow-0 h-10 border-l border-darker/20 mx-4"></div>
-                    <div className="flex gap-3 sm:gap-4 flex-wrap items-center">
-                      <div className="px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 text-darker font-bold text-sm tracking-wider uppercase hover:text-primary hover:border-primary transition-all shadow-sm">
-                        SKM Engineering
-                      </div>
-                      <div className="px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 text-darker font-bold text-sm tracking-wider uppercase hover:text-primary hover:border-primary transition-all shadow-sm">
-                        GAPI Moçambique
-                      </div>
-                      <div className="px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 text-darker font-bold text-sm tracking-wider uppercase hover:text-primary hover:border-primary transition-all shadow-sm">
-                        INCUBOX 2
-                      </div>
-                      <div className="px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 text-darker font-bold text-sm tracking-wider uppercase hover:text-primary hover:border-primary transition-all shadow-sm">
-                        C&amp;I Solar Partners
-                      </div>
-                    </div>
-                  </div>
+                  {/* Lado Direito — 50% livre para visualização da imagem de fundo */}
+                  <div className="hidden lg:block lg:column-6 xl:column-6"></div>
                 </div>
               </div>
             </div>
@@ -566,70 +557,81 @@ export function App() {
 
           {/* MAIN HOME SECTIONS */}
           <main className="relative flex flex-col overflow-x-hidden">
-            {/* SECÇÃO 3 — DECARBONIZATION IS MISSION */}
-            <section id="decarbonization" className="relative w-full py-20 lg:py-24 xl:py-30 bg-white">
+            {/* SECÇÃO 3 — QUEM SOMOS */}
+            <section id="sobre" className="relative w-full py-16 sm:py-20 lg:py-24 bg-white">
               <div className="section-content relative">
                 <div className="container">
-                  <div className="justify-between row gy-8">
-                    <div className="lg:column-4 xl:column-3 relative z-20">
-                      <div className="reveal-item reveal-delay-100 lg:me-7 xl:-me-7.5 relative">
-                        <img
-                          alt="LECASU Off-Grid Solar Hub"
-                          width={510}
-                          height={975}
-                          className="w-full rounded-2xl border-b-4 border-primary max-lg:max-h-100 object-cover object-center shadow-md aspect-[510/975]"
-                          src="/lecasu/incubox-site.jpeg"
-                        />
-                        <div className="absolute z-20 bottom-10 lg:bottom-30 xl:bottom-20 2xl:bottom-43 inset-e-10 lg:-inset-e-17 p-8 rounded-2xl bg-white border-b-4 border-primary flex flex-col items-center gap-4.5 shadow-[0_0_20px_0_rgba(0,0,0,.08)]">
-                          <div className="bg-primary rounded-full size-15.5 flex items-center justify-center text-white shadow-md">
-                            <svg viewBox="0 0 24 24" className="size-8 fill-current">
-                              <path d="M12 2L14.5 7H9.5L12 2ZM4 11H8V15H3.5L4 11ZM10 11H14V15H10V11ZM16 11H20L20.5 15H16V11ZM2 17H7.5L7 21H1.5L2 17ZM9.5 17H14.5L14.5 21H9.5V17ZM16.5 17H22L22.5 21H17L16.5 17Z"/>
-                            </svg>
+                  <div className="row items-stretch gy-10 lg:gy-0">
+                    {/* Lado Esquerdo (50%) — Imagem alinhada com a altura do texto de cima a baixo */}
+                    <div className="column-12 lg:column-6 flex flex-col">
+                      <div className="reveal-item reveal-delay-100 relative w-full h-full flex flex-col flex-1 max-w-lg lg:max-w-none mx-auto">
+                        <div className="relative w-full h-full min-h-[380px] lg:min-h-0 rounded-3xl overflow-hidden shadow-xl border-b-6 border-primary group flex-1">
+                          <img
+                            alt="LECASU Soluções de Energia e Engenharia Eléctrica"
+                            width={700}
+                            height={700}
+                            className="absolute inset-0 w-full h-full object-cover object-center"
+                            src="/lecasu/incubox-site.jpeg"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none"></div>
+
+                          {/* Badge de destaque na base da imagem */}
+                          <div className="absolute bottom-6 left-6 z-20 p-4 sm:p-4.5 rounded-2xl bg-white/95 backdrop-blur-md border border-gray-100 shadow-xl flex items-center gap-3.5">
+                            <div className="bg-primary rounded-xl size-11 sm:size-12 flex items-center justify-center text-white shadow-md shrink-0">
+                              <svg viewBox="0 0 24 24" className="size-6 fill-current">
+                                <path d="M12 2L14.5 7H9.5L12 2ZM4 11H8V15H3.5L4 11ZM10 11H14V15H10V11ZM16 11H20L20.5 15H16V11ZM2 17H7.5L7 21H1.5L2 17ZM9.5 17H14.5L14.5 21H9.5V17ZM16.5 17H22L22.5 21H17L16.5 17Z"/>
+                              </svg>
+                            </div>
+                            <div>
+                              <div className="text-[0.7rem] uppercase font-bold tracking-wider text-primary">{t('Engenharia')}</div>
+                              <div className="font-bold text-darker text-base">{t('Solar & Híbrido')}</div>
+                            </div>
                           </div>
-                          <div className="font-semibold text-darker text-xl/none">Solar &amp; Hybrid</div>
                         </div>
                       </div>
                     </div>
 
-                    <div className="lg:column-8 xl:column-9">
-                      <div className="reveal-item reveal-delay-150 lg:ms-6 xl:ms-16.5 mb-8 lg:mb-12 xl:mb-16 2xl:mb-21 max-w-md">
-                        <div className="text-primary font-semibold text-sm tracking-wider uppercase mb-2">About LECASU</div>
-                        <h2 className="text-3xl lg:text-4xl xl:text-5xl leading-[1.167] font-bold text-darker mb-4 xl:mb-6">
-                          Deliver reliable and sustainable energy solutions.
-                        </h2>
-                        <button
-                          type="button"
-                          onClick={() => navigateTo('about')}
-                          className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 border-transparent bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] text-primary hover:text-darker h-10 lg:h-12 rounded-lg px-0 gap-2.5 font-medium text-base xl:text-lg"
-                        >
-                          Learn More
-                          <div className="inline-flex shrink-0 grow-0 rounded-full items-center justify-center border transition-all border-primary group-hover/button:border-darker fill-primary group-hover/button:fill-white group-hover/button:bg-darker ms-auto size-5">
-                            <svg viewBox="0 0 24 24" className="size-3">
-                              <path d="M20.923 12.382c0.048-0.113 0.076-0.244 0.076-0.382 0-0.276-0.111-0.526-0.292-0.707l-4-4c-0.182-0.188-0.437-0.305-0.719-0.305-0.552 0-1 0.448-1 1 0 0.282 0.117 0.537 0.305 0.719l2.293 2.294h-13.586c-0.552 0-1 0.448-1 1s0.448 1 1 1v0h13.586l-2.293 2.293c-0.188 0.182-0.305 0.437-0.305 0.719 0 0.552 0.448 1 1 1 0.282 0 0.537-0.117 0.719-0.305l4-4c0.090-0.091 0.163-0.199 0.213-0.318l0.002-0.007z"></path>
-                            </svg>
-                          </div>
-                        </button>
-                      </div>
+                    {/* Lado Direito (50%) — Quem Somos */}
+                    <div className="column-12 lg:column-6 flex flex-col justify-between">
+                      <div className="reveal-item reveal-delay-200 lg:ps-8 xl:ps-12 flex flex-col justify-between h-full">
+                        <div>
+                          <div className="text-primary font-semibold text-sm tracking-wider uppercase mb-2">{t('Quem Somos')}</div>
+                          <h2 className="text-2xl sm:text-3xl lg:text-4xl leading-[1.2] font-bold text-darker mb-6 text-pretty">
+                            {t('Somos uma empresa de engenharia que acredita no valor de fazer bem as coisas.')}
+                          </h2>
 
-                      <div className="lg:-ms-4 xl:ms-7.5">
-                        <div className="flex flex-col lg:flex-row gap-y-5 gap-x-7.5">
-                          <div className="reveal-item reveal-delay-250 lg:w-54 xl:w-54 2xl:w-66.5 shrink-0">
-                            <img
-                              alt="Eco House with Solar"
-                              width={401}
-                              height={524}
-                              className="w-full max-lg:max-h-100 object-cover rounded-2xl border-b-4 border-primary shadow-md"
-                              src="/lecasu/about-team.jpeg"
-                            />
-                          </div>
-                          <div className="reveal-item reveal-delay-350 flex flex-col text-lg/relaxed gap-6 py-2 text-body xl:pe-20 text-pretty">
+                          <div className="space-y-4 text-base/relaxed text-body mb-8 text-pretty">
                             <p>
-                              LECASU is an energy engineering company focused on delivering reliable, efficient and scalable power solutions across Africa.
+                              {t('A LECASU é uma empresa moçambicana dedicada ao desenvolvimento de soluções de energia e engenharia eléctrica para clientes residenciais, comerciais, industriais e institucionais.')}
                             </p>
                             <p>
-                              From initial design to long-term operation, each solution is built around reliability, efficiency and the realities of African energy infrastructure. We design, build and operate high-performance solar and hybrid systems engineered for long-term performance.
+                              {t('Trabalhamos em cada projecto com um objectivo claro: compreender as necessidades do cliente e encontrar uma solução técnica que seja segura, viável e duradoura.')}
+                            </p>
+                            <p>
+                              {t('A nossa actividade abrange estudos e projectos de engenharia, sistemas solares fotovoltaicos, soluções híbridas, instalações eléctricas, manutenção e assistência técnica.')}
+                            </p>
+                            <p>
+                              {t('Acreditamos que um bom projecto não termina com a entrega dos equipamentos. É preciso acompanhar, resolver problemas e garantir que o investimento continua a produzir resultados.')}
+                            </p>
+                            <p className="font-medium text-darker">
+                              {t('É assim que queremos construir a nossa história: um projecto, um cliente e uma relação de confiança de cada vez.')}
                             </p>
                           </div>
+                        </div>
+
+                        <div className="pt-2">
+                          <button
+                            type="button"
+                            onClick={() => navigateTo('about')}
+                            className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-12 lg:h-14 gap-4 rounded-full px-7 text-sm font-medium uppercase shadow-lg hover:shadow-primary/25"
+                          >
+                            <span>{t('Saber Mais')}</span>
+                            <div className="inline-flex shrink-0 grow-0 rounded-full items-center justify-center border transition-all border-white/40 group-hover/button:border-white fill-white size-5">
+                              <svg viewBox="0 0 24 24" className="size-3">
+                                <path d="M20.923 12.382c0.048-0.113 0.076-0.244 0.076-0.382 0-0.276-0.111-0.526-0.292-0.707l-4-4c-0.182-0.188-0.437-0.305-0.719-0.305-0.552 0-1 0.448-1 1 0 0.282 0.117 0.537 0.305 0.719l2.293 2.294h-13.586c-0.552 0-1 0.448-1 1s0.448 1 1 1v0h13.586l-2.293 2.293c-0.188 0.182-0.305 0.437-0.305 0.719 0 0.552 0.448 1 1 1 0.282 0 0.537-0.117 0.719-0.305l4-4c0.090-0.091 0.163-0.199 0.213-0.318l0.002-0.007z"></path>
+                              </svg>
+                            </div>
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -639,30 +641,30 @@ export function App() {
             </section>
 
             {/* SECÇÃO 4 — SOLUÇÕES DE ENERGIA */}
-            <section id="solucoes" className="relative w-full py-20 lg:py-24 xl:py-30 bg-primary-lighter/50">
+            <section id="solucoes" className="relative w-full py-20 lg:py-24 xl:py-30 bg-[#f8f9fa] border-y border-gray-200/70">
               <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <img alt="" width={515} height={367} className="absolute top-0 inset-s-0 w-128.75 h-91.75 opacity-60" src="/solurax/shape-a.3alpm6du1b821.png" />
-                <img alt="" width={348} height={373} className="absolute top-0 inset-s-0 w-87 h-93.25 opacity-40" src="/solurax/line-a.0vp8em3vzxe7v.png" />
-                <img alt="" width={280} height={429} className="absolute top-2/5 inset-s-0 w-70 h-107.25 opacity-40" src="/solurax/hexagon-large-half-a.0lvwhb9rd0dr6.png" />
-                <img alt="" width={181} height={157} className="absolute top-1/10 translate-container-end w-45.25 h-39.25 opacity-40" src="/solurax/hexagon-small-a.0nd4j_gaek6pl.png" />
+                <img alt="" width={515} height={367} className="absolute top-0 inset-s-0 w-128.75 h-91.75 opacity-40" src="/solurax/shape-a.3alpm6du1b821.png" />
+                <img alt="" width={348} height={373} className="absolute top-0 inset-s-0 w-87 h-93.25 opacity-25" src="/solurax/line-a.0vp8em3vzxe7v.png" />
+                <img alt="" width={280} height={429} className="absolute top-2/5 inset-s-0 w-70 h-107.25 opacity-25" src="/solurax/hexagon-large-half-a.0lvwhb9rd0dr6.png" />
+                <img alt="" width={181} height={157} className="absolute top-1/10 translate-container-end w-45.25 h-39.25 opacity-25" src="/solurax/hexagon-small-a.0nd4j_gaek6pl.png" />
               </div>
 
               <div className="section-content relative">
                 <div className="container">
-                  <div className="justify-between row gy-8 mb-16">
-                    <div className="lg:column-6 xl:column-6">
-                      <div className="reveal-item reveal-delay-100 flex flex-col h-full justify-between">
+                  <div className="row items-stretch gy-8 mb-16">
+                    <div className="column-12 lg:column-6 flex flex-col justify-between">
+                      <div className="reveal-item reveal-delay-100 flex flex-col h-full justify-between lg:pe-8 xl:pe-12">
                         <div className="mb-8 xl:mb-12">
-                          <div className="text-primary font-semibold text-sm tracking-wider uppercase mb-2">What We Deliver</div>
+                          <div className="text-primary font-semibold text-sm tracking-wider uppercase mb-2">{t('What We Deliver')}</div>
                           <h2 className="text-3xl lg:text-4xl xl:text-5xl leading-[1.167] font-bold text-darker mb-4 xl:mb-6 text-pretty">
-                            Conceived for Africa: Engineered for Maximum Energy Reliability
+                            {t('Conceived for Africa: Engineered for Maximum Energy Reliability')}
                           </h2>
                           <button
                             type="button"
                             onClick={() => navigateTo('service')}
-                            className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 border-transparent bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] text-primary hover:text-darker h-10 lg:h-12 rounded-lg px-0 gap-2.5 font-medium text-base xl:text-lg"
+                            className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 border-transparent bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] text-primary hover:text-darker h-10 lg:h-12 rounded-full px-0 gap-2.5 font-medium text-base xl:text-lg"
                           >
-                            Learn More
+                            {t('Learn More')}
                             <div className="inline-flex shrink-0 grow-0 rounded-full items-center justify-center border transition-all border-primary group-hover/button:border-darker fill-primary group-hover/button:fill-white group-hover/button:bg-darker ms-auto size-5">
                               <svg viewBox="0 0 24 24" className="size-3">
                                 <path d="M20.923 12.382c0.048-0.113 0.076-0.244 0.076-0.382 0-0.276-0.111-0.526-0.292-0.707l-4-4c-0.182-0.188-0.437-0.305-0.719-0.305-0.552 0-1 0.448-1 1 0 0.282 0.117 0.537 0.305 0.719l2.293 2.294h-13.586c-0.552 0-1 0.448-1 1s0.448 1 1 1v0h13.586l-2.293 2.293c-0.188 0.182-0.305 0.437-0.305 0.719 0 0.552 0.448 1 1 1 0.282 0 0.537-0.117 0.719-0.305l4-4c0.090-0.091 0.163-0.199 0.213-0.318l0.002-0.007z"></path>
@@ -670,104 +672,94 @@ export function App() {
                             </div>
                           </button>
                         </div>
-                        <div className="bg-darker p-10 rounded-2xl mt-auto flex gap-6 shadow-xl">
+                        <div className="bg-darker p-8 sm:p-10 rounded-2xl mt-auto flex gap-6 shadow-xl">
                           <div className="w-1 bg-primary shrink-0 rounded-full"></div>
-                          <blockquote className="text-xl 2xl:text-2xl leading-snug text-white">
-                            Decarbonization requires balance between legacy systems and emerging technologies. Between the environment and business economies.
+                          <blockquote className="text-lg sm:text-xl 2xl:text-2xl leading-snug text-white">
+                            {t('Decarbonization requires balance between legacy systems and emerging technologies. Between the environment and business economies.')}
                           </blockquote>
                         </div>
                       </div>
                     </div>
 
-                    <div className="lg:column-6 2xl:column-5 relative z-20">
-                      <div className="reveal-item reveal-delay-300 xl:ps-5 2xl:ps-0 pe-13.5 2xl:-ms-15 relative h-full">
-                        <img
-                          alt="Solar Panel Grid Solution"
-                          width={764}
-                          height={738}
-                          className="w-full max-lg:max-h-120 lg:min-h-full object-cover rounded-2xl border-b-4 border-primary shadow-lg"
-                          src="/lecasu/solar-site.jpeg"
-                        />
-                        <div className="absolute z-20 inset-e-2 bottom-15.5 p-8 rounded-2xl bg-white border-b-4 border-primary flex flex-col items-center gap-4.5 shadow-[0_0_20px_0_rgba(0,0,0,.08)]">
-                          <div className="bg-primary rounded-full size-15.5 flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width={34} height={34} fill="none" viewBox="0 0 34 34">
-                              <path fill="#fff" d="M2.123 4.238a2.12 2.12 0 0 1 2.12-2.119H8.48a2.12 2.12 0 0 1 2.12 2.12v4.237a2.12 2.12 0 0 1-2.12 2.12H4.242a2.12 2.12 0 0 1-2.119-2.12zm10.595 0a2.12 2.12 0 0 1 2.12-2.119h4.237a2.12 2.12 0 0 1 2.12 2.12v4.237a2.12 2.12 0 0 1-2.12 2.12h-4.238a2.12 2.12 0 0 1-2.119-2.12zm10.595 0a2.12 2.12 0 0 1 2.12-2.119h4.237a2.12 2.12 0 0 1 2.12 2.12v4.237a2.12 2.12 0 0 1-2.12 2.12h-4.238a2.12 2.12 0 0 1-2.119-2.12zM2.123 14.833a2.12 2.12 0 0 1 2.12-2.119H8.48a2.12 2.12 0 0 1 2.12 2.12v4.237a2.12 2.12 0 0 1-2.12 2.12H4.242a2.12 2.12 0 0 1-2.119-2.12zm10.595 0a2.12 2.12 0 0 1 2.12-2.119h4.237a2.12 2.12 0 0 1 2.12 2.12v4.237a2.12 2.12 0 0 1-2.12 2.12h-4.238a2.12 2.12 0 0 1-2.119-2.12zm10.595 0a2.12 2.12 0 0 1 2.12-2.119h4.237a2.12 2.12 0 0 1 2.12 2.12v4.237a2.12 2.12 0 0 1-2.12 2.12h-4.238a2.12 2.12 0 0 1-2.119-2.12zM2.123 25.428a2.12 2.12 0 0 1 2.12-2.119H8.48a2.12 2.12 0 0 1 2.12 2.12v4.237a2.12 2.12 0 0 1-2.12 2.12H4.242a2.12 2.12 0 0 1-2.119-2.12zm10.595 0a2.12 2.12 0 0 1 2.12-2.119h4.237a2.12 2.12 0 0 1 2.12 2.12v4.237a2.12 2.12 0 0 1-2.12 2.12h-4.238a2.12 2.12 0 0 1-2.119-2.12zm10.595 0a2.12 2.12 0 0 1 2.12-2.119h4.237a2.12 2.12 0 0 1 2.12 2.12v4.237a2.12 2.12 0 0 1-2.12 2.12h-4.238a2.12 2.12 0 0 1-2.119-2.12z"></path>
-                            </svg>
-                          </div>
-                          <div className="font-semibold text-darker text-xl/none">Grid Solution</div>
+                    <div className="column-12 lg:column-6 flex flex-col">
+                      <div className="reveal-item reveal-delay-300 relative w-full h-full flex flex-col flex-1 max-w-lg lg:max-w-none mx-auto">
+                        <div className="relative w-full h-full min-h-[360px] lg:min-h-0 rounded-2xl overflow-hidden shadow-xl border-b-6 border-primary group flex-1">
+                          <img
+                            alt="Solar Panel Grid Solution"
+                            width={764}
+                            height={738}
+                            className="absolute inset-0 w-full h-full object-cover object-center"
+                            src="/lecasu/solar-site.jpeg"
+                          />
                         </div>
                       </div>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-7.5">
-                    <div className="reveal-item flex flex-col bg-white shadow-[0_2px_26px_0_rgba(0,0,0,.07)] rounded-2xl reveal-delay-100 hover:shadow-xl transition-shadow">
-                      <img alt="Residential Solar" width={840} height={520} className="w-full rounded-t-2xl object-cover h-60" src="/lecasu/engineering-procurement-construction.jpeg" />
+                    <div
+                      onClick={() => navigateTo('service')}
+                      className="reveal-item flex flex-col bg-white border border-gray-100 shadow-[0_2px_26px_0_rgba(0,0,0,.06)] rounded-2xl reveal-delay-100 cursor-pointer overflow-hidden border-b-4 border-b-primary group"
+                    >
+                      <div className="overflow-hidden h-60">
+                        <img alt="Residential Solar" width={840} height={520} className="w-full h-full object-cover" src="/lecasu/engineering-procurement-construction.jpeg" />
+                      </div>
                       <div className="p-8 flex flex-col flex-1 justify-between">
                         <div>
-                          <h5 className="text-2xl xl:text-3xl leading-normal font-semibold text-darker mb-4">Residential Solar</h5>
-                          <p className="text-base leading-relaxed text-body mb-6">
-                            Advanced solar arrays tailored for modern homeowners who prioritize sustainability and economic independence.
+                          <h5 className="text-2xl xl:text-3xl leading-normal font-semibold text-darker group-hover:text-primary transition-colors mb-3">
+                            {t('Residential Solar')}
+                          </h5>
+                          <p className="text-base leading-relaxed text-body">
+                            {t('Advanced solar arrays tailored for modern homeowners who prioritize sustainability and economic independence.')}
                           </p>
                         </div>
-                        <button
-                          onClick={() => navigateTo('service')}
-                          className="group/button inline-flex shrink-0 items-center whitespace-nowrap text-primary hover:text-darker font-medium text-base xl:text-lg gap-2.5 cursor-pointer"
-                        >
-                          Explore
-                          <div className="inline-flex shrink-0 grow-0 rounded-full items-center justify-center border transition-all border-primary group-hover/button:border-darker fill-primary group-hover/button:fill-white group-hover/button:bg-darker size-5">
-                            <svg viewBox="0 0 24 24" className="size-3">
-                              <path d="M20.923 12.382c0.048-0.113 0.076-0.244 0.076-0.382 0-0.276-0.111-0.526-0.292-0.707l-4-4c-0.182-0.188-0.437-0.305-0.719-0.305-0.552 0-1 0.448-1 1 0 0.282 0.117 0.537 0.305 0.719l2.293 2.294h-13.586c-0.552 0-1 0.448-1 1s0.448 1 1 1v0h13.586l-2.293 2.293c-0.188 0.182-0.305 0.437-0.305 0.719 0 0.552 0.448 1 1 1 0.282 0 0.537-0.117 0.719-0.305l4-4c0.090-0.091 0.163-0.199 0.213-0.318l0.002-0.007z"></path>
-                            </svg>
-                          </div>
-                        </button>
                       </div>
                     </div>
 
-                    <div className="reveal-item flex flex-col bg-white shadow-[0_2px_26px_0_rgba(0,0,0,.07)] rounded-2xl reveal-delay-200 hover:shadow-xl transition-shadow">
-                      <img alt="Commercial Solar" width={840} height={520} className="w-full rounded-t-2xl object-cover h-60" src="/lecasu/official-service-hybrid.jpeg" />
+                    <div
+                      onClick={() => navigateTo('service')}
+                      className="reveal-item flex flex-col bg-white border border-gray-100 shadow-[0_2px_26px_0_rgba(0,0,0,.06)] rounded-2xl reveal-delay-200 cursor-pointer overflow-hidden border-b-4 border-b-primary group"
+                    >
+                      <div className="overflow-hidden h-60">
+                        <img alt="Energia Solar e Sistemas Híbridos" width={840} height={520} className="w-full h-full object-cover" src="/lecasu/official-service-hybrid.jpeg" />
+                      </div>
                       <div className="p-8 flex flex-col flex-1 justify-between">
                         <div>
-                          <h5 className="text-2xl xl:text-3xl leading-normal font-semibold text-darker mb-4">Commercial Solar</h5>
-                          <p className="text-base leading-relaxed text-body mb-6">
-                            Solurax industrial-grade energy solutions that optimize operational costs and enhance corporate ESG metrics.
-                          </p>
-                        </div>
-                        <button
-                          onClick={() => navigateTo('service')}
-                          className="group/button inline-flex shrink-0 items-center whitespace-nowrap text-primary hover:text-darker font-medium text-base xl:text-lg gap-2.5 cursor-pointer"
-                        >
-                          Explore
-                          <div className="inline-flex shrink-0 grow-0 rounded-full items-center justify-center border transition-all border-primary group-hover/button:border-darker fill-primary group-hover/button:fill-white group-hover/button:bg-darker size-5">
-                            <svg viewBox="0 0 24 24" className="size-3">
-                              <path d="M20.923 12.382c0.048-0.113 0.076-0.244 0.076-0.382 0-0.276-0.111-0.526-0.292-0.707l-4-4c-0.182-0.188-0.437-0.305-0.719-0.305-0.552 0-1 0.448-1 1 0 0.282 0.117 0.537 0.305 0.719l2.293 2.294h-13.586c-0.552 0-1 0.448-1 1s0.448 1 1 1v0h13.586l-2.293 2.293c-0.188 0.182-0.305 0.437-0.305 0.719 0 0.552 0.448 1 1 1 0.282 0 0.537-0.117 0.719-0.305l4-4c0.090-0.091 0.163-0.199 0.213-0.318l0.002-0.007z"></path>
-                            </svg>
+                          <h5 className="text-2xl xl:text-3xl leading-normal font-semibold text-darker group-hover:text-primary transition-colors mb-3">
+                            {t('Energia Solar e Sistemas Híbridos')}
+                          </h5>
+                          <div className="space-y-3 text-base leading-relaxed text-body">
+                            <p>
+                              {t('Ajudamos famílias e empresas a produzir e gerir a sua própria energia, com soluções solares e híbridas adaptadas às suas necessidades.')}
+                            </p>
+                            <p>
+                              {t('Para as empresas, procuramos transformar os custos de energia numa oportunidade de poupança, eficiência e maior competitividade.')}
+                            </p>
+                            <p>
+                              {t('O nosso objectivo é oferecer soluções que façam sentido, tanto do ponto de vista técnico como económico.')}
+                            </p>
                           </div>
-                        </button>
+                        </div>
                       </div>
                     </div>
 
-                    <div className="reveal-item flex flex-col bg-white shadow-[0_2px_26px_0_rgba(0,0,0,.07)] rounded-2xl reveal-delay-300 hover:shadow-xl transition-shadow">
-                      <img alt="Energy-as-a-Service" width={840} height={520} className="w-full rounded-t-2xl object-cover h-60" src="/lecasu/energy-as-a-service-ppa.jpeg" />
+                    <div
+                      onClick={() => navigateTo('service')}
+                      className="reveal-item flex flex-col bg-white border border-gray-100 shadow-[0_2px_26px_0_rgba(0,0,0,.06)] rounded-2xl reveal-delay-300 cursor-pointer overflow-hidden border-b-4 border-b-primary group"
+                    >
+                      <div className="overflow-hidden h-60">
+                        <img alt="Energy-as-a-Service" width={840} height={520} className="w-full h-full object-cover" src="/lecasu/energy-as-a-service-ppa.jpeg" />
+                      </div>
                       <div className="p-8 flex flex-col flex-1 justify-between">
                         <div>
-                          <div className="text-xs font-bold text-primary uppercase tracking-widest mb-1">03 — Financing</div>
-                          <h5 className="text-2xl xl:text-3xl leading-normal font-semibold text-darker mb-4">Energy-as-a-Service (PPA)</h5>
-                          <p className="text-base leading-relaxed text-body mb-6">
-                            No upfront capital investment required. Pay only for the clean kilowatt-hours you consume with guaranteed availability and covered maintenance.
+                          <div className="text-xs font-bold text-primary uppercase tracking-widest mb-1">{t('03 — Financing')}</div>
+                          <h5 className="text-2xl xl:text-3xl leading-normal font-semibold text-darker group-hover:text-primary transition-colors mb-3">
+                            {t('Energy-as-a-Service (PPA)')}
+                          </h5>
+                          <p className="text-base leading-relaxed text-body">
+                            {t('No upfront capital investment required. Pay only for the clean kilowatt-hours you consume with guaranteed availability and covered maintenance.')}
                           </p>
                         </div>
-                        <button
-                          onClick={() => navigateTo('service')}
-                          className="group/button inline-flex shrink-0 items-center whitespace-nowrap text-primary hover:text-darker font-medium text-base xl:text-lg gap-2.5 cursor-pointer"
-                        >
-                          Explore
-                          <div className="inline-flex shrink-0 grow-0 rounded-full items-center justify-center border transition-all border-primary group-hover/button:border-darker fill-primary group-hover/button:fill-white group-hover/button:bg-darker size-5">
-                            <svg viewBox="0 0 24 24" className="size-3">
-                              <path d="M20.923 12.382c0.048-0.113 0.076-0.244 0.076-0.382 0-0.276-0.111-0.526-0.292-0.707l-4-4c-0.182-0.188-0.437-0.305-0.719-0.305-0.552 0-1 0.448-1 1 0 0.282 0.117 0.537 0.305 0.719l2.293 2.294h-13.586c-0.552 0-1 0.448-1 1s0.448 1 1 1v0h13.586l-2.293 2.293c-0.188 0.182-0.305 0.437-0.305 0.719 0 0.552 0.448 1 1 1 0.282 0 0.537-0.117 0.719-0.305l4-4c0.090-0.091 0.163-0.199 0.213-0.318l0.002-0.007z"></path>
-                            </svg>
-                          </div>
-                        </button>
                       </div>
                     </div>
                   </div>
@@ -775,98 +767,55 @@ export function App() {
               </div>
             </section>
 
-            {/* SECÇÃO 5 — BENEFÍCIOS E SERVIÇOS */}
+            {/* SECÇÃO 5 — BENEFÍCIOS E SERVIÇOS (Fundo Branco - 50% / 50%) */}
             <section id="beneficios" className="relative w-full py-20 lg:py-24 xl:py-30 bg-white">
               <div className="section-content relative">
                 <div className="container">
-                  <div className="justify-between xl:flex-row-reverse row items-center gy-8">
-                    <div className="xl:column-6">
-                      <div className="reveal-item reveal-delay-300">
-                        <img
-                          alt="Commercial Solar Panels"
-                          width={968}
-                          height={900}
-                          className="w-full rounded-2xl max-xl:max-h-130 border-b-4 border-primary shadow-lg object-cover"
-                          src="/lecasu/official-project-skm.jpg"
-                        />
+                  <div className="row items-stretch gy-8 lg:flex-row-reverse">
+                    <div className="column-12 lg:column-6 flex flex-col">
+                      <div className="reveal-item reveal-delay-300 relative w-full h-full flex flex-col flex-1 max-w-lg lg:max-w-none mx-auto">
+                        <div className="relative w-full h-full min-h-[380px] lg:min-h-0 rounded-2xl overflow-hidden shadow-xl border-b-6 border-primary group flex-1">
+                          <img
+                            alt="Commercial Solar Panels"
+                            width={968}
+                            height={900}
+                            className="absolute inset-0 w-full h-full object-cover object-center"
+                            src="/lecasu/official-project-skm.jpg"
+                          />
+                        </div>
                       </div>
                     </div>
-                    <div className="xl:column-6">
-                      <div className="reveal-item reveal-delay-100 text-block xl:pe-15">
-                        <div className="rounded-full bg-primary/16 size-15 xl:size-18 flex justify-center items-center mb-6">
-                          <svg viewBox="0 0 24 24" className="size-8 xl:size-10 fill-primary">
-                            <path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3zm0 2.5l6 5.4V18h-2v-6H8v6H6v-7.1l6-5.4z"/>
-                          </svg>
-                        </div>
-                        <div className="text-primary font-semibold text-sm tracking-wider uppercase mb-2">Commercial &amp; Industrial Solutions</div>
-                        <h2 className="text-darker font-bold text-3xl lg:text-4xl xl:text-5xl leading-[1.166] mb-5">
-                          Cut diesel generator costs &amp; ensure continuous operation
-                        </h2>
-                        <p className="text-base xl:text-lg leading-relaxed text-body mb-4">
-                          Grid instability and surging fuel expenses directly reduce business profitability in Mozambique. LECASU engineers hybrid rooftop systems synchronised with your diesel generators.
-                        </p>
-                        <ul className="flex flex-col gap-3 text-base/relaxed mb-8">
-                          <li className="relative ps-5.5 before:absolute before:size-2.25 before:rounded-full before:bg-primary before:inset-s-0 before:top-2">
-                            <strong className="font-semibold text-darker">Generator Fuel Displacement: </strong>
-                            Reduce generator run-hours and cut monthly diesel consumption by up to 60-80% during daylight operating hours.
-                          </li>
-                          <li className="relative ps-5.5 before:absolute before:size-2.25 before:rounded-full before:bg-primary before:inset-s-0 before:top-2">
-                            <strong className="font-semibold text-darker">Live Telemetry &amp; Monitoring: </strong>
-                            Real-time digital supervision of production, load consumption, battery storage, and fuel savings via centralized dashboards.
-                          </li>
-                        </ul>
+                    <div className="column-12 lg:column-6 flex flex-col justify-between">
+                      <div className="reveal-item reveal-delay-100 text-block lg:pe-8 xl:pe-12 flex flex-col justify-between h-full">
                         <div>
+                          <div className="text-primary font-semibold text-sm tracking-wider uppercase mb-2">
+                            {t('Commercial & Industrial Solutions')}
+                          </div>
+                          <h2 className="text-darker font-bold text-3xl lg:text-4xl xl:text-5xl leading-[1.166] mb-5">
+                            {t('Cut diesel generator costs & ensure continuous operation')}
+                          </h2>
+                          <p className="text-base xl:text-lg leading-relaxed text-body mb-6">
+                            {t('Grid instability and surging fuel expenses directly reduce business profitability in Mozambique. LECASU engineers hybrid rooftop systems synchronised with your diesel generators.')}
+                          </p>
+                          <ul className="flex flex-col gap-3 text-base/relaxed mb-8">
+                            <li className="relative ps-5.5 before:absolute before:size-2.25 before:rounded-full before:bg-primary before:inset-s-0 before:top-2">
+                              <strong className="font-semibold text-darker">{t('Generator Fuel Displacement:')} </strong>
+                              {t('Reduce generator run-hours and cut monthly diesel consumption by up to 60-80% during daylight operating hours.')}
+                            </li>
+                            <li className="relative ps-5.5 before:absolute before:size-2.25 before:rounded-full before:bg-primary before:inset-s-0 before:top-2">
+                              <strong className="font-semibold text-darker">{t('Live Telemetry & Monitoring:')} </strong>
+                              {t('Real-time digital supervision of production, load consumption, battery storage, and fuel savings via centralized dashboards.')}
+                            </li>
+                          </ul>
+                        </div>
+                        <div className="pt-2">
                           <a
                             href="https://simulador.lecasu.co.mz/"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-12 lg:h-14 gap-4 rounded-lg px-7 text-sm font-medium uppercase shadow-lg hover:shadow-primary/30"
+                            className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-12 lg:h-14 gap-4 rounded-full px-7 text-sm font-medium uppercase shadow-lg hover:shadow-primary/30"
                           >
-                            Request a Proposal
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="section-content relative mt-20 lg:mt-24 xl:mt-30">
-                <div className="container">
-                  <div className="justify-between items-center row gy-8">
-                    <div className="xl:column-6">
-                      <div className="reveal-item reveal-delay-100">
-                        <img
-                          alt="INCUBOX 2 Off-Grid Modular Solar Cabins"
-                          width={968}
-                          height={840}
-                          className="w-full rounded-2xl max-xl:max-h-130 border-b-4 border-primary shadow-lg object-cover"
-                          src="/lecasu/official-project-incubox.jpeg"
-                        />
-                      </div>
-                    </div>
-                    <div className="xl:column-6">
-                      <div className="reveal-item reveal-delay-300 text-block xl:ps-15">
-                        <div className="rounded-full bg-primary/16 size-15 xl:size-18 flex justify-center items-center mb-6">
-                          <svg viewBox="0 0 24 24" className="size-8 xl:size-10 fill-primary">
-                            <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-5c.55 0 1 .45 1 1v2c0 .55-.45 1-1 1s-1-.45-1-1V3c0-.55.45-1 1-1zm0 18c.55 0 1 .45 1 1v2c0 .55-.45 1-1 1s-1-.45-1-1v-2c0-.55.45-1 1-1zM4 11H2c-.55 0-1 .45-1 1s.45 1 1 1h2c.55 0 1-.45 1-1s-.45-1-1-1zm18 0h-2c-.55 0-1 .45-1 1s.45 1 1 1h2c.55 0 1-.45 1-1s-.45-1-1-1z"/>
-                          </svg>
-                        </div>
-                        <div className="text-primary font-semibold text-sm tracking-wider uppercase mb-2">Social Impact &amp; Remote Electrification</div>
-                        <h2 className="text-darker font-bold text-3xl lg:text-4xl xl:text-5xl leading-[1.166] mb-5">
-                          Solar infrastructure for remote education and enterprise
-                        </h2>
-                        <p className="text-base xl:text-lg leading-relaxed text-body mb-8">
-                          LECASU installed 11 standalone solar PV systems powering modular training cabins (INCUBOX 2) across Cabo Delgado, Nampula and Niassa. These systems provide uninterrupted power for computers, satellite connectivity, digital equipment, and lighting in remote areas, enabling youth entrepreneurship and community development without relying on the national grid.
-                        </p>
-                        <div>
-                          <a
-                            href="https://simulador.lecasu.co.mz/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-12 lg:h-14 gap-4 rounded-lg px-7 text-sm font-medium uppercase shadow-lg hover:shadow-primary/30"
-                          >
-                            Request a Proposal
+                            {t('Request a Proposal')}
                           </a>
                         </div>
                       </div>
@@ -876,15 +825,63 @@ export function App() {
               </div>
             </section>
 
-            {/* SECÇÃO 6 — HOW IT WORKS */}
-            <section id="how-it-works" className="relative w-full py-20 lg:py-24 xl:py-30 bg-primary-lighter/50">
+            {/* SECÇÃO 5B — IMPACTO SOCIAL E ELECTRIFICAÇÃO REMOTA (Divisão de Fundo Cinza - 50% / 50%) */}
+            <section id="impacto-social" className="relative w-full py-20 lg:py-24 xl:py-30 bg-[#f8f9fa] border-y border-gray-200/70">
+              <div className="section-content relative">
+                <div className="container">
+                  <div className="row items-stretch gy-8">
+                    <div className="column-12 lg:column-6 flex flex-col">
+                      <div className="reveal-item reveal-delay-100 relative w-full h-full flex flex-col flex-1 max-w-lg lg:max-w-none mx-auto">
+                        <div className="relative w-full h-full min-h-[380px] lg:min-h-0 rounded-2xl overflow-hidden shadow-xl border-b-6 border-primary group flex-1">
+                          <img
+                            alt="INCUBOX 2 Off-Grid Modular Solar Cabins"
+                            width={968}
+                            height={840}
+                            className="absolute inset-0 w-full h-full object-cover object-center"
+                            src="/lecasu/official-project-incubox.jpeg"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="column-12 lg:column-6 flex flex-col justify-between">
+                      <div className="reveal-item reveal-delay-300 text-block lg:ps-8 xl:ps-12 flex flex-col justify-between h-full">
+                        <div>
+                          <div className="text-primary font-semibold text-sm tracking-wider uppercase mb-2">
+                            {t('Social Impact & Remote Electrification')}
+                          </div>
+                          <h2 className="text-darker font-bold text-3xl lg:text-4xl xl:text-5xl leading-[1.166] mb-5">
+                            {t('Solar infrastructure for remote education and enterprise')}
+                          </h2>
+                          <p className="text-base xl:text-lg leading-relaxed text-body mb-8">
+                            {t('LECASU installed 11 standalone solar PV systems powering modular training cabins (INCUBOX 2) across Cabo Delgado, Nampula and Niassa. These systems provide uninterrupted power for computers, satellite connectivity, digital equipment, and lighting in remote areas, enabling youth entrepreneurship and community development without relying on the national grid.')}
+                          </p>
+                        </div>
+                        <div className="pt-2">
+                          <a
+                            href="https://simulador.lecasu.co.mz/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-12 lg:h-14 gap-4 rounded-full px-7 text-sm font-medium uppercase shadow-lg hover:shadow-primary/30"
+                          >
+                            {t('Request a Proposal')}
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* SECÇÃO 6 — HOW IT WORKS (Fundo Branco) */}
+            <section id="how-it-works" className="relative w-full py-20 lg:py-24 xl:py-30 bg-white">
               <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <img alt="" width={515} height={367} className="absolute top-0 inset-s-0 w-128.75 h-91.75 opacity-60" src="/solurax/shape-a.3alpm6du1b821.png" />
-                <img alt="" width={348} height={373} className="absolute top-0 inset-s-0 w-87 h-93.25 opacity-40" src="/solurax/line-b.3n1vtjp4lg3yk.png" />
-                <img alt="" width={361} height={362} className="absolute bottom-0 inset-e-0 w-90.25 h-90.5 opacity-40" src="/solurax/line-c.2009jf6qn5162.png" />
-                <img alt="" width={381} height={780} className="absolute top-0 inset-e-0 w-95.25 h-195 opacity-40" src="/solurax/line-d.1--wkxdawkfjt.png" />
-                <img alt="" width={280} height={429} className="absolute bottom-0 translate-y-3/5 inset-s-0 w-70 h-107.25 opacity-40" src="/solurax/hexagon-large-half-b.33_zqf09bzfa9.png" />
-                <img alt="" width={181} height={157} className="absolute top-1/10 translate-container-end w-45.25 h-39.25 opacity-40" src="/solurax/hexagon-small-a.0nd4j_gaek6pl.png" />
+                <img alt="" width={515} height={367} className="absolute top-0 inset-s-0 w-128.75 h-91.75 opacity-40" src="/solurax/shape-a.3alpm6du1b821.png" />
+                <img alt="" width={348} height={373} className="absolute top-0 inset-s-0 w-87 h-93.25 opacity-25" src="/solurax/line-b.3n1vtjp4lg3yk.png" />
+                <img alt="" width={361} height={362} className="absolute bottom-0 inset-e-0 w-90.25 h-90.5 opacity-25" src="/solurax/line-c.2009jf6qn5162.png" />
+                <img alt="" width={381} height={780} className="absolute top-0 inset-e-0 w-95.25 h-195 opacity-25" src="/solurax/line-d.1--wkxdawkfjt.png" />
+                <img alt="" width={280} height={429} className="absolute bottom-0 translate-y-3/5 inset-s-0 w-70 h-107.25 opacity-25" src="/solurax/hexagon-large-half-b.33_zqf09bzfa9.png" />
+                <img alt="" width={181} height={157} className="absolute top-1/10 translate-container-end w-45.25 h-39.25 opacity-25" src="/solurax/hexagon-small-a.0nd4j_gaek6pl.png" />
               </div>
 
               <div className="section-head relative mb-10 xl:mb-15">
@@ -893,10 +890,10 @@ export function App() {
                     <div className="lg:column-6 xl:column-5">
                       <div className="reveal-item reveal-delay-100 2xl:px-8">
                         <h2 className="text-darker font-bold text-3xl lg:text-4xl xl:text-5xl leading-[1.166] mb-5">
-                          How It Works
+                          {t('How It Works')}
                         </h2>
                         <p className="text-base xl:text-lg leading-relaxed text-body">
-                          From consultation to activation. Together, our customers are reshaping the region's energy footprint.
+                          {t("From consultation to activation. Together, our customers are reshaping the region's energy footprint.")}
                         </p>
                       </div>
                     </div>
@@ -916,10 +913,10 @@ export function App() {
                             01
                           </div>
                           <h5 className="font-semibold text-xl xl:text-2xl leading-normal text-darker mb-4">
-                            Consultation
+                            {t('Consultation')}
                           </h5>
                           <p className="text-sm xl:text-base leading-relaxed text-body">
-                            Expert evaluation of your energy needs and site potential.
+                            {t('Expert evaluation of your energy needs and site potential.')}
                           </p>
                         </div>
                       </div>
@@ -930,10 +927,10 @@ export function App() {
                             02
                           </div>
                           <h5 className="font-semibold text-xl xl:text-2xl leading-normal text-darker mb-4">
-                            Custom Design
+                            {t('Custom Design')}
                           </h5>
                           <p className="text-sm xl:text-base leading-relaxed text-body">
-                            Precision engineering blueprints tailored to your property.
+                            {t('Precision engineering blueprints tailored to your property.')}
                           </p>
                         </div>
                       </div>
@@ -944,10 +941,10 @@ export function App() {
                             03
                           </div>
                           <h5 className="font-semibold text-xl xl:text-2xl leading-normal text-darker mb-4">
-                            Professional Install
+                            {t('Professional Install')}
                           </h5>
                           <p className="text-sm xl:text-base leading-relaxed text-body">
-                            Rapid, clean deployment by our certified master technicians.
+                            {t('Rapid, clean deployment by our certified master technicians.')}
                           </p>
                         </div>
                       </div>
@@ -958,10 +955,10 @@ export function App() {
                             04
                           </div>
                           <h5 className="font-semibold text-xl xl:text-2xl leading-normal text-darker mb-4">
-                            Activation
+                            {t('Activation')}
                           </h5>
                           <p className="text-sm xl:text-base leading-relaxed text-body">
-                            System testing, utility interconnection, and live monitoring.
+                            {t('System testing, utility interconnection, and live monitoring.')}
                           </p>
                         </div>
                       </div>
@@ -971,19 +968,21 @@ export function App() {
               </div>
             </section>
 
-            {/* SECÇÃO 7 — PORQUÊ A LECASU (WHY LECASU) */}
-            <section id="why-lecasu" className="relative w-full py-20 lg:py-24 xl:py-30 bg-primary-lighter/40">
+            {/* SECÇÃO 7 — PORQUÊ A LECASU (Divisão Cinza) */}
+            <section id="why-lecasu" className="relative w-full py-20 lg:py-24 xl:py-30 bg-[#f8f9fa] border-y border-gray-200/70">
               <div className="section-head relative mb-12 xl:mb-16">
                 <div className="container">
                   <div className="justify-center text-center row">
                     <div className="lg:column-8 xl:column-7">
                       <div className="reveal-item reveal-delay-100">
-                        <div className="text-primary font-semibold text-sm tracking-wider uppercase mb-2">Porquê a LECASU</div>
+                        <div className="text-primary font-semibold text-sm tracking-wider uppercase mb-2">
+                          {t('Porquê a LECASU')}
+                        </div>
                         <h2 className="text-darker font-bold text-3xl lg:text-4xl xl:text-5xl leading-[1.166] mb-5">
-                          Engenharia Confiável Feita Para África
+                          {t('Engenharia Confiável Feita Para África')}
                         </h2>
                         <p className="text-base/relaxed text-body max-w-2xl mx-auto">
-                          Combinamos capacidade técnica avançada, execução rápida e acompanhamento operacional contínuo para garantir estabilidade energética duradoura.
+                          {t('Combinamos capacidade técnica avançada, execução rápida e acompanhamento operacional contínuo para garantir estabilidade energética duradoura.')}
                         </p>
                       </div>
                     </div>
@@ -994,67 +993,44 @@ export function App() {
               <div className="section-content relative">
                 <div className="container">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div className="reveal-item p-8 bg-white shadow-md rounded-2xl border-b-4 border-primary hover:-translate-y-1 transition-all h-full flex flex-col justify-between">
+                    <div className="reveal-item p-8 bg-white shadow-md rounded-2xl border-b-4 border-primary h-full flex flex-col justify-between">
                       <div>
                         <div className="text-primary font-bold text-3xl mb-3">01</div>
-                        <h4 className="text-xl font-bold text-darker mb-3">African Expertise</h4>
+                        <h4 className="text-xl font-bold text-darker mb-3">{t('African Expertise')}</h4>
                         <p className="text-sm/relaxed text-body">
-                          Profundo conhecimento das normas elétricas de Moçambique, da rede da EDM e dos desafios climáticos locais de alta temperatura e poeira.
+                          {t('Profundo conhecimento das normas elétricas de Moçambique, da rede da EDM e dos desafios climáticos locais de alta temperatura e poeira.')}
                         </p>
                       </div>
                     </div>
 
-                    <div className="reveal-item p-8 bg-white shadow-md rounded-2xl border-b-4 border-primary hover:-translate-y-1 transition-all h-full flex flex-col justify-between">
+                    <div className="reveal-item p-8 bg-white shadow-md rounded-2xl border-b-4 border-primary h-full flex flex-col justify-between">
                       <div>
                         <div className="text-primary font-bold text-3xl mb-3">02</div>
-                        <h4 className="text-xl font-bold text-darker mb-3">Hybrid Systems Capability</h4>
+                        <h4 className="text-xl font-bold text-darker mb-3">{t('Hybrid Systems Capability')}</h4>
                         <p className="text-sm/relaxed text-body">
-                          Integração perfeita entre energia solar fotovoltaica, bancos de baterias e geradores a diesel, reduzindo combustível em até 60-80%.
+                          {t('Integração perfeita entre energia solar fotovoltaica, bancos de baterias e geradores a diesel, reduzindo combustível em até 60-80%.')}
                         </p>
                       </div>
                     </div>
 
-                    <div className="reveal-item p-8 bg-white shadow-md rounded-2xl border-b-4 border-primary hover:-translate-y-1 transition-all h-full flex flex-col justify-between">
+                    <div className="reveal-item p-8 bg-white shadow-md rounded-2xl border-b-4 border-primary h-full flex flex-col justify-between">
                       <div>
                         <div className="text-primary font-bold text-3xl mb-3">03</div>
-                        <h4 className="text-xl font-bold text-darker mb-3">Fast Execution</h4>
+                        <h4 className="text-xl font-bold text-darker mb-3">{t('Fast Execution')}</h4>
                         <p className="text-sm/relaxed text-body">
-                          Aprovisionamento direto com fabricantes Tier-1, equipas de montagem certificadas em Moçambique e comissionamento sem atrasos.
+                          {t('Aprovisionamento direto com fabricantes Tier-1, equipas de montagem certificadas em Moçambique e comissionamento sem atrasos.')}
                         </p>
                       </div>
                     </div>
 
-                    <div className="reveal-item p-8 bg-white shadow-md rounded-2xl border-b-4 border-primary hover:-translate-y-1 transition-all h-full flex flex-col justify-between">
+                    <div className="reveal-item p-8 bg-white shadow-md rounded-2xl border-b-4 border-primary h-full flex flex-col justify-between">
                       <div>
                         <div className="text-primary font-bold text-3xl mb-3">04</div>
-                        <h4 className="text-xl font-bold text-darker mb-3">Strong Engineering Team</h4>
+                        <h4 className="text-xl font-bold text-darker mb-3">{t('Strong Engineering Team')}</h4>
                         <p className="text-sm/relaxed text-body">
-                          Engenheiros eletrotécnicos e técnicos de campo baseados em Maputo fornecendo monitorização SCADA e manutenção preventiva contínua.
+                          {t('Engenheiros eletrotécnicos e técnicos de campo baseados em Maputo fornecendo monitorização SCADA e manutenção preventiva contínua.')}
                         </p>
                       </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* SECÇÃO 8 — CTA PRINCIPAL */}
-            <section className="relative w-full py-10">
-              <div className="section-content relative">
-                <div className="container">
-                  <div className="reveal-item reveal-from-bottom">
-                    <div className="bg-darker p-8 sm:p-12 md:p-16 xl:p-20 flex flex-wrap items-center justify-between xl:gap-x-15 gap-y-7 rounded-[1.25rem] shadow-2xl">
-                      <h2 className="text-white font-bold text-2xl sm:text-3xl lg:text-4xl xl:text-[2.65rem] leading-[1.2] uppercase max-w-3xl">
-                        Power your facility with reliable energy infrastructure
-                      </h2>
-                      <a
-                        href="https://simulador.lecasu.co.mz/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-12 lg:h-15 gap-4 px-7.5 text-base font-medium rounded-full shadow-lg hover:shadow-primary/30"
-                      >
-                        Request a Proposal
-                      </a>
                     </div>
                   </div>
                 </div>
@@ -1068,12 +1044,12 @@ export function App() {
                   <div className="justify-center text-center row">
                     <div className="lg:column-8 xl:column-7 2xl:column-6">
                       <div className="reveal-item reveal-delay-100 2xl:px-8">
-                        <div className="text-primary font-semibold text-sm tracking-wider uppercase mb-2">Selected Case Studies &amp; Insights</div>
+                        <div className="text-primary font-semibold text-sm tracking-wider uppercase mb-2">{t('Selected Case Studies & Insights')}</div>
                         <h2 className="text-darker font-bold text-3xl lg:text-4xl xl:text-5xl leading-[1.166] mb-5">
-                          Engineering Insights &amp; Projects
+                          {t('Engineering Insights & Projects')}
                         </h2>
                         <p className="text-base/relaxed text-body">
-                          Proven deployments, hybrid strategies, and technical milestones from Mozambique.
+                          {t('Proven deployments, hybrid strategies, and technical milestones from Mozambique.')}
                         </p>
                       </div>
                     </div>
@@ -1084,100 +1060,76 @@ export function App() {
               <div className="section-content relative">
                 <div className="container">
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-7.5">
-                    <div className="reveal-item flex flex-col bg-white border-b-4 border-primary shadow-[0_4px_20px_0_rgba(0,0,0,.08)] rounded-2xl h-full reveal-delay-100 hover:shadow-xl transition-shadow">
+                    <div className="reveal-item flex flex-col bg-white border-b-4 border-primary shadow-[0_4px_20px_0_rgba(0,0,0,.08)] rounded-2xl h-full reveal-delay-100 overflow-hidden">
                       <button onClick={() => navigateTo('blog')} className="group flex flex-col h-full text-left cursor-pointer">
-                        <img
-                          alt="The Ultimate Guide to Going Solar in 2026"
-                          width={900}
-                          height={585}
-                          className="rounded-t-2xl object-cover h-56 w-full"
-                          src="/lecasu/official-project-skm.jpg"
-                        />
+                        <div className="overflow-hidden h-56 w-full">
+                          <img
+                            alt="The Ultimate Guide to Going Solar in 2026"
+                            width={900}
+                            height={585}
+                            className="object-cover h-full w-full"
+                            src="/lecasu/official-project-skm.jpg"
+                          />
+                        </div>
                         <div className="p-6 flex flex-col flex-1 justify-between">
                           <div>
-                            <div className="text-primary text-sm font-semibold mb-3">19 April 2026</div>
+                            <div className="text-primary text-sm font-semibold mb-3">{lang === 'pt' ? '19 de Abril de 2026' : '19 April 2026'}</div>
                             <h4 className="text-lg md:text-xl lg:text-2xl leading-snug font-bold text-darker group-hover:text-primary transition-colors line-clamp-2 mb-3">
-                              SKM Engineering Maputo: 80 kWp Grid-Tied Solar with Generator Sync
+                              {t('SKM Engineering Maputo: 80 kWp Grid-Tied Solar with Generator Sync')}
                             </h4>
-                            <p className="text-body text-sm md:text-base leading-relaxed line-clamp-2 mb-6">
-                              Installation of an 80 kWp C&I system at an office/warehouse in Maputo, including advanced monitoring and diesel generator synchronisation.
+                            <p className="text-body text-sm md:text-base leading-relaxed line-clamp-2">
+                              {t('Installation of an 80 kWp C&I system at an office/warehouse in Maputo, including advanced monitoring and diesel generator synchronisation.')}
                             </p>
-                          </div>
-                          <div>
-                            <span className="group/button inline-flex items-center text-primary hover:text-darker gap-2.5 font-medium text-base">
-                              <span>Learn More</span>
-                              <div className="inline-flex shrink-0 grow-0 rounded-full items-center justify-center border transition-all border-primary group-hover/button:border-darker fill-primary group-hover/button:fill-white group-hover/button:bg-darker size-5">
-                                <svg viewBox="0 0 24 24" className="size-3">
-                                  <path d="M20.923 12.382c0.048-0.113 0.076-0.244 0.076-0.382 0-0.276-0.111-0.526-0.292-0.707l-4-4c-0.182-0.188-0.437-0.305-0.719-0.305-0.552 0-1 0.448-1 1 0 0.282 0.117 0.537 0.305 0.719l2.293 2.294h-13.586c-0.552 0-1 0.448-1 1s0.448 1 1 1v0h13.586l-2.293 2.293c-0.188 0.182-0.305 0.437-0.305 0.719 0 0.552 0.448 1 1 1 0.282 0 0.537-0.117 0.719-0.305l4-4c0.090-0.091 0.163-0.199 0.213-0.318l0.002-0.007z"></path>
-                                </svg>
-                              </div>
-                            </span>
                           </div>
                         </div>
                       </button>
                     </div>
 
-                    <div className="reveal-item flex flex-col bg-white border-b-4 border-primary shadow-[0_4px_20px_0_rgba(0,0,0,.08)] rounded-2xl h-full reveal-delay-200 hover:shadow-xl transition-shadow">
+                    <div className="reveal-item flex flex-col bg-white border-b-4 border-primary shadow-[0_4px_20px_0_rgba(0,0,0,.08)] rounded-2xl h-full reveal-delay-200 overflow-hidden">
                       <button onClick={() => navigateTo('blog')} className="group flex flex-col h-full text-left cursor-pointer">
-                        <img
-                          alt="INCUBOX 2 (GAPI): 11 Solar PV Systems Powering Youth Education Hubs"
-                          width={900}
-                          height={585}
-                          className="rounded-t-2xl object-cover h-56 w-full"
-                          src="/lecasu/official-project-incubox.jpeg"
-                        />
+                        <div className="overflow-hidden h-56 w-full">
+                          <img
+                            alt="INCUBOX 2 (GAPI): 11 Solar PV Systems Powering Youth Education Hubs"
+                            width={900}
+                            height={585}
+                            className="object-cover h-full w-full"
+                            src="/lecasu/official-project-incubox.jpeg"
+                          />
+                        </div>
                         <div className="p-6 flex flex-col flex-1 justify-between">
                           <div>
-                            <div className="text-primary text-sm font-semibold mb-3">10 October 2026</div>
+                            <div className="text-primary text-sm font-semibold mb-3">{lang === 'pt' ? '10 de Outubro de 2026' : '10 October 2026'}</div>
                             <h4 className="text-lg md:text-xl lg:text-2xl leading-snug font-bold text-darker group-hover:text-primary transition-colors line-clamp-2 mb-3">
-                              INCUBOX 2 (GAPI): 11 Cabines Solares Fotovoltaicas no Norte de Moçambique
+                              {t('INCUBOX 2 (GAPI): 11 Cabines Solares Fotovoltaicas no Norte de Moçambique')}
                             </h4>
-                            <p className="text-body text-sm md:text-base leading-relaxed line-clamp-2 mb-6">
-                              Implementação de 11 sistemas solares isolados da rede pública em Cabo Delgado, Nampula e Niassa, capacitando centros modulares de formação de jovens.
+                            <p className="text-body text-sm md:text-base leading-relaxed line-clamp-2">
+                              {t('Implementação de 11 sistemas solares isolados da rede pública em Cabo Delgado, Nampula e Niassa, capacitando centros modulares de formação de jovens.')}
                             </p>
-                          </div>
-                          <div>
-                            <span className="group/button inline-flex items-center text-primary hover:text-darker gap-2.5 font-medium text-base">
-                              <span>Learn More</span>
-                              <div className="inline-flex shrink-0 grow-0 rounded-full items-center justify-center border transition-all border-primary group-hover/button:border-darker fill-primary group-hover/button:fill-white group-hover/button:bg-darker size-5">
-                                <svg viewBox="0 0 24 24" className="size-3">
-                                  <path d="M20.923 12.382c0.048-0.113 0.076-0.244 0.076-0.382 0-0.276-0.111-0.526-0.292-0.707l-4-4c-0.182-0.188-0.437-0.305-0.719-0.305-0.552 0-1 0.448-1 1 0 0.282 0.117 0.537 0.305 0.719l2.293 2.294h-13.586c-0.552 0-1 0.448-1 1s0.448 1 1 1v0h13.586l-2.293 2.293c-0.188 0.182-0.305 0.437-0.305 0.719 0 0.552 0.448 1 1 1 0.282 0 0.537-0.117 0.719-0.305l4-4c0.090-0.091 0.163-0.199 0.213-0.318l0.002-0.007z"></path>
-                                </svg>
-                              </div>
-                            </span>
                           </div>
                         </div>
                       </button>
                     </div>
 
-                    <div className="reveal-item flex flex-col bg-white border-b-4 border-primary shadow-[0_4px_20px_0_rgba(0,0,0,.08)] rounded-2xl h-full reveal-delay-300 hover:shadow-xl transition-shadow">
+                    <div className="reveal-item flex flex-col bg-white border-b-4 border-primary shadow-[0_4px_20px_0_rgba(0,0,0,.08)] rounded-2xl h-full reveal-delay-300 overflow-hidden">
                       <button onClick={() => navigateTo('blog')} className="group flex flex-col h-full text-left cursor-pointer">
-                        <img
-                          alt="Energy-as-a-Service (PPA): Zero-Capex Energy for African Enterprises"
-                          width={900}
-                          height={585}
-                          className="rounded-t-2xl object-cover h-56 w-full"
-                          src="/lecasu/energy-as-a-service-ppa.jpeg"
-                        />
+                        <div className="overflow-hidden h-56 w-full">
+                          <img
+                            alt="Energy-as-a-Service (PPA): Zero-Capex Energy for African Enterprises"
+                            width={900}
+                            height={585}
+                            className="object-cover h-full w-full"
+                            src="/lecasu/energy-as-a-service-ppa.jpeg"
+                          />
+                        </div>
                         <div className="p-6 flex flex-col flex-1 justify-between">
                           <div>
-                            <div className="text-primary text-sm font-semibold mb-3">18 October 2026</div>
+                            <div className="text-primary text-sm font-semibold mb-3">{lang === 'pt' ? '18 de Outubro de 2026' : '18 October 2026'}</div>
                             <h4 className="text-lg md:text-xl lg:text-2xl leading-snug font-bold text-darker group-hover:text-primary transition-colors line-clamp-2 mb-3">
-                              Energy-as-a-Service (PPA): Energia Solar Sem Investimento Inicial
+                              {t('Energy-as-a-Service (PPA): Energia Solar Sem Investimento Inicial')}
                             </h4>
-                            <p className="text-body text-sm md:text-base leading-relaxed line-clamp-2 mb-6">
-                              Descubra como empresas comerciais e industriais em Moçambique reduzem custos operacionais com zero despesa de capital (Zero Capex) e O&amp;M integral.
+                            <p className="text-body text-sm md:text-base leading-relaxed line-clamp-2">
+                              {t('Descubra como empresas comerciais e industriais em Moçambique reduzem custos operacionais com zero despesa de capital (Zero Capex) e O&M integral.')}
                             </p>
-                          </div>
-                          <div>
-                            <span className="group/button inline-flex items-center text-primary hover:text-darker gap-2.5 font-medium text-base">
-                              <span>Learn More</span>
-                              <div className="inline-flex shrink-0 grow-0 rounded-full items-center justify-center border transition-all border-primary group-hover/button:border-darker fill-primary group-hover/button:fill-white group-hover/button:bg-darker size-5">
-                                <svg viewBox="0 0 24 24" className="size-3">
-                                  <path d="M20.923 12.382c0.048-0.113 0.076-0.244 0.076-0.382 0-0.276-0.111-0.526-0.292-0.707l-4-4c-0.182-0.188-0.437-0.305-0.719-0.305-0.552 0-1 0.448-1 1 0 0.282 0.117 0.537 0.305 0.719l2.293 2.294h-13.586c-0.552 0-1 0.448-1 1s0.448 1 1 1v0h13.586l-2.293 2.293c-0.188 0.182-0.305 0.437-0.305 0.719 0 0.552 0.448 1 1 1 0.282 0 0.537-0.117 0.719-0.305l4-4c0.090-0.091 0.163-0.199 0.213-0.318l0.002-0.007z"></path>
-                                </svg>
-                              </div>
-                            </span>
                           </div>
                         </div>
                       </button>
@@ -1186,8 +1138,69 @@ export function App() {
                 </div>
               </div>
             </section>
+
+            {/* SECÇÃO CTA FINAL (BANNER DESTACADO COM IMAGEM DE FUNDO E OVERLAY SUAVE) */}
+            <section className="relative w-full pb-16 lg:pb-20 xl:pb-24 bg-[#f8f9fa]">
+              <div className="section-content relative">
+                <div className="container">
+                  <div className="reveal-item reveal-from-bottom">
+                    <div className="relative overflow-hidden rounded-[1.75rem] p-10 sm:p-14 md:p-16 lg:p-20 shadow-2xl border border-white/10 flex flex-col items-center text-center">
+                      {/* Background Image */}
+                      <img
+                        src="/lecasu/hero-energy-v2.jpg"
+                        alt="Solar Energy Infrastructure"
+                        className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
+                      />
+                      {/* Overlay Suave Equilibrado */}
+                      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/80 via-[#0a0a0a]/70 to-[#0a0a0a]/85 backdrop-blur-[1px] pointer-events-none"></div>
+
+                      {/* Conteúdo Centralizado */}
+                      <div className="relative z-10 max-w-3xl mx-auto flex flex-col items-center">
+                        <span className="inline-block px-4 py-1.5 rounded-full bg-primary/20 border border-primary/40 text-primary-light text-xs font-semibold uppercase tracking-widest mb-4">
+                          {lang === 'pt' ? 'Soluções Energéticas' : 'Energy Solutions'}
+                        </span>
+                        <h2 className="text-white font-bold text-2xl sm:text-3xl md:text-4xl lg:text-[2.6rem] leading-[1.2] uppercase drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]">
+                          {t('Power your facility with reliable energy infrastructure')}
+                        </h2>
+                        <p className="mt-4 text-white/80 text-base sm:text-lg max-w-2xl leading-relaxed drop-shadow-[0_1px_6px_rgba(0,0,0,0.5)]">
+                          {t('Turnkey engineering, tier-1 solar hardware, and proactive O&M. Powering businesses, industries, and rural communities across Mozambique.')}
+                        </p>
+                        <div className="mt-8 sm:mt-10 flex justify-center">
+                          <a
+                            href="https://simulador.lecasu.co.mz/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="relative inline-flex items-center justify-center p-[2px] rounded-full overflow-hidden group/cta shadow-sm hover:shadow transition-all cursor-pointer select-none active:scale-[0.98]"
+                          >
+                            {/* Feixe de luz animado caminhando na borda */}
+                            <span
+                              aria-hidden="true"
+                              className="absolute inset-[-150%] m-auto aspect-square w-[350%] animate-border-beam bg-[conic-gradient(from_0deg,transparent_0_65%,rgba(255,163,71,0.3)_72%,#ff8000_82%,#ffffff_91%,#ff8000_96%,transparent_100%)] pointer-events-none"
+                            />
+                            <span className="relative z-10 inline-flex shrink-0 items-center justify-center whitespace-nowrap bg-primary text-white group-hover/cta:bg-primary-dark fill-white h-12 lg:h-14 gap-3.5 rounded-full pl-8 pr-2.5 sm:pr-3 text-sm lg:text-base font-semibold uppercase tracking-[0.5px] transition-colors">
+                              <span>{t('Request a Proposal')}</span>
+                              <span className="size-8 sm:size-9 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover/cta:translate-x-0.5">
+                                <svg
+                                  className="size-4"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth={2.5}
+                                >
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                                </svg>
+                              </span>
+                            </span>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
           </main>
-        </>
+        </div>
       )}
 
       {/* 3. FOOTER (COMMON ACROSS ALL PAGES) */}
@@ -1205,7 +1218,7 @@ export function App() {
                     <img alt="LECASU" width={302} height={72} className="w-auto h-10" src="/lecasu/lecasu-logo.png" />
                   </button>
                   <p className="mt-4 text-base/relaxed text-white/80 max-w-sm">
-                    LECASU delivers resilient solar and hybrid energy infrastructure engineered for African conditions. Turnkey EPC, C&amp;I solar, microgrids, and 24/7 telemetry monitoring across Mozambique.
+                    {t('LECASU delivers resilient solar and hybrid energy infrastructure engineered for African conditions. Turnkey EPC, C&I solar, microgrids, and 24/7 telemetry monitoring across Mozambique.')}
                   </p>
                   <ul className="flex flex-wrap gap-4 pt-7 mt-auto">
                     <li>
@@ -1235,7 +1248,7 @@ export function App() {
 
               <div className="md:column-6 lg:column-3">
                 <div className="reveal-item reveal-delay-150">
-                  <div className="text-xl/8 font-bold text-white mb-6">Contact Info</div>
+                  <div className="text-xl/8 font-bold text-white mb-6">{t('Contact Info')}</div>
                   <ul className="flex flex-col gap-4">
                     <li className="flex gap-2.5">
                       <svg viewBox="0 0 24 24" className="fill-primary size-5 mt-1.25 shrink-0">
@@ -1267,28 +1280,28 @@ export function App() {
 
               <div className="sm:column-6 md:column-3 lg:column-2">
                 <div className="reveal-item reveal-delay-200">
-                  <div className="text-xl/8 font-bold text-white mb-6">Quick Links</div>
+                  <div className="text-xl/8 font-bold text-white mb-6">{t('Quick Links')}</div>
                   <ul className="flex flex-col gap-4">
-                    <li><button onClick={() => navigateTo('home')} className="text-lg/7.5 text-white/80 hover:text-primary transition-colors text-left cursor-pointer">Home</button></li>
-                    <li><button onClick={() => navigateTo('about')} className="text-lg/7.5 text-white/80 hover:text-primary transition-colors text-left cursor-pointer">About</button></li>
-                    <li><button onClick={() => navigateTo('service')} className="text-lg/7.5 text-white/80 hover:text-primary transition-colors text-left cursor-pointer">Services</button></li>
-                    <li><button onClick={() => navigateTo('project')} className="text-lg/7.5 text-white/80 hover:text-primary transition-colors text-left cursor-pointer">Projects</button></li>
-                    <li><button onClick={() => navigateTo('contact')} className="text-lg/7.5 text-white/80 hover:text-primary transition-colors text-left cursor-pointer">Contact</button></li>
+                    <li><button onClick={() => navigateTo('home')} className="text-lg/7.5 text-white/80 hover:text-primary transition-colors text-left cursor-pointer">{t('Home')}</button></li>
+                    <li><button onClick={() => navigateTo('about')} className="text-lg/7.5 text-white/80 hover:text-primary transition-colors text-left cursor-pointer">{t('About')}</button></li>
+                    <li><button onClick={() => navigateTo('service')} className="text-lg/7.5 text-white/80 hover:text-primary transition-colors text-left cursor-pointer">{t('Services')}</button></li>
+                    <li><button onClick={() => navigateTo('project')} className="text-lg/7.5 text-white/80 hover:text-primary transition-colors text-left cursor-pointer">{t('Projects')}</button></li>
+                    <li><button onClick={() => navigateTo('contact')} className="text-lg/7.5 text-white/80 hover:text-primary transition-colors text-left cursor-pointer">{t('Contact')}</button></li>
                   </ul>
                 </div>
               </div>
 
               <div className="sm:column-6 md:column-3 lg:column-2">
                 <div className="reveal-item reveal-delay-250">
-                  <div className="text-xl/8 font-bold text-white mb-6">Working Hours</div>
+                  <div className="text-xl/8 font-bold text-white mb-6">{t('Working Hours')}</div>
                   <ul className="flex flex-col gap-4 text-lg/7.5 text-white/80">
                     <li>
-                      <span className="block text-sm text-white/50">Mon – Fri</span>
+                      <span className="block text-sm text-white/50">{t('Mon – Fri')}</span>
                       <span>08:00 – 17:30</span>
                     </li>
                     <li>
-                      <span className="block text-sm text-white/50">Sat – Sun</span>
-                      <span>Closed</span>
+                      <span className="block text-sm text-white/50">{t('Sat – Sun')}</span>
+                      <span>{t('Closed')}</span>
                     </li>
                     <li>
                       <a
@@ -1297,7 +1310,7 @@ export function App() {
                         rel="noopener noreferrer"
                         className="text-primary hover:underline font-medium"
                       >
-                        Solar Simulator &rarr;
+                        {t('Solar Simulator →')}
                       </a>
                     </li>
                   </ul>
@@ -1315,11 +1328,11 @@ export function App() {
                 <button onClick={() => navigateTo('home')} className="font-medium transition-colors text-white hover:text-primary cursor-pointer">
                   LECASU LDA
                 </button>
-                . Engineered for African energy growth. All Rights Reserved.
+                {t('. All Rights Reserved.')}
               </p>
               <ul className="flex gap-y-2 gap-x-6">
-                <li><button onClick={() => navigateTo('about')} className="text-lg/normal text-white/70 hover:text-primary transition-colors cursor-pointer">Terms and Conditions</button></li>
-                <li><button onClick={() => navigateTo('about')} className="text-lg/normal text-white/70 hover:text-primary transition-colors cursor-pointer">Privacy Policy</button></li>
+                <li><button onClick={() => navigateTo('about')} className="text-lg/normal text-white/70 hover:text-primary transition-colors cursor-pointer">{t('Terms and Conditions')}</button></li>
+                <li><button onClick={() => navigateTo('about')} className="text-lg/normal text-white/70 hover:text-primary transition-colors cursor-pointer">{t('Privacy Policy')}</button></li>
               </ul>
             </div>
           </div>
@@ -1360,29 +1373,29 @@ export function App() {
               &times;
             </button>
             <div className="mb-6">
-              <span className="text-primary font-bold text-xs uppercase tracking-wider">Fast &amp; Free</span>
-              <h3 className="text-2xl font-bold text-darker mt-1">Request a Project Proposal</h3>
-              <p className="text-sm text-body mt-1">Our engineers will calculate your custom savings in less than 24 hours.</p>
+              <span className="text-primary font-bold text-xs uppercase tracking-wider">{t('Fast & Free')}</span>
+              <h3 className="text-2xl font-bold text-darker mt-1">{t('Request a Project Proposal')}</h3>
+              <p className="text-sm text-body mt-1">{t('Our engineers will calculate your custom savings in less than 24 hours.')}</p>
             </div>
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                alert('Thank you! Your quote request has been received. Our team will contact you shortly.');
+                alert(lang === 'pt' ? 'Obrigado! O seu pedido de proposta foi recebido com sucesso. A nossa equipa entrará em contacto brevemente.' : 'Thank you! Your quote request has been received. Our team will contact you shortly.');
                 setQuoteModalOpen(false);
               }}
               className="space-y-4"
             >
               <div>
-                <label className="block text-xs font-semibold text-darker uppercase mb-1">Full Name</label>
+                <label className="block text-xs font-semibold text-darker uppercase mb-1">{t('Full Name')}</label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. John Doe"
+                  placeholder={lang === 'pt' ? 'ex. João Silva' : 'e.g. John Doe'}
                   className="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:border-primary"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-darker uppercase mb-1">Email Address</label>
+                <label className="block text-xs font-semibold text-darker uppercase mb-1">{t('Email Address')}</label>
                 <input
                   type="email"
                   required
@@ -1391,7 +1404,7 @@ export function App() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-darker uppercase mb-1">Phone Number</label>
+                <label className="block text-xs font-semibold text-darker uppercase mb-1">{t('Phone Number')}</label>
                 <input
                   type="tel"
                   required
@@ -1400,21 +1413,21 @@ export function App() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-darker uppercase mb-1">System Type</label>
+                <label className="block text-xs font-semibold text-darker uppercase mb-1">{t('System Type')}</label>
                 <select className="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:border-primary bg-white">
-                  <option>EPC (Engineering, Procurement &amp; Construction)</option>
-                  <option>Hybrid Systems (Solar + Battery + Diesel)</option>
-                  <option>Energy-as-a-Service (PPA — Zero Capex)</option>
-                  <option>Commercial &amp; Industrial (C&amp;I) Rooftops</option>
-                  <option>Off-Grid &amp; Rural Solar Micro-Grids</option>
-                  <option>Operations &amp; Maintenance (O&amp;M)</option>
+                  <option>{t('EPC (Engineering, Procurement & Construction)')}</option>
+                  <option>{t('Hybrid Systems (Solar + Battery + Diesel)')}</option>
+                  <option>{t('Energy-as-a-Service (PPA — Zero Capex)')}</option>
+                  <option>{t('Commercial & Industrial (C&I) Rooftops')}</option>
+                  <option>{t('Off-Grid & Rural Solar Micro-Grids')}</option>
+                  <option>{t('Operations & Maintenance (O&M)')}</option>
                 </select>
               </div>
               <button
                 type="submit"
-                className="w-full py-3.5 rounded-lg bg-primary hover:bg-primary-dark text-white font-semibold text-sm transition-all duration-300 shadow-md cursor-pointer uppercase tracking-wider"
+                className="w-full py-3.5 rounded-full bg-primary hover:bg-primary-dark text-white font-semibold text-sm transition-all duration-300 shadow-md cursor-pointer uppercase tracking-wider"
               >
-                Submit Request
+                {t('Submit Request')}
               </button>
             </form>
           </div>

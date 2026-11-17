@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface PackagesPageProps {
   onNavigate: (page: string) => void;
@@ -8,17 +9,25 @@ interface PackagesPageProps {
 
 export function PackagesPage({ onNavigate, onOpenVideo, onOpenQuote }: PackagesPageProps) {
   void onOpenVideo;
+  const { lang, t } = useLanguage();
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
 
   const plans = [
     {
-      name: 'Starter Plan',
-      system: 'Up to 4.5 kW System',
+      name: t('Starter Plan'),
+      system: t('Up to 4.5 kW System'),
       price: billingCycle === 'monthly' ? '$1,260' : '$945',
-      period: billingCycle === 'monthly' ? 'Flexible Monthly Financing' : 'Billed Annually (Save 25%)',
-      btnText: 'GET ESTIMATE',
+      period: billingCycle === 'monthly' ? t('Flexible Monthly Financing') : t('Billed Annually (Save 25%)'),
+      btnText: t('GET ESTIMATE'),
       isPopular: false,
-      features: [
+      features: lang === 'pt' ? [
+        'Painéis Solares de Alta Eficiência Tier-1',
+        'Inversor Inteligente Standard Ligado à Rede',
+        'Análise Avançada de Sombreamento por Drone',
+        'Instalação Profissional Certificada',
+        'Garantia de Mão de Obra de 10 Anos',
+        'Acompanhamento de Energia em Tempo Real por App'
+      ] : [
         'Tier-1 High-Efficiency Solar Panels',
         'Standard Grid-Tied Smart Inverter',
         'Comprehensive Drone-Based Roof Shading Analysis',
@@ -28,13 +37,20 @@ export function PackagesPage({ onNavigate, onOpenVideo, onOpenQuote }: PackagesP
       ]
     },
     {
-      name: 'Recommended Plan',
-      system: 'Up to 8.5 kW System',
+      name: t('Recommended Plan'),
+      system: t('Up to 8.5 kW System'),
       price: billingCycle === 'monthly' ? '$4,256' : '$3,192',
-      period: billingCycle === 'monthly' ? 'Most Popular Choice for Homeowners' : 'Billed Annually (Save 25%)',
-      btnText: 'REQUEST QUOTE',
+      period: billingCycle === 'monthly' ? t('Most Popular Choice for Homeowners') : t('Billed Annually (Save 25%)'),
+      btnText: t('REQUEST QUOTE'),
       isPopular: true,
-      features: [
+      features: lang === 'pt' ? [
+        'Todas as características do Plano Inicial, mais',
+        'Módulos Solares Premium Mono PERC de Alta Produção',
+        'Tecnologia de Microinversores de Última Geração',
+        'Ativação Prioritária de Ligação à Rede Pública',
+        'Garantia de Desempenho Industrial de 25 Anos',
+        'Linha de Apoio Dedicada ao Cliente 24/7'
+      ] : [
         'All features in Starter Plan, plus',
         'Premium High-Output Mono PERC Solar',
         'Next-Gen Microinverter Technology',
@@ -44,13 +60,20 @@ export function PackagesPage({ onNavigate, onOpenVideo, onOpenQuote }: PackagesP
       ]
     },
     {
-      name: 'Premium Plan',
-      system: '12+ kW Scalable System + Battery',
+      name: t('Premium Plan'),
+      system: t('12+ kW Scalable System + Battery'),
       price: billingCycle === 'monthly' ? '$6,479' : '$4,859',
-      period: billingCycle === 'monthly' ? 'Complete Energy Security Setup' : 'Billed Annually (Save 25%)',
-      btnText: 'CONTACT US',
+      period: billingCycle === 'monthly' ? t('Complete Energy Security Setup') : t('Billed Annually (Save 25%)'),
+      btnText: t('CONTACT US'),
       isPopular: false,
-      features: [
+      features: lang === 'pt' ? [
+        'Todas as características do Plano Recomendado, mais',
+        'Conjunto Solar Estético All-Black Ultra-Premium',
+        'Integração de Sistema de Armazenamento por Baterias',
+        'Comutador Automático de Isolamento em Caso de Falha',
+        'Estação de Carregamento Nível 2 para Veículos Elétricos',
+        'Monitorização Contínua de Saúde do Sistema e Limpeza'
+      ] : [
         'All features in Recommended Plan, plus',
         'Ultra-Premium All-Black Aesthetic Solar Array',
         'Smart Battery Storage System Integration',
@@ -86,18 +109,18 @@ export function PackagesPage({ onNavigate, onOpenVideo, onOpenQuote }: PackagesP
                         onClick={() => onNavigate('home')}
                         className="transition-colors text-base text-white/70 hover:text-white cursor-pointer"
                       >
-                        Home
+                        {t('Home')}
                       </button>
                     </li>
                     <li className="text-white/90 text-sm">/</li>
                     <li className="inline-flex items-center gap-1">
-                      <span className="font-normal text-sm text-white">Pricing</span>
+                      <span className="font-normal text-sm text-white">{t('Pricing')}</span>
                     </li>
                   </ol>
                 </nav>
               </div>
               <h2 className="text-3xl font-bold text-center text-white md:text-4xl lg:text-5xl leading-[1.1] xl:text-6xl 2xl:text-[5rem]">
-                Pricing Plans
+                {t('Pricing Plans')}
               </h2>
             </div>
           </div>
@@ -113,10 +136,10 @@ export function PackagesPage({ onNavigate, onOpenVideo, onOpenQuote }: PackagesP
                 <div className="lg:column-8 xl:column-7 2xl:column-6">
                   <div className="reveal-item reveal-delay-100 2xl:px-8">
                     <h2 className="text-darker font-bold text-3xl lg:text-4xl xl:text-5xl leading-[1.166] mb-5">
-                      Commercial &amp; Enterprise Solutions
+                      {t('Commercial & Enterprise Solutions')}
                     </h2>
                     <p className="text-base/relaxed text-body">
-                      Choose the level of support you need — whether you want everything handled for you or prefer a more hands-on approach.
+                      {t('Choose the level of support you need — whether you want everything handled for you or prefer a more hands-on approach.')}
                     </p>
                   </div>
                 </div>
@@ -138,7 +161,7 @@ export function PackagesPage({ onNavigate, onOpenVideo, onOpenQuote }: PackagesP
                         : 'text-body hover:text-darker'
                     }`}
                   >
-                    Monthly
+                    {t('Monthly')}
                   </button>
                   <button
                     type="button"
@@ -149,11 +172,11 @@ export function PackagesPage({ onNavigate, onOpenVideo, onOpenQuote }: PackagesP
                         : 'text-body hover:text-darker'
                     }`}
                   >
-                    <span>Yearly</span>
+                    <span>{t('Yearly')}</span>
                     <span className={`px-2 py-0.5 text-[11px] font-semibold rounded-full transition-colors ${
                       billingCycle === 'yearly' ? 'bg-white text-primary' : 'bg-primary text-white'
                     }`}>
-                      Save 25%
+                      {t('Save 25%')}
                     </span>
                   </button>
                 </div>
@@ -166,7 +189,7 @@ export function PackagesPage({ onNavigate, onOpenVideo, onOpenQuote }: PackagesP
                     <div
                       className={`reveal-item rounded-2xl h-full flex flex-col border-b-4 transition-all duration-300 shadow-[0_4px_20px_0] shadow-black/8 ${
                         plan.isPopular
-                          ? 'border-primary bg-primary text-white scale-102 lg:-translate-y-2'
+                          ? 'border-primary bg-primary text-white'
                           : 'border-primary bg-white text-darker'
                       }`}
                     >
@@ -190,7 +213,7 @@ export function PackagesPage({ onNavigate, onOpenVideo, onOpenQuote }: PackagesP
                         <button
                           type="button"
                           onClick={() => (onOpenQuote ? onOpenQuote() : onNavigate('contact'))}
-                          className={`w-full inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 transition-all outline-none select-none cursor-pointer tracking-[.5px] h-10 lg:h-12 rounded-lg px-6 text-sm font-medium uppercase shadow-md ${
+                          className={`w-full inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 transition-all outline-none select-none cursor-pointer tracking-[.5px] h-10 lg:h-12 rounded-full px-6 text-sm font-medium uppercase shadow-md ${
                             plan.isPopular
                               ? 'border-white bg-white text-primary hover:bg-darker hover:border-darker hover:text-white'
                               : 'border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark'
@@ -224,29 +247,6 @@ export function PackagesPage({ onNavigate, onOpenVideo, onOpenQuote }: PackagesP
                     </div>
                   </div>
                 ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Bottom CTA Banner */}
-        <section className="relative w-full pb-20 lg:pb-24 xl:pb-30">
-          <div className="section-content relative">
-            <div className="container">
-              <div className="reveal-item reveal-from-bottom">
-                <div className="bg-darker p-8 sm:p-12 md:p-16 xl:p-20 flex flex-wrap items-center justify-between xl:gap-x-15 gap-y-7 rounded-[1.25rem]">
-                  <h2 className="text-white font-bold text-2xl sm:text-3xl lg:text-4xl xl:text-[2.65rem] leading-[1.2] uppercase max-w-3xl">
-                    Power your facility with reliable energy infrastructure
-                  </h2>
-                  <a
-                    href="https://simulador.lecasu.co.mz/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-12 lg:h-15 gap-4 px-7.5 text-base font-medium rounded-full shadow-lg"
-                  >
-                    Request a Proposal
-                  </a>
-                </div>
               </div>
             </div>
           </div>

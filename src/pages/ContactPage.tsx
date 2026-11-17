@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface ContactPageProps {
   onNavigate: (page: string) => void;
@@ -9,6 +10,7 @@ interface ContactPageProps {
 export function ContactPage({ onNavigate, onOpenVideo, onOpenQuote }: ContactPageProps) {
   void onOpenVideo;
   void onOpenQuote;
+  const { lang, t } = useLanguage();
 
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [fullName, setFullName] = useState('');
@@ -54,18 +56,18 @@ export function ContactPage({ onNavigate, onOpenVideo, onOpenQuote }: ContactPag
                         onClick={() => onNavigate('home')}
                         className="transition-colors text-base text-white/70 hover:text-white cursor-pointer"
                       >
-                        Home
+                        {t('Home')}
                       </button>
                     </li>
                     <li className="text-white/90 text-sm">/</li>
                     <li className="inline-flex items-center gap-1">
-                      <span className="font-normal text-sm text-white">Contact Us</span>
+                      <span className="font-normal text-sm text-white">{t('Contact Us')}</span>
                     </li>
                   </ol>
                 </nav>
               </div>
               <h2 className="text-3xl font-bold text-center text-white md:text-4xl lg:text-5xl leading-[1.1] xl:text-6xl 2xl:text-[5rem]">
-                Contact Us
+                {t('Contact Us')}
               </h2>
             </div>
           </div>
@@ -77,16 +79,20 @@ export function ContactPage({ onNavigate, onOpenVideo, onOpenQuote }: ContactPag
         {/* Contact Information & Form */}
         <section className="relative w-full pt-20 lg:pt-24 xl:pt-30">
           <div className="container">
-            <div className="row g-12 items-start justify-between">
-              {/* Left Column: Info Cards */}
-              <div className="lg:column-6 xl:column-5">
-                <div className="reveal-item reveal-delay-100">
+            <div className="row items-start justify-between gy-8">
+              {/* Left Column: Info Cards (50%) */}
+              <div className="column-12 lg:column-6">
+                <div className="reveal-item reveal-delay-100 lg:pe-6 xl:pe-10">
                   <div className="text-block mb-8">
-                    <h2 className="text-darker font-bold text-3xl lg:text-4xl xl:text-5xl leading-[1.166] mb-5">
-                      Let's turn your vision into reality
+                    <h2 className="text-darker font-bold text-3xl sm:text-4xl lg:text-[2.6rem] xl:text-[3rem] leading-[1.2] mb-5">
+                      {lang === 'pt' ? (
+                        <>Vamos transformar a sua visão <br className="hidden sm:inline" />em realidade</>
+                      ) : (
+                        <>Let's turn your vision <br className="hidden sm:inline" />into reality</>
+                      )}
                     </h2>
                     <p className="text-base/relaxed text-body text-pretty">
-                      Let’s build something meaningful together by combining creativity, strategy, and innovation to create impactful clean energy solutions that drive growth, strengthen homes, and deliver lasting value.
+                      {t('Let’s build something meaningful together by combining creativity, strategy, and innovation to create impactful clean energy solutions that drive growth, strengthen homes, and deliver lasting value.')}
                     </p>
                   </div>
 
@@ -98,7 +104,7 @@ export function ContactPage({ onNavigate, onOpenVideo, onOpenQuote }: ContactPag
                         </svg>
                       </div>
                       <div>
-                        <h5 className="text-darker text-xl font-semibold mb-0.5">Our Address</h5>
+                        <h5 className="text-darker text-xl font-semibold mb-0.5">{t('Our Address')}</h5>
                         <p className="text-body text-base/normal">Rua da Mozal, Matola-Rio, 1115</p>
                       </div>
                     </li>
@@ -110,7 +116,7 @@ export function ContactPage({ onNavigate, onOpenVideo, onOpenQuote }: ContactPag
                         </svg>
                       </div>
                       <div>
-                        <h5 className="text-darker text-xl font-semibold mb-0.5">Phone Number</h5>
+                        <h5 className="text-darker text-xl font-semibold mb-0.5">{t('Phone Number')}</h5>
                         <p className="text-body text-base/normal">+258 85 550 0255</p>
                       </div>
                     </li>
@@ -122,7 +128,7 @@ export function ContactPage({ onNavigate, onOpenVideo, onOpenQuote }: ContactPag
                         </svg>
                       </div>
                       <div>
-                        <h5 className="text-darker text-xl font-semibold mb-0.5">Email Address</h5>
+                        <h5 className="text-darker text-xl font-semibold mb-0.5">{t('Email Address')}</h5>
                         <p className="text-body text-base/normal">
                           <a href="mailto:info@lecasu.co.mz" className="hover:text-primary transition-colors">
                             info@lecasu.co.mz
@@ -134,10 +140,10 @@ export function ContactPage({ onNavigate, onOpenVideo, onOpenQuote }: ContactPag
                 </div>
               </div>
 
-              {/* Right Column: Contact Form */}
-              <div className="lg:column-6 xl:column-7 2xl:column-6">
+              {/* Right Column: Contact Form (50%) */}
+              <div className="column-12 lg:column-6">
                 <div className="reveal-item reveal-delay-300 p-8 lg:p-10 rounded-2xl bg-white border border-lighter shadow-lg">
-                  <h3 className="mb-6 text-3xl lg:text-4xl font-bold text-darker">Get In Touch</h3>
+                  <h3 className="mb-6 text-3xl lg:text-4xl font-bold text-darker">{t('Get In Touch')}</h3>
 
                   {formSubmitted ? (
                     <div className="p-6 bg-primary/10 border border-primary text-darker rounded-xl text-center">
@@ -146,23 +152,23 @@ export function ContactPage({ onNavigate, onOpenVideo, onOpenQuote }: ContactPag
                           <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
                         </svg>
                       </div>
-                      <h4 className="text-xl font-bold mb-1">Thank You!</h4>
+                      <h4 className="text-xl font-bold mb-1">{t('Thank You!')}</h4>
                       <p className="text-sm text-body">
-                        Your inquiry has been received. Our renewable energy team will get back to you within 24 hours.
+                        {t('Your inquiry has been received. Our renewable energy team will get back to you within 24 hours.')}
                       </p>
                       <button
                         type="button"
                         onClick={() => setFormSubmitted(false)}
-                        className="mt-4 px-6 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary-dark transition-colors"
+                        className="mt-4 px-6 py-2 bg-primary text-white rounded-full text-sm font-medium hover:bg-primary-dark transition-colors"
                       >
-                        Send Another Message
+                        {t('Send Another Message')}
                       </button>
                     </div>
                   ) : (
                     <form onSubmit={handleSubmit} className="row g-6">
                       <div className="column-6 lg:column-12 xl:column-6">
                         <label className="block mb-2 text-base font-normal text-darker" htmlFor="contact-name">
-                          Your Full Name *
+                          {t('Your Full Name *')}
                         </label>
                         <input
                           className="border border-lighter bg-white text-darker placeholder-body/70 rounded-lg px-4 py-2.5 w-full outline-offset-0 focus:outline-primary focus:border-transparent transition-all"
@@ -170,14 +176,14 @@ export function ContactPage({ onNavigate, onOpenVideo, onOpenQuote }: ContactPag
                           id="contact-name"
                           value={fullName}
                           onChange={(e) => setFullName(e.target.value)}
-                          placeholder="Enter your name"
+                          placeholder={t('Enter your name')}
                           required
                         />
                       </div>
 
                       <div className="column-6 lg:column-12 xl:column-6">
                         <label className="block mb-2 text-base font-normal text-darker" htmlFor="contact-email">
-                          Email Address *
+                          {t('Email Address *')}
                         </label>
                         <input
                           className="border border-lighter bg-white text-darker placeholder-body/70 rounded-lg px-4 py-2.5 w-full outline-offset-0 focus:outline-primary focus:border-transparent transition-all"
@@ -192,7 +198,7 @@ export function ContactPage({ onNavigate, onOpenVideo, onOpenQuote }: ContactPag
 
                       <div className="column-6 lg:column-12 xl:column-6">
                         <label className="block mb-2 text-base font-normal text-darker" htmlFor="contact-phone">
-                          Your Phone
+                          {t('Your Phone')}
                         </label>
                         <input
                           className="border border-lighter bg-white text-darker placeholder-body/70 rounded-lg px-4 py-2.5 w-full outline-offset-0 focus:outline-primary focus:border-transparent transition-all"
@@ -207,7 +213,7 @@ export function ContactPage({ onNavigate, onOpenVideo, onOpenQuote }: ContactPag
 
                       <div className="column-6 lg:column-12 xl:column-6">
                         <label className="block mb-2 text-base font-normal text-darker" htmlFor="contact-subject">
-                          Service Type
+                          {t('Service Type')}
                         </label>
                         <div className="relative">
                           <select
@@ -217,19 +223,19 @@ export function ContactPage({ onNavigate, onOpenVideo, onOpenQuote }: ContactPag
                             className="border border-lighter bg-white text-darker placeholder-body/70 rounded-lg px-4 py-2.5 w-full outline-offset-0 focus:outline-primary focus:border-transparent transition-all"
                             required
                           >
-                            <option value="" disabled>Select inquiry type...</option>
-                            <option value="residential">Residential Solar Solutions</option>
-                            <option value="commercial">Commercial Solar Arrays</option>
-                            <option value="battery">Battery Energy Storage</option>
-                            <option value="ev">EV Charging Infrastructure</option>
-                            <option value="maintenance">Maintenance &amp; Inspection</option>
+                            <option value="" disabled>{t('Select inquiry type...')}</option>
+                            <option value="residential">{t('Residential Solar Solutions')}</option>
+                            <option value="commercial">{t('Commercial Solar Arrays')}</option>
+                            <option value="battery">{t('Battery Energy Storage')}</option>
+                            <option value="ev">{t('EV Charging Infrastructure')}</option>
+                            <option value="maintenance">{t('Maintenance & Inspection')}</option>
                           </select>
                         </div>
                       </div>
 
                       <div className="column-12">
                         <label className="block mb-2 text-base font-normal text-darker" htmlFor="contact-message">
-                          Message
+                          {t('Message')}
                         </label>
                         <textarea
                           id="contact-message"
@@ -237,7 +243,7 @@ export function ContactPage({ onNavigate, onOpenVideo, onOpenQuote }: ContactPag
                           value={message}
                           onChange={(e) => setMessage(e.target.value)}
                           className="border border-lighter bg-white text-darker placeholder-body/70 rounded-lg px-4 py-2.5 w-full outline-offset-0 focus:outline-primary focus:border-transparent transition-all resize-none"
-                          placeholder="Tell us about your roof, current energy consumption, or goals..."
+                          placeholder={t('Tell us about your roof, current energy consumption, or goals...')}
                           required
                         ></textarea>
                       </div>
@@ -245,9 +251,9 @@ export function ContactPage({ onNavigate, onOpenVideo, onOpenQuote }: ContactPag
                       <div className="pt-3 column-12">
                         <button
                           type="submit"
-                          className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-12 lg:h-14 gap-4 rounded-lg px-8 text-sm font-medium uppercase shadow-md"
+                          className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-12 lg:h-14 gap-4 rounded-full px-8 text-sm font-medium uppercase shadow-md"
                         >
-                          <span>Send Message</span>
+                          <span>{t('Send Message')}</span>
                         </button>
                       </div>
                     </form>
@@ -266,10 +272,10 @@ export function ContactPage({ onNavigate, onOpenVideo, onOpenQuote }: ContactPag
                 <div className="lg:column-8 xl:column-7">
                   <div className="reveal-item reveal-delay-100 2xl:px-8">
                     <h2 className="text-darker font-bold text-3xl lg:text-4xl xl:text-5xl leading-[1.166] mb-5">
-                      Our Headquarters in Matola-Rio
+                      {t('Our Headquarters in Matola-Rio')}
                     </h2>
                     <p className="text-base xl:text-lg leading-relaxed text-body">
-                      Visit our headquarters and regional energy technology laboratories at Rua da Mozal, Matola-Rio, 1115 to consult directly with certified engineers and discover cutting-edge photovoltaic hardware.
+                      {t('Visit our headquarters and regional energy technology laboratories at Rua da Mozal, Matola-Rio, 1115 to consult directly with certified engineers and discover cutting-edge photovoltaic hardware.')}
                     </p>
                   </div>
                 </div>
