@@ -1,11 +1,12 @@
 import { useLanguage } from '../i18n/LanguageContext';
 
 interface ServicePageProps {
-  onNavigate: (page: string) => void;
+  onNavigate: (page: string, context?: string) => void;
   onOpenQuote?: () => void;
 }
 
 export function ServicePage({ onNavigate, onOpenQuote }: ServicePageProps) {
+  void onOpenQuote;
   const { t } = useLanguage();
 
   const services = [
@@ -126,15 +127,15 @@ export function ServicePage({ onNavigate, onOpenQuote }: ServicePageProps) {
                 {services.map((svc, idx) => (
                   <div key={idx} className="xl:column-4 md:column-6">
                     <div
-                      onClick={() => (onOpenQuote ? onOpenQuote() : onNavigate('contact'))}
-                      className="reveal-item flex flex-col bg-white shadow-[0_2px_26px_0_rgba(0,0,0,.07)] rounded-2xl h-full border border-lighter cursor-pointer overflow-hidden border-b-4 border-b-primary group"
+                      onClick={() => onNavigate('contact', svc.title)}
+                      className="reveal-item flex flex-col bg-white shadow-[0_2px_26px_0_rgba(0,0,0,.07)] rounded-2xl h-full border border-lighter cursor-pointer overflow-hidden border-b-4 border-b-primary group hover:shadow-2xl hover:scale-[1.01] transition-all duration-300"
                     >
                       <div className="overflow-hidden h-56">
                         <img
                           alt={svc.title}
                           width={840}
                           height={520}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           src={svc.image}
                         />
                       </div>
@@ -148,6 +149,17 @@ export function ServicePage({ onNavigate, onOpenQuote }: ServicePageProps) {
                               <p key={pIdx}>{paragraph}</p>
                             ))}
                           </div>
+                        </div>
+
+                        <div className="pt-6 mt-6 border-t border-gray-100 flex items-center justify-between">
+                          <span className="text-sm font-semibold text-primary group-hover:text-primary-dark transition-colors">
+                            {t('Solicitar Informações / Cotação')}
+                          </span>
+                          <span className="size-8 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover:translate-x-1">
+                            <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                            </svg>
+                          </span>
                         </div>
                       </div>
                     </div>

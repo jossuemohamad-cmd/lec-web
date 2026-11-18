@@ -3,6 +3,7 @@ import { useLanguage } from './i18n/LanguageContext';
 import { AboutPage } from './pages/AboutPage';
 import { ServicePage } from './pages/ServicePage';
 import { ProjectPage } from './pages/ProjectPage';
+import { ProjectDetailPage } from './pages/ProjectDetailPage';
 import { ContactPage } from './pages/ContactPage';
 import { PackagesPage } from './pages/PackagesPage';
 import { FaqsPage } from './pages/FaqsPage';
@@ -22,6 +23,8 @@ export function App() {
 
   // Router state
   const [currentPage, setCurrentPage] = useState<string>('home');
+  const [selectedProjectId, setSelectedProjectId] = useState<string>('skm-engineering');
+  const [selectedServiceContext, setSelectedServiceContext] = useState<string>('');
 
   // One-time fluid entrance animation for the initial site load
   const [initialEntrance, setInitialEntrance] = useState(true);
@@ -48,9 +51,17 @@ export function App() {
   // Sync hash on initial load
   useEffect(() => {
     const handleHash = () => {
-      const hash = window.location.hash.replace('#', '').toLowerCase();
-      if (['about', 'service', 'project', 'contact', 'packages', 'faqs'].includes(hash)) {
-        setCurrentPage(hash);
+      const raw = window.location.hash.replace('#', '').toLowerCase();
+      if (raw.startsWith('project/')) {
+        const pid = raw.replace('project/', '');
+        if (pid) {
+          setSelectedProjectId(pid);
+          setCurrentPage('project-detail');
+          return;
+        }
+      }
+      if (['about', 'service', 'project', 'contact', 'packages', 'faqs'].includes(raw)) {
+        setCurrentPage(raw);
       } else {
         setCurrentPage('home');
       }
@@ -60,9 +71,29 @@ export function App() {
     return () => window.removeEventListener('hashchange', handleHash);
   }, []);
 
-  const navigateTo = (page: string) => {
+  const navigateTo = (page: string, context?: string) => {
+    if (page === 'contact' && context) {
+      setSelectedServiceContext(context);
+    }
+    if (page === 'project-detail' && context) {
+      setSelectedProjectId(context);
+    }
     setCurrentPage(page);
-    window.location.hash = page === 'home' ? '' : page;
+    if (page === 'home') {
+      window.location.hash = '';
+    } else if (page === 'project-detail') {
+      window.location.hash = `project/${context || selectedProjectId}`;
+    } else {
+      window.location.hash = page;
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setMobileMenuOpen(false);
+  };
+
+  const openProjectDetail = (projectId: string) => {
+    setSelectedProjectId(projectId);
+    setCurrentPage('project-detail');
+    window.location.hash = `project/${projectId}`;
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setMobileMenuOpen(false);
   };
@@ -397,6 +428,15 @@ export function App() {
           <ProjectPage
             onNavigate={navigateTo}
             onOpenQuote={() => setQuoteModalOpen(true)}
+            onSelectProject={openProjectDetail}
+          />
+        )}
+
+        {currentPage === 'project-detail' && (
+          <ProjectDetailPage
+            projectId={selectedProjectId}
+            onNavigate={navigateTo}
+            onSelectProject={openProjectDetail}
           />
         )}
 
@@ -404,6 +444,7 @@ export function App() {
           <ContactPage
             onNavigate={navigateTo}
             onOpenQuote={() => setQuoteModalOpen(true)}
+            initialService={selectedServiceContext}
           />
         )}
 
@@ -698,11 +739,11 @@ export function App() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-7.5">
                     <div
-                      onClick={() => navigateTo('service')}
-                      className="reveal-item flex flex-col bg-white border border-gray-100 shadow-[0_2px_26px_0_rgba(0,0,0,.06)] rounded-2xl reveal-delay-100 cursor-pointer overflow-hidden border-b-4 border-b-primary group"
+                      onClick={() => navigateTo('contact', t('Residential Solar'))}
+                      className="reveal-item flex flex-col bg-white border border-gray-100 shadow-[0_2px_26px_0_rgba(0,0,0,.06)] rounded-2xl reveal-delay-100 cursor-pointer overflow-hidden border-b-4 border-b-primary group hover:shadow-2xl hover:scale-[1.01] transition-all duration-300"
                     >
                       <div className="overflow-hidden h-60">
-                        <img alt="Residential Solar" width={840} height={520} className="w-full h-full object-cover" src="/lecasu/engineering-procurement-construction.jpeg" />
+                        <img alt="Residential Solar" width={840} height={520} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/lecasu/engineering-procurement-construction.jpeg" />
                       </div>
                       <div className="p-8 flex flex-col flex-1 justify-between">
                         <div>
@@ -713,15 +754,25 @@ export function App() {
                             {t('Advanced solar arrays tailored for modern homeowners who prioritize sustainability and economic independence.')}
                           </p>
                         </div>
+                        <div className="pt-6 mt-6 border-t border-gray-100 flex items-center justify-between">
+                          <span className="text-sm font-semibold text-primary group-hover:text-primary-dark transition-colors">
+                            {t('Solicitar Informações / Cotação')}
+                          </span>
+                          <span className="size-8 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover:translate-x-1">
+                            <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                            </svg>
+                          </span>
+                        </div>
                       </div>
                     </div>
 
                     <div
-                      onClick={() => navigateTo('service')}
-                      className="reveal-item flex flex-col bg-white border border-gray-100 shadow-[0_2px_26px_0_rgba(0,0,0,.06)] rounded-2xl reveal-delay-200 cursor-pointer overflow-hidden border-b-4 border-b-primary group"
+                      onClick={() => navigateTo('contact', t('Energia Solar e Sistemas Híbridos'))}
+                      className="reveal-item flex flex-col bg-white border border-gray-100 shadow-[0_2px_26px_0_rgba(0,0,0,.06)] rounded-2xl reveal-delay-200 cursor-pointer overflow-hidden border-b-4 border-b-primary group hover:shadow-2xl hover:scale-[1.01] transition-all duration-300"
                     >
                       <div className="overflow-hidden h-60">
-                        <img alt="Energia Solar e Sistemas Híbridos" width={840} height={520} className="w-full h-full object-cover" src="/lecasu/energy-as-a-service-ppa.jpeg" />
+                        <img alt="Energia Solar e Sistemas Híbridos" width={840} height={520} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/lecasu/energy-as-a-service-ppa.jpeg" />
                       </div>
                       <div className="p-8 flex flex-col flex-1 justify-between">
                         <div>
@@ -740,15 +791,25 @@ export function App() {
                             </p>
                           </div>
                         </div>
+                        <div className="pt-6 mt-6 border-t border-gray-100 flex items-center justify-between">
+                          <span className="text-sm font-semibold text-primary group-hover:text-primary-dark transition-colors">
+                            {t('Solicitar Informações / Cotação')}
+                          </span>
+                          <span className="size-8 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover:translate-x-1">
+                            <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                            </svg>
+                          </span>
+                        </div>
                       </div>
                     </div>
 
                     <div
-                      onClick={() => navigateTo('service')}
-                      className="reveal-item flex flex-col bg-white border border-gray-100 shadow-[0_2px_26px_0_rgba(0,0,0,.06)] rounded-2xl reveal-delay-300 cursor-pointer overflow-hidden border-b-4 border-b-primary group"
+                      onClick={() => navigateTo('contact', t('Energy-as-a-Service (PPA)'))}
+                      className="reveal-item flex flex-col bg-white border border-gray-100 shadow-[0_2px_26px_0_rgba(0,0,0,.06)] rounded-2xl reveal-delay-300 cursor-pointer overflow-hidden border-b-4 border-b-primary group hover:shadow-2xl hover:scale-[1.01] transition-all duration-300"
                     >
                       <div className="overflow-hidden h-60">
-                        <img alt="Energy-as-a-Service" width={840} height={520} className="w-full h-full object-cover" src="/lecasu/official-service-hybrid.jpeg" />
+                        <img alt="Energy-as-a-Service" width={840} height={520} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/lecasu/official-service-hybrid.jpeg" />
                       </div>
                       <div className="p-8 flex flex-col flex-1 justify-between">
                         <div>
@@ -758,6 +819,16 @@ export function App() {
                           <p className="text-base leading-relaxed text-body">
                             {t('No upfront capital investment required. Pay only for the clean kilowatt-hours you consume with guaranteed availability and covered maintenance.')}
                           </p>
+                        </div>
+                        <div className="pt-6 mt-6 border-t border-gray-100 flex items-center justify-between">
+                          <span className="text-sm font-semibold text-primary group-hover:text-primary-dark transition-colors">
+                            {t('Solicitar Informações / Cotação')}
+                          </span>
+                          <span className="size-8 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover:translate-x-1">
+                            <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                            </svg>
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -772,15 +843,30 @@ export function App() {
                 <div className="container">
                   <div className="row items-stretch gy-8 lg:flex-row-reverse">
                     <div className="column-12 lg:column-6 flex flex-col">
-                      <div className="reveal-item reveal-delay-300 relative w-full h-full flex flex-col flex-1 max-w-lg lg:max-w-none mx-auto">
+                      <div
+                        onClick={() => openProjectDetail('skm-engineering')}
+                        className="reveal-item reveal-delay-300 relative w-full h-full flex flex-col flex-1 max-w-lg lg:max-w-none mx-auto cursor-pointer"
+                      >
                         <div className="relative w-full h-full min-h-[380px] lg:min-h-0 rounded-2xl overflow-hidden shadow-xl border-b-6 border-primary group flex-1">
                           <img
-                            alt="Commercial Solar Panels"
+                            alt="Commercial Solar Panels - SKM Engineering"
                             width={968}
                             height={900}
-                            className="absolute inset-0 w-full h-full object-cover object-center"
+                            className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
                             src="/lecasu/official-project-skm.jpg"
                           />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none"></div>
+                          <div className="absolute bottom-5 left-5 right-5 z-20 flex items-center justify-between">
+                            <span className="px-3 py-1 rounded-full bg-primary text-white text-xs font-semibold shadow-md">
+                              SKM Engineering &mdash; 80 kWp
+                            </span>
+                            <span className="px-3 py-1 rounded-full bg-white/95 text-darker text-xs font-semibold shadow-md group-hover:bg-primary group-hover:text-white transition-colors flex items-center gap-1.5">
+                              <span>{lang === 'pt' ? 'Ver projecto & galeria' : 'View project & gallery'}</span>
+                              <svg className="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                              </svg>
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -807,7 +893,19 @@ export function App() {
                             </li>
                           </ul>
                         </div>
-                        <div className="pt-2">
+                        <div className="pt-2 flex flex-wrap items-center gap-3">
+                          <button
+                            type="button"
+                            onClick={() => openProjectDetail('skm-engineering')}
+                            className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-darker bg-darker text-white hover:bg-primary hover:border-primary fill-white h-12 lg:h-14 gap-3.5 rounded-full pl-7 pr-2.5 sm:pr-3 text-sm font-semibold shadow-md"
+                          >
+                            <span>{lang === 'pt' ? 'Ver Projecto & Galeria' : 'View Project & Gallery'}</span>
+                            <span className="size-8 sm:size-9 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover/button:translate-x-0.5">
+                              <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                              </svg>
+                            </span>
+                          </button>
                           <a
                             href="https://simulador.lecasu.co.mz/"
                             target="_blank"
@@ -835,15 +933,30 @@ export function App() {
                 <div className="container">
                   <div className="row items-stretch gy-8">
                     <div className="column-12 lg:column-6 flex flex-col">
-                      <div className="reveal-item reveal-delay-100 relative w-full h-full flex flex-col flex-1 max-w-lg lg:max-w-none mx-auto">
+                      <div
+                        onClick={() => openProjectDetail('incubox-2')}
+                        className="reveal-item reveal-delay-100 relative w-full h-full flex flex-col flex-1 max-w-lg lg:max-w-none mx-auto cursor-pointer"
+                      >
                         <div className="relative w-full h-full min-h-[380px] lg:min-h-0 rounded-2xl overflow-hidden shadow-xl border-b-6 border-primary group flex-1">
                           <img
                             alt="INCUBOX 2 Off-Grid Modular Solar Cabins"
                             width={968}
                             height={840}
-                            className="absolute inset-0 w-full h-full object-cover object-center"
+                            className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
                             src="/lecasu/official-project-incubox.jpeg"
                           />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none"></div>
+                          <div className="absolute bottom-5 left-5 right-5 z-20 flex items-center justify-between">
+                            <span className="px-3 py-1 rounded-full bg-primary text-white text-xs font-semibold shadow-md">
+                              INCUBOX 2 &mdash; 68.2 kWp
+                            </span>
+                            <span className="px-3 py-1 rounded-full bg-white/95 text-darker text-xs font-semibold shadow-md group-hover:bg-primary group-hover:text-white transition-colors flex items-center gap-1.5">
+                              <span>{lang === 'pt' ? 'Ver projecto & galeria' : 'View project & gallery'}</span>
+                              <svg className="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                              </svg>
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -860,7 +973,19 @@ export function App() {
                             {t('LECASU installed 11 standalone solar PV systems powering modular training cabins (INCUBOX 2) across Cabo Delgado, Nampula and Niassa. These systems provide uninterrupted power for computers, satellite connectivity, digital equipment, and lighting in remote areas, enabling youth entrepreneurship and community development without relying on the national grid.')}
                           </p>
                         </div>
-                        <div className="pt-2">
+                        <div className="pt-2 flex flex-wrap items-center gap-3">
+                          <button
+                            type="button"
+                            onClick={() => openProjectDetail('incubox-2')}
+                            className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-darker bg-darker text-white hover:bg-primary hover:border-primary fill-white h-12 lg:h-14 gap-3.5 rounded-full pl-7 pr-2.5 sm:pr-3 text-sm font-semibold shadow-md"
+                          >
+                            <span>{lang === 'pt' ? 'Ver Projecto & Galeria' : 'View Project & Gallery'}</span>
+                            <span className="size-8 sm:size-9 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover/button:translate-x-0.5">
+                              <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                              </svg>
+                            </span>
+                          </button>
                           <a
                             href="https://simulador.lecasu.co.mz/"
                             target="_blank"

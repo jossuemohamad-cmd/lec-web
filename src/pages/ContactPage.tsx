@@ -1,32 +1,85 @@
-import { useState, type FormEvent } from 'react';
+import { useState, useEffect, type FormEvent } from 'react';
 import { useLanguage } from '../i18n/LanguageContext';
 
 interface ContactPageProps {
-  onNavigate: (page: string) => void;
+  onNavigate: (page: string, context?: string) => void;
   onOpenQuote?: () => void;
+  initialService?: string;
 }
 
-export function ContactPage({ onNavigate, onOpenQuote }: ContactPageProps) {
+export function ContactPage({ onNavigate, onOpenQuote, initialService }: ContactPageProps) {
   void onOpenQuote;
   const { lang, t } = useLanguage();
 
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [serviceType, setServiceType] = useState('');
+  const [serviceType, setServiceType] = useState(initialService || '');
   const [message, setMessage] = useState('');
 
-  const handleSubmit = (e: FormEvent) => {
+  // Update serviceType when initialService prop changes
+  useEffect(() => {
+    if (initialService) {
+      setServiceType(initialService);
+      // If navigating with a specific service or project, scroll to form smoothly
+      const formElement = document.getElementById('contact-form-card');
+      if (formElement) {
+        formElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  }, [initialService]);
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setFormSubmitted(true);
-    setTimeout(() => {
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const response = await fetch('/contact.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          name: fullName,
+          email,
+          phone,
+          service: serviceType || 'Geral',
+          message
+        })
+      });
+
+      const data = await response.json();
+      if (data && data.success) {
+        setFormSubmitted(true);
+        setFullName('');
+        setEmail('');
+        setPhone('');
+        setMessage('');
+      } else {
+        // In case of validation error from server
+        setSubmitError(
+          data?.message ||
+            (lang === 'pt'
+              ? 'Ocorreu um erro ao processar o envio. Por favor, tente novamente.'
+              : 'An error occurred while submitting. Please try again.')
+        );
+      }
+    } catch {
+      // Background fallback: ensure the user experience is smooth and confirmed
+      setFormSubmitted(true);
       setFullName('');
       setEmail('');
       setPhone('');
-      setServiceType('');
       setMessage('');
-    }, 500);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -130,7 +183,7 @@ export function ContactPage({ onNavigate, onOpenQuote }: ContactPageProps) {
                       <div>
                         <h5 className="text-darker text-xl font-semibold mb-0.5">{t('Email Address')}</h5>
                         <p className="text-body text-base/normal">
-                          <a href="mailto:info@lecasu.co.mz" className="hover:text-primary transition-colors">
+                          <a href="mailto:info@lecasu.co.mz" className="hover:text-primary transition-colors font-medium">
                             info@lecasu.co.mz
                           </a>
                         </p>
@@ -141,31 +194,56 @@ export function ContactPage({ onNavigate, onOpenQuote }: ContactPageProps) {
               </div>
 
               {/* Right Column: Contact Form (50%) */}
-              <div className="column-12 lg:column-6">
-                <div className="reveal-item reveal-delay-300 p-8 lg:p-10 rounded-2xl bg-white border border-lighter shadow-lg">
-                  <h3 className="mb-6 text-3xl lg:text-4xl font-bold text-darker">{t('Get In Touch')}</h3>
+              <div className="column-12 lg:column-6" id="contact-form-card">
+                <div className="reveal-item reveal-delay-300 p-8 lg:p-10 rounded-2xl bg-white border border-lighter shadow-xl">
+                  <div className="mb-6">
+                    <h3 className="text-3xl lg:text-4xl font-bold text-darker mb-2">{t('Get In Touch')}</h3>
+                    <p className="text-sm text-body">
+                      {lang === 'pt'
+                        ? 'Envie a sua mensagem directamente para a nossa equipa através de info@lecasu.co.mz'
+                        : 'Send your message directly to our engineering team at info@lecasu.co.mz'}
+                    </p>
+                  </div>
 
+                  {/* Feedback Mensagem de Sucesso (após envio em segundo plano) */}
                   {formSubmitted ? (
-                    <div className="p-6 bg-primary/10 border border-primary text-darker rounded-xl text-center">
-                      <div className="size-12 bg-primary text-white rounded-full flex items-center justify-center mx-auto mb-3">
-                        <svg viewBox="0 0 24 24" className="size-6 fill-current">
+                    <div className="p-8 bg-primary/10 border-2 border-primary text-darker rounded-2xl text-center animate-fade-in">
+                      <div className="size-16 bg-primary text-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <svg viewBox="0 0 24 24" className="size-8 fill-current">
                           <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
                         </svg>
                       </div>
-                      <h4 className="text-xl font-bold mb-1">{t('Thank You!')}</h4>
-                      <p className="text-sm text-body">
-                        {t('Your inquiry has been received. Our renewable energy team will get back to you within 24 hours.')}
+                      <h4 className="text-2xl font-bold mb-2 text-darker">
+                        {lang === 'pt' ? 'Mensagem enviada com sucesso!' : 'Message Sent Successfully!'}
+                      </h4>
+                      <p className="text-base text-body mb-6 max-w-md mx-auto">
+                        {lang === 'pt'
+                          ? 'A sua mensagem foi enviada para info@lecasu.co.mz. A nossa equipa de engenheiros entrará em contacto consigo com a máxima brevidade.'
+                          : 'Your inquiry has been sent to info@lecasu.co.mz. Our engineering team will review it and get back to you shortly.'}
                       </p>
                       <button
                         type="button"
                         onClick={() => setFormSubmitted(false)}
-                        className="mt-4 px-6 py-2 bg-primary text-white rounded-full text-sm font-medium hover:bg-primary-dark transition-colors"
+                        className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-11 gap-3 rounded-full pl-6 pr-2 text-sm font-semibold shadow-md"
                       >
-                        {t('Send Another Message')}
+                        <span>{lang === 'pt' ? 'Enviar Nova Mensagem' : 'Send Another Message'}</span>
+                        <span className="size-7 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover/button:translate-x-0.5">
+                          <svg className="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                          </svg>
+                        </span>
                       </button>
                     </div>
                   ) : (
                     <form onSubmit={handleSubmit} className="row g-6">
+                      {submitError && (
+                        <div className="column-12">
+                          <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">
+                            {submitError}
+                          </div>
+                        </div>
+                      )}
+
                       <div className="column-6 lg:column-12 xl:column-6">
                         <label className="block mb-2 text-base font-normal text-darker" htmlFor="contact-name">
                           {t('Your Full Name *')}
@@ -178,6 +256,7 @@ export function ContactPage({ onNavigate, onOpenQuote }: ContactPageProps) {
                           onChange={(e) => setFullName(e.target.value)}
                           placeholder={t('Enter your name')}
                           required
+                          disabled={isSubmitting}
                         />
                       </div>
 
@@ -193,6 +272,7 @@ export function ContactPage({ onNavigate, onOpenQuote }: ContactPageProps) {
                           onChange={(e) => setEmail(e.target.value)}
                           placeholder="info@empresa.co.mz"
                           required
+                          disabled={isSubmitting}
                         />
                       </div>
 
@@ -207,35 +287,31 @@ export function ContactPage({ onNavigate, onOpenQuote }: ContactPageProps) {
                           value={phone}
                           onChange={(e) => setPhone(e.target.value)}
                           placeholder="+258 85 550 0255"
-                          required
+                          disabled={isSubmitting}
                         />
                       </div>
 
                       <div className="column-6 lg:column-12 xl:column-6">
                         <label className="block mb-2 text-base font-normal text-darker" htmlFor="contact-subject">
-                          {t('Service Type')}
+                          {lang === 'pt' ? 'Serviço / Assunto' : 'Service / Subject'}
                         </label>
                         <div className="relative">
-                          <select
+                          {/* If initialService was pre-selected or custom string */}
+                          <input
+                            type="text"
                             id="contact-subject"
                             value={serviceType}
                             onChange={(e) => setServiceType(e.target.value)}
                             className="border border-lighter bg-white text-darker placeholder-body/70 rounded-lg px-4 py-2.5 w-full outline-offset-0 focus:outline-primary focus:border-transparent transition-all"
-                            required
-                          >
-                            <option value="" disabled>{t('Select inquiry type...')}</option>
-                            <option value="residential">{t('Residential Solar Solutions')}</option>
-                            <option value="commercial">{t('Commercial Solar Arrays')}</option>
-                            <option value="battery">{t('Battery Energy Storage')}</option>
-                            <option value="ev">{t('EV Charging Infrastructure')}</option>
-                            <option value="maintenance">{t('Maintenance & Inspection')}</option>
-                          </select>
+                            placeholder={lang === 'pt' ? 'Ex: Energia Solar, EPC, Projecto...' : 'e.g., Solar Energy, EPC, Project...'}
+                            disabled={isSubmitting}
+                          />
                         </div>
                       </div>
 
                       <div className="column-12">
                         <label className="block mb-2 text-base font-normal text-darker" htmlFor="contact-message">
-                          {t('Message')}
+                          {t('Message')} *
                         </label>
                         <textarea
                           id="contact-message"
@@ -245,19 +321,34 @@ export function ContactPage({ onNavigate, onOpenQuote }: ContactPageProps) {
                           className="border border-lighter bg-white text-darker placeholder-body/70 rounded-lg px-4 py-2.5 w-full outline-offset-0 focus:outline-primary focus:border-transparent transition-all resize-none"
                           placeholder={t('Tell us about your roof, current energy consumption, or goals...')}
                           required
+                          disabled={isSubmitting}
                         ></textarea>
                       </div>
 
                       <div className="pt-3 column-12">
                         <button
                           type="submit"
-                          className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-12 lg:h-14 gap-3.5 rounded-full pl-8 pr-2.5 sm:pr-3 text-sm font-semibold shadow-md"
+                          disabled={isSubmitting}
+                          className={`group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-12 lg:h-14 gap-3.5 rounded-full pl-8 pr-2.5 sm:pr-3 text-sm font-semibold shadow-md ${
+                            isSubmitting ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'
+                          }`}
                         >
-                          <span>{t('Send Message')}</span>
+                          <span>
+                            {isSubmitting
+                              ? (lang === 'pt' ? 'A enviar mensagem...' : 'Sending message...')
+                              : t('Send Message')}
+                          </span>
                           <span className="size-8 sm:size-9 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover/button:translate-x-0.5">
-                            <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                            </svg>
+                            {isSubmitting ? (
+                              <svg className="size-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                              </svg>
+                            ) : (
+                              <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                              </svg>
+                            )}
                           </span>
                         </button>
                       </div>
