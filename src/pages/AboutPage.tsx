@@ -280,10 +280,6 @@ export function AboutPage({ onNavigate, onOpenQuote }: AboutPageProps) {
                         className="absolute inset-0 w-full h-full object-cover object-center"
                         src="/lecasu/about-team.jpeg"
                       />
-                      <div className="absolute bottom-6 left-6 right-6 p-5 rounded-xl bg-[#0f0f0f]/90 backdrop-blur-md text-white border-l-4 border-primary z-20">
-                        <div className="font-bold text-base sm:text-lg">{t('Equipa de Engenharia LECASU')}</div>
-                        <p className="text-xs sm:text-sm text-white/80 mt-1">{t('Especialistas em projetos solares C&I, microrredes e sistemas híbridos em Moçambique.')}</p>
-                      </div>
                     </div>
                   </div>
                 </div>
