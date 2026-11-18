@@ -103,7 +103,9 @@ export function ContactPage({ onNavigate, onOpenQuote }: ContactPageProps) {
                       </div>
                       <div>
                         <h5 className="text-darker text-xl font-semibold mb-0.5">{t('Our Address')}</h5>
-                        <p className="text-body text-base/normal">Rua da Mozal, Matola-Rio, 1115</p>
+                        <p className="text-body text-base/normal">
+                          Rua da Mozal, <span className="whitespace-nowrap">Matola&#8209;Rio, 1115</span>
+                        </p>
                       </div>
                     </li>
 
@@ -249,9 +251,14 @@ export function ContactPage({ onNavigate, onOpenQuote }: ContactPageProps) {
                       <div className="pt-3 column-12">
                         <button
                           type="submit"
-                          className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-12 lg:h-14 gap-4 rounded-full px-8 text-sm font-medium uppercase shadow-md"
+                          className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-12 lg:h-14 gap-3.5 rounded-full pl-8 pr-2.5 sm:pr-3 text-sm font-semibold shadow-md"
                         >
                           <span>{t('Send Message')}</span>
+                          <span className="size-8 sm:size-9 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover/button:translate-x-0.5">
+                            <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                            </svg>
+                          </span>
                         </button>
                       </div>
                     </form>
@@ -267,9 +274,9 @@ export function ContactPage({ onNavigate, onOpenQuote }: ContactPageProps) {
           <div className="section-head relative mb-10 xl:mb-15">
             <div className="container">
               <div className="justify-center text-center row">
-                <div className="lg:column-8 xl:column-7">
-                  <div className="reveal-item reveal-delay-100 2xl:px-8">
-                    <h2 className="text-darker font-bold text-3xl lg:text-4xl xl:text-5xl leading-[1.166] mb-5">
+                <div className="lg:column-10 xl:column-8">
+                  <div className="reveal-item reveal-delay-100">
+                    <h2 className="text-darker font-bold text-3xl lg:text-4xl xl:text-5xl leading-[1.166] mb-5 [text-wrap:balance]">
                       {t('Our Headquarters in Matola-Rio')}
                     </h2>
                     <p className="text-base xl:text-lg leading-relaxed text-body">

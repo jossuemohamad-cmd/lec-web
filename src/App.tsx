@@ -6,12 +6,11 @@ import { ProjectPage } from './pages/ProjectPage';
 import { ContactPage } from './pages/ContactPage';
 import { PackagesPage } from './pages/PackagesPage';
 import { FaqsPage } from './pages/FaqsPage';
-import { BlogPage } from './pages/BlogPage';
 import { MaintenancePage } from './pages/MaintenancePage';
 
 export function App() {
   // Flag para colocar o site em manutenção
-  const isMaintenanceMode = true;
+  const isMaintenanceMode = false;
 
   if (isMaintenanceMode) {
     return <MaintenancePage />;
@@ -50,7 +49,7 @@ export function App() {
   useEffect(() => {
     const handleHash = () => {
       const hash = window.location.hash.replace('#', '').toLowerCase();
-      if (['about', 'service', 'project', 'contact', 'packages', 'faqs', 'blog'].includes(hash)) {
+      if (['about', 'service', 'project', 'contact', 'packages', 'faqs'].includes(hash)) {
         setCurrentPage(hash);
       } else {
         setCurrentPage('home');
@@ -257,9 +256,14 @@ export function App() {
                 href="https://simulador.lecasu.co.mz"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-colors outline-none select-none cursor-pointer tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-10 lg:h-12 gap-4 px-6 font-medium rounded-full text-base shadow-none hover:shadow-none"
+                className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-colors outline-none select-none cursor-pointer tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-10 lg:h-12 gap-3 pl-5 pr-2 sm:pl-6 sm:pr-2 font-medium rounded-full text-sm sm:text-base shadow-none hover:shadow-none"
               >
-                {t('Request a Proposal')}
+                <span>{t('Request a Proposal')}</span>
+                <span className="size-7 sm:size-8 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover/button:translate-x-0.5">
+                  <svg className="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                  </svg>
+                </span>
               </a>
             </nav>
 
@@ -361,9 +365,14 @@ export function App() {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => setMobileMenuOpen(false)}
-            className="w-full mt-6 py-3 rounded-full bg-primary text-white font-medium text-center shadow-lg"
+            className="group/button w-full mt-6 py-2.5 sm:py-3 rounded-full bg-primary text-white font-medium flex items-center justify-center gap-3 pl-6 pr-2 shadow-lg"
           >
-            {t('Request a Proposal')}
+            <span>{t('Request a Proposal')}</span>
+            <span className="size-8 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover/button:translate-x-0.5">
+              <svg className="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+              </svg>
+            </span>
           </a>
         </nav>
       </aside>
@@ -411,13 +420,6 @@ export function App() {
             onOpenQuote={() => setQuoteModalOpen(true)}
           />
         )}
-
-        {currentPage === 'blog' && (
-          <BlogPage
-            onNavigate={navigateTo}
-            onOpenQuote={() => setQuoteModalOpen(true)}
-          />
-        )}
       </div>
 
       {/* HOME PAGE */}
@@ -461,7 +463,7 @@ export function App() {
                           </>
                         )}
                       </h1>
-                      <p className={`text-base sm:text-lg leading-relaxed text-white mb-7 sm:mb-9 max-w-lg text-pretty drop-shadow-[0_1px_8px_rgba(0,0,0,0.85)] ${
+                      <p className={`text-base sm:text-lg leading-relaxed text-white mb-7 sm:mb-9 max-w-lg drop-shadow-[0_1px_8px_rgba(0,0,0,0.85)] text-justify hero-desc-justified ${
                         initialEntrance ? 'hero-enter-desc' : ''
                       }`}>
                         {t('Acreditamos que a energia pode transformar vidas. Por isso, trabalhamos para levar soluções energéticas a empresas, famílias e comunidades, contribuindo para novas oportunidades e um futuro mais digno.')}
@@ -485,7 +487,7 @@ export function App() {
                             />
 
                             {/* Botão interno com ícone de seta dentro de círculo preto */}
-                            <span className="relative z-10 inline-flex shrink-0 items-center justify-center whitespace-nowrap bg-primary text-white group-hover/beam:bg-primary-dark fill-white h-12 lg:h-14 gap-3.5 rounded-full pl-7 pr-2.5 sm:pr-3 text-sm font-semibold uppercase tracking-[0.5px] transition-colors">
+                            <span className="relative z-10 inline-flex shrink-0 items-center justify-center whitespace-nowrap bg-primary text-white group-hover/beam:bg-primary-dark fill-white h-12 lg:h-14 gap-3.5 rounded-full pl-7 pr-2.5 sm:pr-3 text-sm font-semibold tracking-[0.5px] transition-colors">
                               <span>{t('Request a Proposal')}</span>
                               <span className="size-8 sm:size-9 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover/beam:translate-x-0.5">
                                 <svg
@@ -505,9 +507,14 @@ export function App() {
                           <button
                             type="button"
                             onClick={() => navigateTo('project')}
-                            className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-white/80 text-white hover:bg-white/15 fill-white h-12 lg:h-14 gap-4 rounded-full px-7 text-sm font-medium uppercase backdrop-blur-md"
+                            className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-white/80 text-white hover:bg-white/15 fill-white h-12 lg:h-14 gap-3.5 rounded-full pl-7 pr-2.5 sm:pr-3 text-sm font-medium backdrop-blur-md"
                           >
-                            {t('View Projects')}
+                            <span>{t('View Projects')}</span>
+                            <span className="size-8 sm:size-9 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover/button:translate-x-0.5">
+                              <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                              </svg>
+                            </span>
                           </button>
                         </li>
                       </ul>
@@ -521,8 +528,8 @@ export function App() {
                             <div className="text-3xl lg:text-4xl font-bold text-white mb-1.5">
                               <span className="tabular-nums inline-block">{installedCount}+</span>
                             </div>
-                            <div className="text-xs tracking-[1px] font-medium uppercase text-white/70 leading-snug">
-                              {lang === 'pt' ? <>Projetos <br /> Entregues</> : <>Projects <br /> Delivered</>}
+                            <div className="text-xs tracking-[1px] font-medium text-white/70 leading-snug">
+                              {lang === 'pt' ? <>Projetos <br /> entregues</> : <>Projects <br /> delivered</>}
                             </div>
                           </li>
                           <li className="h-10 border-l border-white/20"></li>
@@ -530,8 +537,8 @@ export function App() {
                             <div className="text-3xl lg:text-4xl font-bold text-white mb-1.5">
                               <span className="tabular-nums inline-block">{savingsCount}+</span>
                             </div>
-                            <div className="text-xs tracking-[1px] font-medium uppercase text-white/70 leading-snug">
-                              {lang === 'pt' ? <>Especialistas <br /> Híbridos &amp; Off-Grid</> : <>Hybrid &amp; Off-Grid <br /> Specialists</>}
+                            <div className="text-xs tracking-[1px] font-medium text-white/70 leading-snug">
+                              {lang === 'pt' ? <>Especialistas <br /> híbridos e off-grid</> : <>Hybrid &amp; off-grid <br /> specialists</>}
                             </div>
                           </li>
                           <li className="h-10 border-l border-white/20"></li>
@@ -539,8 +546,8 @@ export function App() {
                             <div className="text-3xl lg:text-4xl font-bold text-white mb-1.5">
                               <span className="tabular-nums inline-block">{ratingCount}+</span>
                             </div>
-                            <div className="text-xs tracking-[1px] font-medium uppercase text-white/70 leading-snug">
-                              {lang === 'pt' ? <>Operações em <br /> Moçambique</> : <>Operations Across <br /> Mozambique</>}
+                            <div className="text-xs tracking-[1px] font-medium text-white/70 leading-snug">
+                              {lang === 'pt' ? <>Operações em <br /> Moçambique</> : <>Operations across <br /> Mozambique</>}
                             </div>
                           </li>
                         </ul>
@@ -583,7 +590,7 @@ export function App() {
                               </svg>
                             </div>
                             <div>
-                              <div className="text-[0.7rem] uppercase font-bold tracking-wider text-primary">{t('Engenharia')}</div>
+                              <div className="text-[0.7rem] font-bold tracking-wider text-primary">{t('Engenharia')}</div>
                               <div className="font-bold text-darker text-base">{t('Solar & Híbrido')}</div>
                             </div>
                           </div>
@@ -595,7 +602,7 @@ export function App() {
                     <div className="column-12 lg:column-6 flex flex-col justify-between">
                       <div className="reveal-item reveal-delay-200 lg:ps-8 xl:ps-12 flex flex-col justify-between h-full">
                         <div>
-                          <div className="text-primary font-semibold text-sm tracking-wider uppercase mb-2">{t('Quem Somos')}</div>
+                          <div className="text-primary font-semibold text-sm tracking-wider mb-2">{t('Quem Somos')}</div>
                           <h2 className="text-2xl sm:text-3xl lg:text-4xl leading-[1.2] font-bold text-darker mb-6 text-pretty">
                             {t('Somos uma empresa de engenharia que acredita no valor de fazer bem as coisas.')}
                           </h2>
@@ -623,14 +630,14 @@ export function App() {
                           <button
                             type="button"
                             onClick={() => navigateTo('about')}
-                            className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-12 lg:h-14 gap-4 rounded-full px-7 text-sm font-medium uppercase shadow-lg hover:shadow-primary/25"
+                            className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-12 lg:h-14 gap-3.5 rounded-full pl-7 pr-2.5 sm:pr-3 text-sm font-semibold shadow-lg hover:shadow-primary/25"
                           >
                             <span>{t('Saber Mais')}</span>
-                            <div className="inline-flex shrink-0 grow-0 rounded-full items-center justify-center border transition-all border-white/40 group-hover/button:border-white fill-white size-5">
-                              <svg viewBox="0 0 24 24" className="size-3">
-                                <path d="M20.923 12.382c0.048-0.113 0.076-0.244 0.076-0.382 0-0.276-0.111-0.526-0.292-0.707l-4-4c-0.182-0.188-0.437-0.305-0.719-0.305-0.552 0-1 0.448-1 1 0 0.282 0.117 0.537 0.305 0.719l2.293 2.294h-13.586c-0.552 0-1 0.448-1 1s0.448 1 1 1v0h13.586l-2.293 2.293c-0.188 0.182-0.305 0.437-0.305 0.719 0 0.552 0.448 1 1 1 0.282 0 0.537-0.117 0.719-0.305l4-4c0.090-0.091 0.163-0.199 0.213-0.318l0.002-0.007z"></path>
+                            <span className="size-8 sm:size-9 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover/button:translate-x-0.5">
+                              <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
                               </svg>
-                            </div>
+                            </span>
                           </button>
                         </div>
                       </div>
@@ -642,34 +649,27 @@ export function App() {
 
             {/* SECÇÃO 4 — SOLUÇÕES DE ENERGIA */}
             <section id="solucoes" className="relative w-full py-20 lg:py-24 xl:py-30 bg-[#f8f9fa] border-y border-gray-200/70">
-              <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <img alt="" width={515} height={367} className="absolute top-0 inset-s-0 w-128.75 h-91.75 opacity-40" src="/solurax/shape-a.3alpm6du1b821.png" />
-                <img alt="" width={348} height={373} className="absolute top-0 inset-s-0 w-87 h-93.25 opacity-25" src="/solurax/line-a.0vp8em3vzxe7v.png" />
-                <img alt="" width={280} height={429} className="absolute top-2/5 inset-s-0 w-70 h-107.25 opacity-25" src="/solurax/hexagon-large-half-a.0lvwhb9rd0dr6.png" />
-                <img alt="" width={181} height={157} className="absolute top-1/10 translate-container-end w-45.25 h-39.25 opacity-25" src="/solurax/hexagon-small-a.0nd4j_gaek6pl.png" />
-              </div>
-
               <div className="section-content relative">
                 <div className="container">
                   <div className="row items-stretch gy-8 mb-16">
                     <div className="column-12 lg:column-6 flex flex-col justify-between">
                       <div className="reveal-item reveal-delay-100 flex flex-col h-full justify-between lg:pe-8 xl:pe-12">
                         <div className="mb-8 xl:mb-12">
-                          <div className="text-primary font-semibold text-sm tracking-wider uppercase mb-2">{t('What We Deliver')}</div>
+                          <div className="text-primary font-semibold text-sm tracking-wider mb-2">{t('What We Deliver')}</div>
                           <h2 className="text-3xl lg:text-4xl xl:text-5xl leading-[1.167] font-bold text-darker mb-4 xl:mb-6 text-pretty">
                             {t('Engineered for Maximum Energy Reliability')}
                           </h2>
                           <button
                             type="button"
                             onClick={() => navigateTo('service')}
-                            className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 border-transparent bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] text-primary hover:text-darker h-10 lg:h-12 rounded-full px-0 gap-2.5 font-medium text-base xl:text-lg"
+                            className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 border-transparent bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] text-primary hover:text-darker h-10 lg:h-12 rounded-full px-0 gap-3 font-semibold text-base xl:text-lg"
                           >
-                            {t('Learn More')}
-                            <div className="inline-flex shrink-0 grow-0 rounded-full items-center justify-center border transition-all border-primary group-hover/button:border-darker fill-primary group-hover/button:fill-white group-hover/button:bg-darker ms-auto size-5">
-                              <svg viewBox="0 0 24 24" className="size-3">
-                                <path d="M20.923 12.382c0.048-0.113 0.076-0.244 0.076-0.382 0-0.276-0.111-0.526-0.292-0.707l-4-4c-0.182-0.188-0.437-0.305-0.719-0.305-0.552 0-1 0.448-1 1 0 0.282 0.117 0.537 0.305 0.719l2.293 2.294h-13.586c-0.552 0-1 0.448-1 1s0.448 1 1 1v0h13.586l-2.293 2.293c-0.188 0.182-0.305 0.437-0.305 0.719 0 0.552 0.448 1 1 1 0.282 0 0.537-0.117 0.719-0.305l4-4c0.090-0.091 0.163-0.199 0.213-0.318l0.002-0.007z"></path>
+                            <span>{t('Learn More')}</span>
+                            <span className="size-7 sm:size-8 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover/button:translate-x-0.5">
+                              <svg className="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
                               </svg>
-                            </div>
+                            </span>
                           </button>
                         </div>
                         <div className="bg-darker p-8 sm:p-10 rounded-2xl mt-auto flex gap-6 shadow-xl">
@@ -721,7 +721,7 @@ export function App() {
                       className="reveal-item flex flex-col bg-white border border-gray-100 shadow-[0_2px_26px_0_rgba(0,0,0,.06)] rounded-2xl reveal-delay-200 cursor-pointer overflow-hidden border-b-4 border-b-primary group"
                     >
                       <div className="overflow-hidden h-60">
-                        <img alt="Energia Solar e Sistemas Híbridos" width={840} height={520} className="w-full h-full object-cover" src="/lecasu/official-service-hybrid.jpeg" />
+                        <img alt="Energia Solar e Sistemas Híbridos" width={840} height={520} className="w-full h-full object-cover" src="/lecasu/energy-as-a-service-ppa.jpeg" />
                       </div>
                       <div className="p-8 flex flex-col flex-1 justify-between">
                         <div>
@@ -748,11 +748,10 @@ export function App() {
                       className="reveal-item flex flex-col bg-white border border-gray-100 shadow-[0_2px_26px_0_rgba(0,0,0,.06)] rounded-2xl reveal-delay-300 cursor-pointer overflow-hidden border-b-4 border-b-primary group"
                     >
                       <div className="overflow-hidden h-60">
-                        <img alt="Energy-as-a-Service" width={840} height={520} className="w-full h-full object-cover" src="/lecasu/energy-as-a-service-ppa.jpeg" />
+                        <img alt="Energy-as-a-Service" width={840} height={520} className="w-full h-full object-cover" src="/lecasu/official-service-hybrid.jpeg" />
                       </div>
                       <div className="p-8 flex flex-col flex-1 justify-between">
                         <div>
-                          <div className="text-xs font-bold text-primary uppercase tracking-widest mb-1">{t('03 — Financing')}</div>
                           <h5 className="text-2xl xl:text-3xl leading-normal font-semibold text-darker group-hover:text-primary transition-colors mb-3">
                             {t('Energy-as-a-Service (PPA)')}
                           </h5>
@@ -788,7 +787,7 @@ export function App() {
                     <div className="column-12 lg:column-6 flex flex-col justify-between">
                       <div className="reveal-item reveal-delay-100 text-block lg:pe-8 xl:pe-12 flex flex-col justify-between h-full">
                         <div>
-                          <div className="text-primary font-semibold text-sm tracking-wider uppercase mb-2">
+                          <div className="text-primary font-semibold text-sm tracking-wider mb-2">
                             {t('Commercial & Industrial Solutions')}
                           </div>
                           <h2 className="text-darker font-bold text-3xl lg:text-4xl xl:text-5xl leading-[1.166] mb-5">
@@ -813,9 +812,14 @@ export function App() {
                             href="https://simulador.lecasu.co.mz/"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-12 lg:h-14 gap-4 rounded-full px-7 text-sm font-medium uppercase shadow-lg hover:shadow-primary/30"
+                            className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-12 lg:h-14 gap-3.5 rounded-full pl-7 pr-2.5 sm:pr-3 text-sm font-semibold shadow-lg hover:shadow-primary/30"
                           >
-                            {t('Request a Proposal')}
+                            <span>{t('Request a Proposal')}</span>
+                            <span className="size-8 sm:size-9 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover/button:translate-x-0.5">
+                              <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                              </svg>
+                            </span>
                           </a>
                         </div>
                       </div>
@@ -846,7 +850,7 @@ export function App() {
                     <div className="column-12 lg:column-6 flex flex-col justify-between">
                       <div className="reveal-item reveal-delay-300 text-block lg:ps-8 xl:ps-12 flex flex-col justify-between h-full">
                         <div>
-                          <div className="text-primary font-semibold text-sm tracking-wider uppercase mb-2">
+                          <div className="text-primary font-semibold text-sm tracking-wider mb-2">
                             {t('Social Impact & Remote Electrification')}
                           </div>
                           <h2 className="text-darker font-bold text-3xl lg:text-4xl xl:text-5xl leading-[1.166] mb-5">
@@ -861,9 +865,14 @@ export function App() {
                             href="https://simulador.lecasu.co.mz/"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-12 lg:h-14 gap-4 rounded-full px-7 text-sm font-medium uppercase shadow-lg hover:shadow-primary/30"
+                            className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-12 lg:h-14 gap-3.5 rounded-full pl-7 pr-2.5 sm:pr-3 text-sm font-semibold shadow-lg hover:shadow-primary/30"
                           >
-                            {t('Request a Proposal')}
+                            <span>{t('Request a Proposal')}</span>
+                            <span className="size-8 sm:size-9 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover/button:translate-x-0.5">
+                              <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                              </svg>
+                            </span>
                           </a>
                         </div>
                       </div>
@@ -875,15 +884,6 @@ export function App() {
 
             {/* SECÇÃO 6 — HOW IT WORKS (Fundo Branco) */}
             <section id="how-it-works" className="relative w-full py-20 lg:py-24 xl:py-30 bg-white">
-              <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <img alt="" width={515} height={367} className="absolute top-0 inset-s-0 w-128.75 h-91.75 opacity-40" src="/solurax/shape-a.3alpm6du1b821.png" />
-                <img alt="" width={348} height={373} className="absolute top-0 inset-s-0 w-87 h-93.25 opacity-25" src="/solurax/line-b.3n1vtjp4lg3yk.png" />
-                <img alt="" width={361} height={362} className="absolute bottom-0 inset-e-0 w-90.25 h-90.5 opacity-25" src="/solurax/line-c.2009jf6qn5162.png" />
-                <img alt="" width={381} height={780} className="absolute top-0 inset-e-0 w-95.25 h-195 opacity-25" src="/solurax/line-d.1--wkxdawkfjt.png" />
-                <img alt="" width={280} height={429} className="absolute bottom-0 translate-y-3/5 inset-s-0 w-70 h-107.25 opacity-25" src="/solurax/hexagon-large-half-b.33_zqf09bzfa9.png" />
-                <img alt="" width={181} height={157} className="absolute top-1/10 translate-container-end w-45.25 h-39.25 opacity-25" src="/solurax/hexagon-small-a.0nd4j_gaek6pl.png" />
-              </div>
-
               <div className="section-head relative mb-10 xl:mb-15">
                 <div className="container">
                   <div className="justify-center text-center row">
@@ -975,12 +975,9 @@ export function App() {
                   <div className="justify-center text-center row">
                     <div className="lg:column-8 xl:column-7">
                       <div className="reveal-item reveal-delay-100">
-                        <div className="text-primary font-semibold text-sm tracking-wider uppercase mb-2">
+                        <div className="text-primary font-semibold text-sm tracking-wider mb-3">
                           {t('Porquê a LECASU')}
                         </div>
-                        <h2 className="text-darker font-bold text-3xl lg:text-4xl xl:text-5xl leading-[1.166] mb-5">
-                          {t('Engenharia Confiável Feita Para África')}
-                        </h2>
                         <p className="text-base/relaxed text-body max-w-2xl mx-auto">
                           {t('Combinamos capacidade técnica avançada, execução rápida e acompanhamento operacional contínuo para garantir estabilidade energética duradoura.')}
                         </p>
@@ -1037,110 +1034,8 @@ export function App() {
               </div>
             </section>
 
-            {/* SECÇÃO 9 — ARTIGOS E CONHECIMENTO */}
-            <section id="artigos" className="relative w-full py-20 lg:py-24 xl:py-30 bg-white">
-              <div className="section-head relative mb-10 xl:mb-15">
-                <div className="container">
-                  <div className="justify-center text-center row">
-                    <div className="lg:column-8 xl:column-7 2xl:column-6">
-                      <div className="reveal-item reveal-delay-100 2xl:px-8">
-                        <div className="text-primary font-semibold text-sm tracking-wider uppercase mb-2">{t('Selected Case Studies & Insights')}</div>
-                        <h2 className="text-darker font-bold text-3xl lg:text-4xl xl:text-5xl leading-[1.166] mb-5">
-                          {t('Engineering Insights & Projects')}
-                        </h2>
-                        <p className="text-base/relaxed text-body">
-                          {t('Proven deployments, hybrid strategies, and technical milestones from Mozambique.')}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="section-content relative">
-                <div className="container">
-                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-7.5">
-                    <div className="reveal-item flex flex-col bg-white border-b-4 border-primary shadow-[0_4px_20px_0_rgba(0,0,0,.08)] rounded-2xl h-full reveal-delay-100 overflow-hidden">
-                      <button onClick={() => navigateTo('blog')} className="group flex flex-col h-full text-left cursor-pointer">
-                        <div className="overflow-hidden h-56 w-full">
-                          <img
-                            alt="The Ultimate Guide to Going Solar in 2026"
-                            width={900}
-                            height={585}
-                            className="object-cover h-full w-full"
-                            src="/lecasu/official-project-skm.jpg"
-                          />
-                        </div>
-                        <div className="p-6 flex flex-col flex-1 justify-between">
-                          <div>
-                            <div className="text-primary text-sm font-semibold mb-3">{lang === 'pt' ? '19 de Abril de 2026' : '19 April 2026'}</div>
-                            <h4 className="text-lg md:text-xl lg:text-2xl leading-snug font-bold text-darker group-hover:text-primary transition-colors line-clamp-2 mb-3">
-                              {t('SKM Engineering Maputo: 80 kWp Grid-Tied Solar with Generator Sync')}
-                            </h4>
-                            <p className="text-body text-sm md:text-base leading-relaxed line-clamp-2">
-                              {t('Installation of an 80 kWp C&I system at an office/warehouse in Maputo, including advanced monitoring and diesel generator synchronisation.')}
-                            </p>
-                          </div>
-                        </div>
-                      </button>
-                    </div>
-
-                    <div className="reveal-item flex flex-col bg-white border-b-4 border-primary shadow-[0_4px_20px_0_rgba(0,0,0,.08)] rounded-2xl h-full reveal-delay-200 overflow-hidden">
-                      <button onClick={() => navigateTo('blog')} className="group flex flex-col h-full text-left cursor-pointer">
-                        <div className="overflow-hidden h-56 w-full">
-                          <img
-                            alt="INCUBOX 2 (GAPI): 11 Solar PV Systems Powering Youth Education Hubs"
-                            width={900}
-                            height={585}
-                            className="object-cover h-full w-full"
-                            src="/lecasu/official-project-incubox.jpeg"
-                          />
-                        </div>
-                        <div className="p-6 flex flex-col flex-1 justify-between">
-                          <div>
-                            <div className="text-primary text-sm font-semibold mb-3">{lang === 'pt' ? '10 de Outubro de 2026' : '10 October 2026'}</div>
-                            <h4 className="text-lg md:text-xl lg:text-2xl leading-snug font-bold text-darker group-hover:text-primary transition-colors line-clamp-2 mb-3">
-                              {t('INCUBOX 2 (GAPI): 11 Cabines Solares Fotovoltaicas no Norte de Moçambique')}
-                            </h4>
-                            <p className="text-body text-sm md:text-base leading-relaxed line-clamp-2">
-                              {t('Implementação de 11 sistemas solares isolados da rede pública em Cabo Delgado, Nampula e Niassa, capacitando centros modulares de formação de jovens.')}
-                            </p>
-                          </div>
-                        </div>
-                      </button>
-                    </div>
-
-                    <div className="reveal-item flex flex-col bg-white border-b-4 border-primary shadow-[0_4px_20px_0_rgba(0,0,0,.08)] rounded-2xl h-full reveal-delay-300 overflow-hidden">
-                      <button onClick={() => navigateTo('blog')} className="group flex flex-col h-full text-left cursor-pointer">
-                        <div className="overflow-hidden h-56 w-full">
-                          <img
-                            alt="Energy-as-a-Service (PPA): Zero-Capex Energy for African Enterprises"
-                            width={900}
-                            height={585}
-                            className="object-cover h-full w-full"
-                            src="/lecasu/energy-as-a-service-ppa.jpeg"
-                          />
-                        </div>
-                        <div className="p-6 flex flex-col flex-1 justify-between">
-                          <div>
-                            <div className="text-primary text-sm font-semibold mb-3">{lang === 'pt' ? '18 de Outubro de 2026' : '18 October 2026'}</div>
-                            <h4 className="text-lg md:text-xl lg:text-2xl leading-snug font-bold text-darker group-hover:text-primary transition-colors line-clamp-2 mb-3">
-                              {t('Energy-as-a-Service (PPA): Energia Solar Sem Investimento Inicial')}
-                            </h4>
-                            <p className="text-body text-sm md:text-base leading-relaxed line-clamp-2">
-                              {t('Descubra como empresas comerciais e industriais em Moçambique reduzem custos operacionais com zero despesa de capital (Zero Capex) e O&M integral.')}
-                            </p>
-                          </div>
-                        </div>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-
             {/* SECÇÃO CTA FINAL (BANNER DESTACADO COM IMAGEM DE FUNDO E OVERLAY SUAVE) */}
-            <section className="relative w-full pb-16 lg:pb-20 xl:pb-24 bg-[#f8f9fa]">
+            <section className="relative w-full py-16 lg:py-20 xl:py-24 bg-white">
               <div className="section-content relative">
                 <div className="container">
                   <div className="reveal-item reveal-from-bottom">
@@ -1156,10 +1051,10 @@ export function App() {
 
                       {/* Conteúdo Centralizado */}
                       <div className="relative z-10 max-w-3xl mx-auto flex flex-col items-center">
-                        <span className="inline-block px-4 py-1.5 rounded-full bg-primary/20 border border-primary/40 text-primary-light text-xs font-semibold uppercase tracking-widest mb-4">
-                          {lang === 'pt' ? 'Soluções Energéticas' : 'Energy Solutions'}
+                        <span className="inline-block px-4 py-1.5 rounded-full bg-primary/20 border border-primary/40 text-primary-light text-xs font-semibold tracking-widest mb-4">
+                          {lang === 'pt' ? 'Soluções energéticas' : 'Energy solutions'}
                         </span>
-                        <h2 className="text-white font-bold text-2xl sm:text-3xl md:text-4xl lg:text-[2.6rem] leading-[1.2] uppercase drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]">
+                        <h2 className="text-white font-bold text-2xl sm:text-3xl md:text-4xl lg:text-[2.6rem] leading-[1.2] drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]">
                           {t('Power your facility with reliable energy infrastructure')}
                         </h2>
                         <p className="mt-4 text-white/80 text-base sm:text-lg max-w-2xl leading-relaxed drop-shadow-[0_1px_6px_rgba(0,0,0,0.5)]">
@@ -1177,7 +1072,7 @@ export function App() {
                               aria-hidden="true"
                               className="absolute inset-[-150%] m-auto aspect-square w-[350%] animate-border-beam bg-[conic-gradient(from_0deg,transparent_0_65%,rgba(255,163,71,0.3)_72%,#ff8000_82%,#ffffff_91%,#ff8000_96%,transparent_100%)] pointer-events-none"
                             />
-                            <span className="relative z-10 inline-flex shrink-0 items-center justify-center whitespace-nowrap bg-primary text-white group-hover/cta:bg-primary-dark fill-white h-12 lg:h-14 gap-3.5 rounded-full pl-8 pr-2.5 sm:pr-3 text-sm lg:text-base font-semibold uppercase tracking-[0.5px] transition-colors">
+                            <span className="relative z-10 inline-flex shrink-0 items-center justify-center whitespace-nowrap bg-primary text-white group-hover/cta:bg-primary-dark fill-white h-12 lg:h-14 gap-3.5 rounded-full pl-8 pr-2.5 sm:pr-3 text-sm lg:text-base font-semibold tracking-[0.5px] transition-colors">
                               <span>{t('Request a Proposal')}</span>
                               <span className="size-8 sm:size-9 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover/cta:translate-x-0.5">
                                 <svg
@@ -1205,9 +1100,7 @@ export function App() {
 
       {/* 3. FOOTER (COMMON ACROSS ALL PAGES) */}
       <footer id="footer" className="relative w-full bg-darker">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10 bg-gradient-to-r from-darker to-dark">
-          <img alt="" width={1920} height={636} className="absolute bottom-0 inset-0 opacity-10" src="/solurax/pattern-a.0ts1zcv6qcsrl.png" />
-        </div>
+        <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10 bg-gradient-to-r from-darker to-dark"></div>
 
         <div className="relative py-10 md:py-15">
           <div className="container">
@@ -1246,7 +1139,7 @@ export function App() {
                 </div>
               </div>
 
-              <div className="md:column-6 lg:column-3">
+              <div className="md:column-6 lg:column-4">
                 <div className="reveal-item reveal-delay-150">
                   <div className="text-xl/8 font-bold text-white mb-6">{t('Contact Info')}</div>
                   <ul className="flex flex-col gap-4">
@@ -1270,8 +1163,8 @@ export function App() {
                       <svg viewBox="0 0 24 24" className="fill-primary size-5 mt-1.25 shrink-0">
                         <path d="M21.369 18.341c-0.463-1.59-1.124-2.978-1.971-4.23l0.034 0.053c-0.399-0.756-0.948-1.384-1.611-1.861l-0.016-0.011c0.475-0.932 0.762-2.030 0.784-3.193l0-0.007c0-0.016 0-0.036 0-0.055 0-3.654-2.941-6.62-6.585-6.661l-0.004-0c-3.648 0.041-6.589 3.007-6.589 6.661 0 0.019 0 0.039 0 0.058l-0-0.003c0.022 1.169 0.309 2.266 0.803 3.241l-0.020-0.043c-0.673 0.479-1.216 1.097-1.595 1.816l-0.014 0.028c-0.744 1.141-1.387 2.453-1.866 3.843l-0.038 0.126c-0.049 0.189-0.077 0.406-0.077 0.63 0 0.614 0.212 1.179 0.567 1.625l-0.004-0.005c0.489 0.625 1.243 1.023 2.091 1.023 0.002 0 0.005 0 0.007 0h13.49c0.001 0 0.002 0 0.002 0 0.827 0 1.567-0.375 2.058-0.964l0.003-0.004c0.367-0.434 0.59-1 0.59-1.618 0-0.158-0.015-0.313-0.043-0.463l0.002 0.016zM12 4.375c2.543 0.039 4.589 2.11 4.589 4.658 0 0.020-0 0.040-0 0.061l0-0.003c0 3.081-3.251 5.956-4.589 7.009-1.338-1.053-4.589-3.928-4.589-7.009-0-0.017-0-0.037-0-0.058 0-2.549 2.046-4.619 4.586-4.658l0.004-0zM19.282 19.128c-0.127 0.15-0.315 0.246-0.526 0.247h-13.491c-0.212-0-0.401-0.1-0.522-0.254l-0.001-0.001c-0.085-0.105-0.137-0.24-0.137-0.387 0-0.053 0.007-0.105 0.019-0.154l-0.001 0.004c0.473-1.32 1.045-2.46 1.734-3.516l-0.039 0.064c0.232-0.438 0.528-0.809 0.882-1.115l0.005-0.004c1.196 1.613 2.593 2.989 4.175 4.125l0.056 0.038c0.158 0.109 0.353 0.174 0.564 0.174s0.406-0.065 0.567-0.176l-0.003 0.002c1.637-1.173 3.033-2.547 4.192-4.108l0.036-0.050c0.372 0.324 0.68 0.71 0.91 1.144l0.010 0.022c0.692 1.014 1.266 2.182 1.664 3.43l0.026 0.095c0.005 0.026 0.007 0.056 0.007 0.086 0 0.129-0.048 0.246-0.127 0.336l0-0.001zM14.75 9c0-1.519-1.231-2.75-2.75-2.75s-2.75 1.231-2.75 2.75c0 1.519 1.231 2.75 2.75 2.75v0c1.518-0.002 2.748-1.232 2.75-2.75v-0zM10.75 9c0-0.69 0.56-1.25 1.25-1.25s1.25 0.56 1.25 1.25c0 0.69-0.56 1.25-1.25 1.25v0c-0.69-0.001-1.249-0.56-1.25-1.25v-0z"></path>
                       </svg>
-                      <a className="text-lg/7.5 text-white/80 hover:text-primary transition-colors" href="https://maps.google.com/?q=-25.9629144,32.4168674" target="_blank" rel="noopener noreferrer">
-                        Rua da Mozal, Matola-Rio, 1115
+                      <a className="text-lg/7.5 text-white/80 hover:text-primary transition-colors inline-block" href="https://maps.google.com/?q=-25.9629144,32.4168674" target="_blank" rel="noopener noreferrer">
+                        <span>Rua da Mozal,</span> <span className="whitespace-nowrap">Matola&#8209;Rio, 1115</span>
                       </a>
                     </li>
                   </ul>
@@ -1350,7 +1243,7 @@ export function App() {
               &times;
             </button>
             <div className="mb-6">
-              <span className="text-primary font-bold text-xs uppercase tracking-wider">{t('Fast & Free')}</span>
+              <span className="text-primary font-bold text-xs tracking-wider">{t('Fast & Free')}</span>
               <h3 className="text-2xl font-bold text-darker mt-1">{t('Request a Project Proposal')}</h3>
               <p className="text-sm text-body mt-1">{t('Our engineers will calculate your custom savings in less than 24 hours.')}</p>
             </div>
@@ -1363,7 +1256,7 @@ export function App() {
               className="space-y-4"
             >
               <div>
-                <label className="block text-xs font-semibold text-darker uppercase mb-1">{t('Full Name')}</label>
+                <label className="block text-xs font-semibold text-darker mb-1">{t('Full Name')}</label>
                 <input
                   type="text"
                   required
@@ -1372,7 +1265,7 @@ export function App() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-darker uppercase mb-1">{t('Email Address')}</label>
+                <label className="block text-xs font-semibold text-darker mb-1">{t('Email Address')}</label>
                 <input
                   type="email"
                   required
@@ -1381,7 +1274,7 @@ export function App() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-darker uppercase mb-1">{t('Phone Number')}</label>
+                <label className="block text-xs font-semibold text-darker mb-1">{t('Phone Number')}</label>
                 <input
                   type="tel"
                   required
@@ -1390,7 +1283,7 @@ export function App() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-darker uppercase mb-1">{t('System Type')}</label>
+                <label className="block text-xs font-semibold text-darker mb-1">{t('System Type')}</label>
                 <select className="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:border-primary bg-white">
                   <option>{t('EPC (Engineering, Procurement & Construction)')}</option>
                   <option>{t('Hybrid Systems (Solar + Battery + Diesel)')}</option>
@@ -1402,9 +1295,14 @@ export function App() {
               </div>
               <button
                 type="submit"
-                className="w-full py-3.5 rounded-full bg-primary hover:bg-primary-dark text-white font-semibold text-sm transition-all duration-300 shadow-md cursor-pointer uppercase tracking-wider"
+                className="group/button w-full py-2.5 sm:py-3 rounded-full bg-primary hover:bg-primary-dark text-white font-semibold text-sm transition-all duration-300 shadow-md cursor-pointer tracking-wider flex items-center justify-center gap-3 pl-6 pr-2 sm:pr-2.5"
               >
-                {t('Submit Request')}
+                <span>{t('Submit Request')}</span>
+                <span className="size-8 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover/button:translate-x-0.5">
+                  <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                  </svg>
+                </span>
               </button>
             </form>
           </div>

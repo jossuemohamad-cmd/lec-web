@@ -17,12 +17,12 @@ export function ServicePage({ onNavigate, onOpenQuote }: ServicePageProps) {
     {
       title: t('Energia Solar e Sistemas Híbridos'),
       desc: `${t('Ajudamos famílias e empresas a produzir e gerir a sua própria energia, com soluções solares e híbridas adaptadas às suas necessidades.')}\n\n${t('Para as empresas, procuramos transformar os custos de energia numa oportunidade de poupança, eficiência e maior competitividade.')}\n\n${t('O nosso objectivo é oferecer soluções que façam sentido, tanto do ponto de vista técnico como económico.')}`,
-      image: '/lecasu/official-service-hybrid.jpeg'
+      image: '/lecasu/energy-as-a-service-ppa.jpeg'
     },
     {
       title: t('Energy-as-a-Service (PPA)'),
       desc: t('Zero upfront capital investment. Pay only for the clean kilowatt-hours you consume with guaranteed availability and covered maintenance.'),
-      image: '/lecasu/energy-as-a-service-ppa.jpeg'
+      image: '/lecasu/official-service-hybrid.jpeg'
     },
     {
       title: t('Operations & Maintenance (O&M)'),
@@ -112,7 +112,7 @@ export function ServicePage({ onNavigate, onOpenQuote }: ServicePageProps) {
                       {t('Reliable Energy Infrastructure')}
                     </h2>
                     <p className="text-base xl:text-lg leading-relaxed text-body max-w-2xl mx-auto">
-                      {t('From first assessment to long-term operation, we deliver resilient energy infrastructure through one accountable engineering partner across Mozambique.')}
+                      {t('From first assessment to long-term operation, we deliver resilient energy infrastructure.')}
                     </p>
                   </div>
                 </div>
@@ -160,20 +160,14 @@ export function ServicePage({ onNavigate, onOpenQuote }: ServicePageProps) {
 
         {/* Section: The LECASU 4-Step Engineering Process */}
         <section className="relative w-full pt-20 lg:pt-24 xl:pt-30 bg-white">
-          <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <img alt="" width={381} height={780} className="absolute top-0 inset-e-0 w-95.25 h-195" src="/solurax/line-d.1--wkxdawkfjt.png" />
-          </div>
           <div className="section-head relative mb-10 xl:mb-15">
             <div className="container">
               <div className="justify-center text-center row">
                 <div className="lg:column-8 xl:column-7 2xl:column-7">
                   <div className="reveal-item reveal-delay-100 2xl:px-8">
-                    <h2 className="text-darker font-bold text-3xl lg:text-4xl xl:text-5xl leading-[1.166] mb-5">
-                      {t('The LECASU 4-Step Process')}
+                    <h2 className="text-darker font-bold text-3xl lg:text-4xl xl:text-5xl leading-[1.166]">
+                      {t('The 4-Step Process')}
                     </h2>
-                    <p className="text-base/relaxed text-body max-w-sm mx-auto xl:px-10">
-                      {t('Our seamless transition to clean energy, delivering robust and certified energy infrastructure across Mozambique.')}
-                    </p>
                   </div>
                 </div>
               </div>
@@ -246,20 +240,20 @@ export function ServicePage({ onNavigate, onOpenQuote }: ServicePageProps) {
                     <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-darker leading-[1.2] mb-4 xl:mb-6 text-pretty">
                       {t('Proven Deployments Across Mozambique')}
                     </h2>
-                    <p className="text-body text-base md:text-lg leading-relaxed mb-8 text-pretty">
+                    <p className="text-body text-base md:text-lg leading-relaxed mb-8 text-pretty hyphens-none">
                       {t('Watch how our sustainable energy installations transform homes, businesses, and rural districts with dependable zero-carbon electricity.')}
                     </p>
                     <button
                       type="button"
-                      onClick={() => onNavigate('about')}
-                      className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-12 lg:h-14 gap-4 rounded-full px-7 text-sm font-medium uppercase shadow-lg hover:shadow-primary/25"
+                      onClick={() => onNavigate('project')}
+                      className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-12 lg:h-14 gap-3.5 rounded-full pl-7 pr-2.5 sm:pr-3 text-sm font-semibold shadow-lg hover:shadow-primary/25"
                     >
                       <span>{t('Learn More')}</span>
-                      <div className="inline-flex shrink-0 grow-0 rounded-full items-center justify-center border transition-all border-white/40 group-hover/button:border-white fill-white size-5">
-                        <svg viewBox="0 0 24 24" className="size-3">
-                          <path d="M20.923 12.382c0.048-0.113 0.076-0.244 0.076-0.382 0-0.276-0.111-0.526-0.292-0.707l-4-4c-0.182-0.188-0.437-0.305-0.719-0.305-0.552 0-1 0.448-1 1 0 0.282 0.117 0.537 0.305 0.719l2.293 2.294h-13.586c-0.552 0-1 0.448-1 1s0.448 1 1 1v0h13.586l-2.293 2.293c-0.188 0.182-0.305 0.437-0.305 0.719 0 0.552 0.448 1 1 1 0.282 0 0.537-0.117 0.719-0.305l4-4c0.090-0.091 0.163-0.199 0.213-0.318l0.002-0.007z"></path>
+                      <span className="size-8 sm:size-9 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover/button:translate-x-0.5">
+                        <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
                         </svg>
-                      </div>
+                      </span>
                     </button>
                   </div>
                 </div>

@@ -19,19 +19,19 @@ export function PackagesPage({ onNavigate, onOpenQuote }: PackagesPageProps) {
       btnText: t('GET ESTIMATE'),
       isPopular: false,
       features: lang === 'pt' ? [
-        'Painéis Solares de Alta Eficiência Tier-1',
-        'Inversor Inteligente Standard Ligado à Rede',
-        'Análise Avançada de Sombreamento por Drone',
-        'Instalação Profissional Certificada',
-        'Garantia de Mão de Obra de 10 Anos',
-        'Acompanhamento de Energia em Tempo Real por App'
+        'Painéis solares de alta eficiência Tier-1',
+        'Inversor inteligente standard ligado à rede',
+        'Análise avançada de sombreamento por drone',
+        'Instalação profissional certificada',
+        'Garantia de mão de obra de 10 anos',
+        'Acompanhamento de energia em tempo real por app'
       ] : [
-        'Tier-1 High-Efficiency Solar Panels',
-        'Standard Grid-Tied Smart Inverter',
-        'Comprehensive Drone-Based Roof Shading Analysis',
-        'In-House Professional Installation',
-        'Standard 10-Year Workmanship Warranty',
-        'Real-Time Mobile App Energy Tracking'
+        'Tier-1 high-efficiency solar panels',
+        'Standard grid-tied smart inverter',
+        'Comprehensive drone-based roof shading analysis',
+        'In-house professional installation',
+        'Standard 10-year workmanship warranty',
+        'Real-time mobile app energy tracking'
       ]
     },
     {
@@ -42,19 +42,19 @@ export function PackagesPage({ onNavigate, onOpenQuote }: PackagesPageProps) {
       btnText: t('REQUEST QUOTE'),
       isPopular: true,
       features: lang === 'pt' ? [
-        'Todas as características do Plano Inicial, mais',
-        'Módulos Solares Premium Mono PERC de Alta Produção',
-        'Tecnologia de Microinversores de Última Geração',
-        'Ativação Prioritária de Ligação à Rede Pública',
-        'Garantia de Desempenho Industrial de 25 Anos',
-        'Linha de Apoio Dedicada ao Cliente 24/7'
+        'Todas as características do plano inicial, mais',
+        'Módulos solares premium Mono PERC de alta produção',
+        'Tecnologia de microinversores de última geração',
+        'Ativação prioritária de ligação à rede pública',
+        'Garantia de desempenho industrial de 25 anos',
+        'Linha de apoio dedicada ao cliente 24/7'
       ] : [
-        'All features in Starter Plan, plus',
-        'Premium High-Output Mono PERC Solar',
-        'Next-Gen Microinverter Technology',
-        'Priority Grid Interconnection Activation',
-        '25-Year Premium Industry Performance Warranty',
-        '24/7 Dedicated Customer Support Hotline'
+        'All features in starter plan, plus',
+        'Premium high-output Mono PERC solar',
+        'Next-gen microinverter technology',
+        'Priority grid interconnection activation',
+        '25-year premium industry performance warranty',
+        '24/7 dedicated customer support hotline'
       ]
     },
     {
@@ -65,19 +65,19 @@ export function PackagesPage({ onNavigate, onOpenQuote }: PackagesPageProps) {
       btnText: t('CONTACT US'),
       isPopular: false,
       features: lang === 'pt' ? [
-        'Todas as características do Plano Recomendado, mais',
-        'Conjunto Solar Estético All-Black Ultra-Premium',
-        'Integração de Sistema de Armazenamento por Baterias',
-        'Comutador Automático de Isolamento em Caso de Falha',
-        'Estação de Carregamento Nível 2 para Veículos Elétricos',
-        'Monitorização Contínua de Saúde do Sistema e Limpeza'
+        'Todas as características do plano recomendado, mais',
+        'Conjunto solar estético All-Black ultra-premium',
+        'Integração de sistema de armazenamento por baterias',
+        'Comutador automático de isolamento em caso de falha',
+        'Estação de carregamento nível 2 para veículos elétricos',
+        'Monitorização contínua de saúde do sistema e limpeza'
       ] : [
-        'All features in Recommended Plan, plus',
-        'Ultra-Premium All-Black Aesthetic Solar Array',
-        'Smart Battery Storage System Integration',
-        'Automated Blackout Isolation Switch',
-        'Built-in EV Level-2 Charging Station Setup',
-        'Lifetime Proactive Health Monitoring & Cleaning'
+        'All features in recommended plan, plus',
+        'Ultra-premium All-Black aesthetic solar array',
+        'Smart battery storage system integration',
+        'Automated blackout isolation switch',
+        'Built-in EV level-2 charging station setup',
+        'Lifetime proactive health monitoring & cleaning'
       ]
     }
   ];
@@ -211,13 +211,18 @@ export function PackagesPage({ onNavigate, onOpenQuote }: PackagesPageProps) {
                         <button
                           type="button"
                           onClick={() => (onOpenQuote ? onOpenQuote() : onNavigate('contact'))}
-                          className={`w-full inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 transition-all outline-none select-none cursor-pointer tracking-[.5px] h-10 lg:h-12 rounded-full px-6 text-sm font-medium uppercase shadow-md ${
+                          className={`group/button w-full inline-flex shrink-0 items-center justify-between whitespace-nowrap border-2 transition-all outline-none select-none cursor-pointer tracking-[.5px] h-10 lg:h-12 rounded-full pl-6 pr-2 text-sm font-semibold shadow-md ${
                             plan.isPopular
                               ? 'border-white bg-white text-primary hover:bg-darker hover:border-darker hover:text-white'
                               : 'border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark'
                           }`}
                         >
-                          {plan.btnText}
+                          <span>{plan.btnText}</span>
+                          <span className="size-7 sm:size-8 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover/button:translate-x-0.5">
+                            <svg className="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                            </svg>
+                          </span>
                         </button>
                       </div>
 

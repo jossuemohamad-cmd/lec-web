@@ -78,7 +78,7 @@ export function AboutPage({ onNavigate, onOpenQuote }: AboutPageProps) {
                 <div className="column-12 lg:column-6 flex flex-col justify-between">
                   <div className="reveal-item reveal-delay-200 lg:ps-8 xl:ps-12 flex flex-col justify-between h-full">
                     <div>
-                      <div className="text-primary font-semibold text-sm tracking-wider uppercase mb-2">{t('Quem Somos')}</div>
+                      <div className="text-primary font-semibold text-sm tracking-wider mb-2">{t('Quem Somos')}</div>
                       <h2 className="text-3xl lg:text-4xl xl:text-5xl leading-[1.167] font-bold text-darker mb-6 text-pretty">
                         {t('Somos uma empresa de engenharia que acredita no valor de fazer bem as coisas.')}
                       </h2>
@@ -105,14 +105,14 @@ export function AboutPage({ onNavigate, onOpenQuote }: AboutPageProps) {
                       <button
                         type="button"
                         onClick={() => onNavigate('contact')}
-                        className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-12 lg:h-14 gap-4 rounded-full px-7 text-sm font-medium uppercase shadow-lg hover:shadow-primary/25"
+                        className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-primary bg-primary text-white hover:bg-primary-dark hover:border-primary-dark fill-white h-12 lg:h-14 gap-3.5 rounded-full pl-7 pr-2.5 sm:pr-3 text-sm font-semibold shadow-lg hover:shadow-primary/25"
                       >
                         <span>{t('Fale Connosco')}</span>
-                        <div className="inline-flex shrink-0 grow-0 rounded-full items-center justify-center border transition-all border-white/40 group-hover/button:border-white fill-white size-5">
-                          <svg viewBox="0 0 24 24" className="size-3">
-                            <path d="M20.923 12.382c0.048-0.113 0.076-0.244 0.076-0.382 0-0.276-0.111-0.526-0.292-0.707l-4-4c-0.182-0.188-0.437-0.305-0.719-0.305-0.552 0-1 0.448-1 1 0 0.282 0.117 0.537 0.305 0.719l2.293 2.294h-13.586c-0.552 0-1 0.448-1 1s0.448 1 1 1v0h13.586l-2.293 2.293c-0.188 0.182-0.305 0.437-0.305 0.719 0 0.552 0.448 1 1 1 0.282 0 0.537-0.117 0.719-0.305l4-4c0.090-0.091 0.163-0.199 0.213-0.318l0.002-0.007z"></path>
+                        <span className="size-8 sm:size-9 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover/button:translate-x-0.5">
+                          <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
                           </svg>
-                        </div>
+                        </span>
                       </button>
                     </div>
                   </div>
@@ -187,14 +187,6 @@ export function AboutPage({ onNavigate, onOpenQuote }: AboutPageProps) {
 
         {/* Section: Aligning Technology with Business Strategy (Padronizado 50% / 50%) */}
         <section className="relative w-full py-20 lg:py-24 xl:py-30 bg-[#f8f9fa] border-y border-gray-200/70">
-          <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <img alt="" width={515} height={367} className="absolute top-0 inset-s-0 w-128.75 h-91.75 opacity-40" src="/solurax/shape-a.3alpm6du1b821.png" />
-            <img alt="" width={348} height={373} className="absolute top-0 inset-s-0 w-87 h-93.25 opacity-25" src="/solurax/line-b.3n1vtjp4lg3yk.png" />
-            <img alt="" width={361} height={647} className="absolute bottom-0 inset-e-0 w-95.25 h-161.75 opacity-25" src="/solurax/line-e.2kld3qnxxjrpv.png" />
-            <img alt="" width={280} height={429} className="absolute bottom-10 inset-s-0 w-70 h-107.25 opacity-25" src="/solurax/hexagon-large-half-b.33_zqf09bzfa9.png" />
-            <img alt="" width={181} height={157} className="absolute top-1/10 translate-container-end w-45.25 h-39.25 opacity-25" src="/solurax/hexagon-small-a.0nd4j_gaek6pl.png" />
-          </div>
-
           <div className="section-content relative">
             <div className="container">
               <div className="row items-stretch gy-8">
@@ -202,7 +194,7 @@ export function AboutPage({ onNavigate, onOpenQuote }: AboutPageProps) {
                 <div className="column-12 lg:column-6 flex flex-col justify-between">
                   <div className="reveal-item reveal-delay-100 text-block lg:pe-8 xl:pe-12 flex flex-col justify-between h-full">
                     <div className="mb-6">
-                      <div className="mb-3 text-sm/4.25 font-semibold uppercase text-primary tracking-wider">{t('Our Value')}</div>
+                      <div className="mb-3 text-sm/4.25 font-semibold text-primary tracking-wider">{t('Our Value')}</div>
                       <h2 className="mb-4 text-darker text-3xl lg:text-4xl xl:text-5xl leading-tight font-bold text-pretty">
                         {t('Aligning technology with business strategy.')}
                       </h2>
@@ -288,7 +280,7 @@ export function AboutPage({ onNavigate, onOpenQuote }: AboutPageProps) {
                 <div className="column-12 lg:column-6 flex flex-col justify-between">
                   <div className="reveal-item lg:ps-8 xl:ps-12 flex flex-col justify-between h-full">
                     <div>
-                      <div className="text-primary font-semibold text-sm tracking-wider uppercase mb-2">{t('Engenharia e Compromisso')}</div>
+                      <div className="text-primary font-semibold text-sm tracking-wider mb-2">{t('Engenharia e Compromisso')}</div>
                       <h2 className="text-3xl lg:text-4xl font-bold text-darker mb-6 leading-tight text-pretty">
                         {t('A Nossa Visão, Missão e Valores')}
                       </h2>

@@ -321,3 +321,14 @@ button[type="submit"],
 .btn {
   border-radius: 9999px !important;
 }
+
+/* ==========================================================================
+   HERO DESCRIPTION JUSTIFICATION ONLY (JUSTIFICAÇÃO APENAS NA DESCRIÇÃO DO HERO)
+   ========================================================================== */
+.hero-desc-justified,
+header p.text-justify,
+.hero-enter-desc {
+  text-align: justify !important;
+  text-justify: inter-word;
+  text-align-last: left;
+}

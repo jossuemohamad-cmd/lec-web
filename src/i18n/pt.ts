@@ -51,7 +51,7 @@ export const PT_TRANSLATIONS: Record<string, string> = {
     'Para as empresas, procuramos transformar os custos de energia numa oportunidade de poupança, eficiência e maior competitividade.',
   'O nosso objectivo é oferecer soluções que façam sentido, tanto do ponto de vista técnico como económico.':
     'O nosso objectivo é oferecer soluções que façam sentido, tanto do ponto de vista técnico como económico.',
-  'Energy-as-a-Service (PPA)': 'Energia como Serviço (PPA)',
+  'Energy-as-a-Service (PPA)': 'Energy-as-Service (PPA)',
   'African Expertise': 'Experiência Africana',
   'Hybrid Systems Capability': 'Capacidade em Sistemas Híbridos',
   'Fast Execution': 'Execução Rápida',
