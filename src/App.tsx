@@ -7,8 +7,16 @@ import { ContactPage } from './pages/ContactPage';
 import { PackagesPage } from './pages/PackagesPage';
 import { FaqsPage } from './pages/FaqsPage';
 import { BlogPage } from './pages/BlogPage';
+import { MaintenancePage } from './pages/MaintenancePage';
 
 export function App() {
+  // Flag para colocar o site em manutenção
+  const isMaintenanceMode = true;
+
+  if (isMaintenanceMode) {
+    return <MaintenancePage />;
+  }
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [quoteModalOpen, setQuoteModalOpen] = useState(false);
   const { lang, toggleLanguage, t } = useLanguage();
@@ -649,7 +657,7 @@ export function App() {
                         <div className="mb-8 xl:mb-12">
                           <div className="text-primary font-semibold text-sm tracking-wider uppercase mb-2">{t('What We Deliver')}</div>
                           <h2 className="text-3xl lg:text-4xl xl:text-5xl leading-[1.167] font-bold text-darker mb-4 xl:mb-6 text-pretty">
-                            {t('Conceived for Africa: Engineered for Maximum Energy Reliability')}
+                            {t('Engineered for Maximum Energy Reliability')}
                           </h2>
                           <button
                             type="button"

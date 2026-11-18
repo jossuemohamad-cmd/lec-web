@@ -6,7 +6,7 @@ interface ServicePageProps {
 }
 
 export function ServicePage({ onNavigate, onOpenQuote }: ServicePageProps) {
-  const { lang, t } = useLanguage();
+  const { t } = useLanguage();
 
   const services = [
     {
@@ -109,11 +109,7 @@ export function ServicePage({ onNavigate, onOpenQuote }: ServicePageProps) {
                 <div className="column-12 lg:column-10 xl:column-10 mx-auto">
                   <div className="reveal-item reveal-delay-100">
                     <h2 className="text-darker font-bold text-3xl sm:text-4xl lg:text-[2.75rem] leading-[1.2] mb-5 max-w-4xl mx-auto">
-                      {lang === 'pt' ? (
-                        <>Concebido para África: <br className="hidden sm:inline" />Infraestrutura Energética Fiável</>
-                      ) : (
-                        <>Conceived for Africa: <br className="hidden sm:inline" />Reliable Energy Infrastructure</>
-                      )}
+                      {t('Reliable Energy Infrastructure')}
                     </h2>
                     <p className="text-base xl:text-lg leading-relaxed text-body max-w-2xl mx-auto">
                       {t('From first assessment to long-term operation, we deliver resilient energy infrastructure through one accountable engineering partner across Mozambique.')}

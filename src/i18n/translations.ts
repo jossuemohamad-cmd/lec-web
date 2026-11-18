@@ -107,13 +107,13 @@ export const DICTIONARY: Record<string, { pt: string; en: string }> = {
   // Soluções / What We Deliver Section
   'What We Deliver': { pt: 'O Que Oferecemos', en: 'What We Deliver' },
   'O Que Oferecemos': { pt: 'O Que Oferecemos', en: 'What We Deliver' },
-  'Conceived for Africa: Engineered for Maximum Energy Reliability': {
-    pt: 'Concebido para África: Engenharia para Máxima Confiabilidade Energética',
-    en: 'Conceived for Africa: Engineered for Maximum Energy Reliability'
+  'Engineered for Maximum Energy Reliability': {
+    pt: 'Engenharia para Máxima Confiabilidade Energética',
+    en: 'Engineered for Maximum Energy Reliability'
   },
-  'Concebido para África: Engenharia para Máxima Confiabilidade Energética': {
-    pt: 'Concebido para África: Engenharia para Máxima Confiabilidade Energética',
-    en: 'Conceived for Africa: Engineered for Maximum Energy Reliability'
+  'Engenharia para Máxima Confiabilidade Energética': {
+    pt: 'Engenharia para Máxima Confiabilidade Energética',
+    en: 'Engineered for Maximum Energy Reliability'
   },
   'Decarbonization requires balance between legacy systems and emerging technologies. Between the environment and business economies.': {
     pt: 'A descarbonização exige equilíbrio entre sistemas legados e tecnologias emergentes. Entre o meio ambiente e a economia empresarial.',
@@ -517,9 +517,13 @@ export const DICTIONARY: Record<string, { pt: string; en: string }> = {
   // Service Page Specifics
   'Our Services': { pt: 'Os Nossos Serviços', en: 'Our Services' },
   'Os Nossos Serviços': { pt: 'Os Nossos Serviços', en: 'Our Services' },
-  'Conceived for Africa: Reliable Energy Infrastructure': {
-    pt: 'Concebido para África: Infraestrutura Energética Fiável',
-    en: 'Conceived for Africa: Reliable Energy Infrastructure'
+  'Reliable Energy Infrastructure': {
+    pt: 'Infraestrutura Energética Fiável',
+    en: 'Reliable Energy Infrastructure'
+  },
+  'Infraestrutura Energética Fiável': {
+    pt: 'Infraestrutura Energética Fiável',
+    en: 'Reliable Energy Infrastructure'
   },
   'From first assessment to long-term operation, we deliver resilient energy infrastructure through one accountable engineering partner across Mozambique.': {
     pt: 'Desde a avaliação inicial até à operação a longo prazo, fornecemos infraestrutura energética resiliente através de um único parceiro de engenharia em Moçambique.',
