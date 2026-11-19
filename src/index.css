@@ -256,9 +256,9 @@ img:hover,
 :root {
   --container-sm: 540px;
   --container-md: 720px;
-  --container-lg: 940px;
-  --container-xl: 1120px;
-  --container-2xl: 1200px;
+  --container-lg: 960px;
+  --container-xl: 1200px;
+  --container-2xl: 1340px;
 }
 
 .container {
@@ -278,35 +278,35 @@ img:hover,
 @media (min-width: 768px) {
   .container {
     max-width: 720px !important;
-    padding-inline: 2rem !important; /* 32px */
+    padding-inline: 1.75rem !important; /* 28px */
   }
 }
 
 @media (min-width: 992px) {
   .container {
-    max-width: 940px !important;
-    padding-inline: 2.25rem !important; /* 36px */
+    max-width: 960px !important;
+    padding-inline: 2rem !important; /* 32px */
   }
 }
 
 @media (min-width: 1200px) {
   .container {
-    max-width: 1120px !important;
-    padding-inline: 2.5rem !important; /* 40px */
+    max-width: 1200px !important;
+    padding-inline: 2.25rem !important; /* 36px */
   }
 }
 
 @media (min-width: 1400px) {
   .container {
-    max-width: 1200px !important;
-    padding-inline: 3rem !important; /* 48px */
+    max-width: 1320px !important;
+    padding-inline: 2.5rem !important; /* 40px */
   }
 }
 
 @media (min-width: 1600px) {
   .container {
-    max-width: 1260px !important;
-    padding-inline: 3.5rem !important; /* 56px */
+    max-width: 1440px !important;
+    padding-inline: 2.5rem !important; /* 40px */
   }
 }
 
