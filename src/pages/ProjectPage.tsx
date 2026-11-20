@@ -112,10 +112,7 @@ export function ProjectPage({ onNavigate, onOpenQuote, onSelectProject }: Projec
               <div className="justify-center text-center row">
                 <div className="lg:column-8 xl:column-9 2xl:column-8">
                   <div className="reveal-item reveal-delay-100 2xl:px-8">
-                    <h2 className="text-darker font-bold text-3xl lg:text-4xl xl:text-5xl leading-[1.166] mb-5">
-                      {t('Projects powering real places in Mozambique.')}
-                    </h2>
-                    <p className="text-base xl:text-lg leading-relaxed text-body max-w-md mx-auto">
+                    <p className="text-base xl:text-lg leading-relaxed text-body max-w-2xl mx-auto">
                       {t('Explore our featured installations across our international network, highlighting how our seamless technology delivers reliable power.')}
                     </p>
                   </div>
