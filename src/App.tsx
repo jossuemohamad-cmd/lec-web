@@ -515,10 +515,9 @@ export function App() {
                       }`}>
                         <li>
                           {/* Botão com feixe de luz animado caminhando na borda e ícone em círculo preto */}
-                          <a
-                            href="https://simulador.lecasu.co.mz/"
-                            target="_blank"
-                            rel="noopener noreferrer"
+                          <button
+                            type="button"
+                            onClick={() => navigateTo('project')}
                             className="relative inline-flex items-center justify-center p-[2px] rounded-full overflow-hidden group/beam shadow-sm hover:shadow transition-all cursor-pointer select-none active:scale-[0.98]"
                           >
                             {/* Feixe de luz caminhando sobre a borda */}
@@ -529,7 +528,7 @@ export function App() {
 
                             {/* Botão interno com ícone de seta dentro de círculo preto */}
                             <span className="relative z-10 inline-flex shrink-0 items-center justify-center whitespace-nowrap bg-primary text-white group-hover/beam:bg-primary-dark fill-white h-12 lg:h-14 gap-3.5 rounded-full pl-7 pr-2.5 sm:pr-3 text-sm font-semibold tracking-[0.5px] transition-colors">
-                              <span>{t('Request a Proposal')}</span>
+                              <span>{lang === 'pt' ? 'Ver Projetos' : 'View Projects'}</span>
                               <span className="size-8 sm:size-9 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover/beam:translate-x-0.5">
                                 <svg
                                   className="size-4"
@@ -541,20 +540,6 @@ export function App() {
                                   <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
                                 </svg>
                               </span>
-                            </span>
-                          </a>
-                        </li>
-                        <li>
-                          <button
-                            type="button"
-                            onClick={() => navigateTo('project')}
-                            className="group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap border-2 bg-clip-padding transition-all outline-none select-none cursor-pointer tracking-[.5px] border-white/80 text-white hover:bg-white/15 fill-white h-12 lg:h-14 gap-3.5 rounded-full pl-7 pr-2.5 sm:pr-3 text-sm font-medium backdrop-blur-md"
-                          >
-                            <span>{t('View Projects')}</span>
-                            <span className="size-8 sm:size-9 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover/button:translate-x-0.5">
-                              <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                              </svg>
                             </span>
                           </button>
                         </li>
@@ -1120,7 +1105,7 @@ export function App() {
                         <div className="text-primary font-bold text-3xl mb-3">01</div>
                         <h4 className="text-xl font-bold text-darker mb-3">{t('African Expertise')}</h4>
                         <p className="text-sm/relaxed text-body">
-                          {t('Profundo conhecimento das normas elétricas de Moçambique, da rede da EDM e dos desafios climáticos locais de alta temperatura e poeira.')}
+                          {t('Profundo conhecimento das normas elétricas de Moçambique, da rede da EDM e dos desafios climáticos locais de alta temperatura.')}
                         </p>
                       </div>
                     </div>
@@ -1140,7 +1125,7 @@ export function App() {
                         <div className="text-primary font-bold text-3xl mb-3">03</div>
                         <h4 className="text-xl font-bold text-darker mb-3">{t('Fast Execution')}</h4>
                         <p className="text-sm/relaxed text-body">
-                          {t('Aprovisionamento direto com fabricantes Tier-1, equipas de montagem certificadas em Moçambique e comissionamento sem atrasos.')}
+                          {t('Aprovisionamento direto com fabricantes Tier-1, equipas de montagem certificadas e comissionamento sem atrasos.')}
                         </p>
                       </div>
                     </div>
@@ -1182,9 +1167,6 @@ export function App() {
                         <h2 className="text-white font-bold text-2xl sm:text-3xl md:text-4xl lg:text-[2.6rem] leading-[1.2] drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]">
                           {t('Power your facility with reliable energy infrastructure')}
                         </h2>
-                        <p className="mt-4 text-white/80 text-base sm:text-lg max-w-2xl leading-relaxed drop-shadow-[0_1px_6px_rgba(0,0,0,0.5)]">
-                          {t('Turnkey engineering, tier-1 solar hardware, and proactive O&M. Powering businesses, industries, and rural communities across Mozambique.')}
-                        </p>
                         <div className="mt-8 sm:mt-10 flex justify-center">
                           <a
                             href="https://simulador.lecasu.co.mz/"

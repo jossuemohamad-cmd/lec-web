@@ -258,9 +258,9 @@ export const DICTIONARY: Record<string, { pt: string; en: string }> = {
   },
   'African Expertise': { pt: 'Experiência africana', en: 'African expertise' },
   'Experiência Africana': { pt: 'Experiência africana', en: 'African expertise' },
-  'Profundo conhecimento das normas elétricas de Moçambique, da rede da EDM e dos desafios climáticos locais de alta temperatura e poeira.': {
-    pt: 'Profundo conhecimento das normas elétricas de Moçambique, da rede da EDM e dos desafios climáticos locais de alta temperatura e poeira.',
-    en: 'Deep knowledge of Mozambican electrical standards, the EDM grid, and local climatic challenges of extreme heat and dust.'
+  'Profundo conhecimento das normas elétricas de Moçambique, da rede da EDM e dos desafios climáticos locais de alta temperatura.': {
+    pt: 'Profundo conhecimento das normas elétricas de Moçambique, da rede da EDM e dos desafios climáticos locais de alta temperatura.',
+    en: 'Deep knowledge of Mozambican electrical standards, the EDM grid, and local climatic challenges of extreme heat.'
   },
   'Hybrid Systems Capability': { pt: 'Capacidade em sistemas híbridos', en: 'Hybrid systems capability' },
   'Capacidade em Sistemas Híbridos': { pt: 'Capacidade em sistemas híbridos', en: 'Hybrid systems capability' },
@@ -270,9 +270,9 @@ export const DICTIONARY: Record<string, { pt: string; en: string }> = {
   },
   'Fast Execution': { pt: 'Execução rápida', en: 'Fast execution' },
   'Execução Rápida': { pt: 'Execução rápida', en: 'Fast execution' },
-  'Aprovisionamento direto com fabricantes Tier-1, equipas de montagem certificadas em Moçambique e comissionamento sem atrasos.': {
-    pt: 'Aprovisionamento direto com fabricantes Tier-1, equipas de montagem certificadas em Moçambique e comissionamento sem atrasos.',
-    en: 'Direct procurement from Tier-1 manufacturers, certified installation crews in Mozambique, and commissioning without delays.'
+  'Aprovisionamento direto com fabricantes Tier-1, equipas de montagem certificadas e comissionamento sem atrasos.': {
+    pt: 'Aprovisionamento direto com fabricantes Tier-1, equipas de montagem certificadas e comissionamento sem atrasos.',
+    en: 'Direct procurement from Tier-1 manufacturers, certified installation crews, and commissioning without delays.'
   },
   'Strong Engineering Team': { pt: 'Equipa de engenharia sólida', en: 'Strong engineering team' },
   'Equipa de Engenharia Sólida': { pt: 'Equipa de engenharia sólida', en: 'Strong engineering team' },
