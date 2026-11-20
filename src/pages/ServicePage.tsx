@@ -13,7 +13,7 @@ export function ServicePage({ onNavigate, onOpenQuote }: ServicePageProps) {
     {
       title: t('EPC — Engineering, Procurement & Construction'),
       desc: t('Turnkey solar delivery: engineering design, Tier-1 equipment procurement, certified construction, and grid/generator commissioning.'),
-      image: '/lecasu/engineering-procurement-construction.jpeg'
+      image: '/lecasu/epc-team-working.jpg'
     },
     {
       title: t('Energia Solar e Sistemas Híbridos'),
