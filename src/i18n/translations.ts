@@ -690,8 +690,8 @@ export const DICTIONARY: Record<string, { pt: string; en: string }> = {
   'Technical & Installation': { pt: 'Técnica e instalação', en: 'Technical & installation' },
   'Finance & Guarantees': { pt: 'Financiamento e garantias', en: 'Finance & guarantees' },
   'Explore our featured installations across our international network, highlighting how our seamless technology delivers reliable power.': {
-    pt: 'Explore as nossas instalações de referência em Moçambique, demonstrando como a nossa tecnologia de engenharia entrega energia confiável.',
-    en: 'Explore our featured installations across our international network, highlighting how our seamless technology delivers reliable power.'
+    pt: 'Explore as nossas instalações de referência em Moçambique, demonstrando nosso compromisso com resultados',
+    en: 'Explore our featured installations across Mozambique, demonstrating our commitment to results.'
   }
 };
 

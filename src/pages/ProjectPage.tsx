@@ -58,6 +58,84 @@ export function ProjectPage({ onNavigate, onOpenQuote, onSelectProject }: Projec
       stat2Label: lang === 'pt' ? 'Unidades solares' : 'Solar units',
       stat3Value: '100%',
       stat3Label: lang === 'pt' ? 'Autonomia energética' : 'Energy autonomy'
+    },
+    {
+      id: 'ijcsud-sistemas-fotovoltaicos',
+      title: 'Igreja de Jesus Cristo dos Santos dos Últimos dias - Capela da Machava',
+      tag: lang === 'pt' ? 'Fotovoltaico com Armazenamento' : 'Solar PV & Storage',
+      location: lang === 'pt' ? 'Província de Maputo' : 'Maputo Province',
+      image: '/lecasu/machava-capela-solar-aerial-overview.jpg',
+      stat1Value: '3 x 12 kWp',
+      stat1Label: lang === 'pt' ? 'Capacidade solar' : 'Solar capacity',
+      stat2Value: '20 kWh',
+      stat2Label: lang === 'pt' ? 'Armazenamento' : 'Battery storage',
+      stat3Value: '2025',
+      stat3Label: lang === 'pt' ? 'Ano de conclusão' : 'Year completed'
+    },
+    {
+      id: 'ijcsud-projectos-residenciais',
+      title: 'Igreja de Jesus Cristo dos Santos dos Últimos dias - Capela de Matola-Gare',
+      tag: lang === 'pt' ? 'Estudos & Projetos Executivos' : 'Executive Design',
+      location: lang === 'pt' ? 'Cidade de Maputo' : 'Maputo City',
+      image: '/lecasu/matola-gare-capela-solar-aerial.jpg',
+      stat1Value: '10',
+      stat1Label: lang === 'pt' ? 'Residências' : 'Dwellings',
+      stat2Value: '100%',
+      stat2Label: lang === 'pt' ? 'Projeto executivo' : 'Executive design',
+      stat3Value: '2025',
+      stat3Label: lang === 'pt' ? 'Ano de projeto' : 'Project year'
+    },
+    {
+      id: 'gapi-agrovida-cabo-delgado',
+      title: 'GAPI, Sociedade de Investimentos',
+      tag: lang === 'pt' ? 'Projecto AgroVida' : 'AgroVida Project',
+      location: lang === 'pt' ? 'Cabo Delgado' : 'Cabo Delgado',
+      image: '/lecasu/gapi-agrovida-cabin-solar.jpg',
+      stat1Value: '6.2 kWp',
+      stat1Label: lang === 'pt' ? 'Potência solar' : 'Solar capacity',
+      stat2Value: 'BESS',
+      stat2Label: lang === 'pt' ? 'Armazenamento' : 'Battery storage',
+      stat3Value: '2026',
+      stat3Label: lang === 'pt' ? 'Ano de execução' : 'Execution year'
+    },
+    {
+      id: 'gapi-aga-khan-agrovida',
+      title: 'GAPI / Fundação Aga Khan',
+      tag: lang === 'pt' ? 'Projecto AgroVida' : 'AgroVida Project',
+      location: lang === 'pt' ? 'Montepuez, Cabo Delgado' : 'Montepuez, Cabo Delgado',
+      image: '/lecasu/project-inhambane.jpg',
+      stat1Value: '6.2 kWp',
+      stat1Label: lang === 'pt' ? 'Potência solar' : 'Solar capacity',
+      stat2Value: '400 Ah',
+      stat2Label: lang === 'pt' ? 'Banco de baterias' : 'Battery bank',
+      stat3Value: '2023',
+      stat3Label: lang === 'pt' ? 'Ano de instalação' : 'Year installed'
+    },
+    {
+      id: 'fdc-irrigacao-solar-guija',
+      title: 'FDC — Fundação para o Desenvolvimento Comunitário',
+      tag: lang === 'pt' ? 'Irrigação Solar' : 'Solar Irrigation',
+      location: lang === 'pt' ? 'Gaza, Distrito de Guijá' : 'Guijá District, Gaza',
+      image: '/lecasu/project-extra-2.jpeg',
+      stat1Value: '2 x 5 kWp',
+      stat1Label: lang === 'pt' ? 'Sistemas solares' : 'Solar systems',
+      stat2Value: '2',
+      stat2Label: lang === 'pt' ? 'Beneficiários' : 'Beneficiaries',
+      stat3Value: '2024',
+      stat3Label: lang === 'pt' ? 'Ano de instalação' : 'Year installed'
+    },
+    {
+      id: 'quinta-namaacha',
+      title: 'Quinta - Namaacha',
+      tag: lang === 'pt' ? 'Solar Rural & Armazenamento' : 'Rural Solar PV & BESS',
+      location: lang === 'pt' ? 'Namaacha, Província de Maputo' : 'Namaacha, Maputo Province',
+      image: '/lecasu/quinta-namaacha-solar-aerial-wide.jpg',
+      stat1Value: '8 kWp',
+      stat1Label: lang === 'pt' ? 'Capacidade solar' : 'Solar capacity',
+      stat2Value: '15 kWh',
+      stat2Label: lang === 'pt' ? 'Armazenamento BESS' : 'Battery storage',
+      stat3Value: '100%',
+      stat3Label: lang === 'pt' ? 'Autonomia fora da rede' : 'Off-grid autonomy'
     }
   ];
 
@@ -154,7 +232,7 @@ export function ProjectPage({ onNavigate, onOpenQuote, onSelectProject }: Projec
                             </span>
                           </span>
                         </div>
-                        <h3 className="text-2xl lg:text-3xl leading-snug font-bold text-white mb-1 line-clamp-1 group-hover:text-primary-light transition-colors">
+                        <h3 className="text-2xl lg:text-3xl leading-snug font-bold text-white mb-1 line-clamp-2 group-hover:text-primary-light transition-colors">
                           {proj.title}
                         </h3>
                         <p className="text-sm text-white/75 mb-5 line-clamp-1">

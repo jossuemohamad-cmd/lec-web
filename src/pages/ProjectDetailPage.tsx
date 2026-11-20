@@ -296,7 +296,7 @@ export function ProjectDetailPage({
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div className={`grid grid-cols-1 sm:grid-cols-2 ${project.gallery.length <= 3 ? 'lg:grid-cols-3' : 'lg:grid-cols-4'} gap-5`}>
               {project.gallery.map((photo, idx) => (
                 <div
                   key={idx}

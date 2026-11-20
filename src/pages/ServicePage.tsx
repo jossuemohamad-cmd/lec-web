@@ -9,22 +9,26 @@ export function ServicePage({ onNavigate, onOpenQuote }: ServicePageProps) {
   void onOpenQuote;
   const { t } = useLanguage();
 
-  const services = [
+  const featuredService = {
+    title: t('Energia Solar e Sistemas Híbridos'),
+    desc: `${t('Ajudamos famílias e empresas a produzir e gerir a sua própria energia, com soluções solares e híbridas adaptadas às suas necessidades.')}\n\n${t('Para as empresas, procuramos transformar os custos de energia numa oportunidade de poupança, eficiência e maior competitividade.')}\n\n${t('O nosso objectivo é oferecer soluções que façam sentido, tanto do ponto de vista técnico como económico.')}`,
+    image: '/lecasu/energy-as-a-service-ppa.jpeg'
+  };
+
+  const sideServices = [
     {
       title: t('EPC — Engineering, Procurement & Construction'),
       desc: t('Turnkey solar delivery: engineering design, Tier-1 equipment procurement, certified construction, and grid/generator commissioning.'),
       image: '/lecasu/epc-team-working.jpg'
     },
     {
-      title: t('Energia Solar e Sistemas Híbridos'),
-      desc: `${t('Ajudamos famílias e empresas a produzir e gerir a sua própria energia, com soluções solares e híbridas adaptadas às suas necessidades.')}\n\n${t('Para as empresas, procuramos transformar os custos de energia numa oportunidade de poupança, eficiência e maior competitividade.')}\n\n${t('O nosso objectivo é oferecer soluções que façam sentido, tanto do ponto de vista técnico como económico.')}`,
-      image: '/lecasu/energy-as-a-service-ppa.jpeg'
-    },
-    {
       title: t('Energy-as-a-Service (PPA)'),
       desc: t('Zero upfront capital investment. Pay only for the clean kilowatt-hours you consume with guaranteed availability and covered maintenance.'),
       image: '/lecasu/official-service-hybrid.jpeg'
-    },
+    }
+  ];
+
+  const bottomServices = [
     {
       title: t('Operations & Maintenance (O&M)'),
       desc: t('Proactive solar panel cleaning, thermal imaging inspections, SCADA telemetry monitoring, inverter diagnostics, and regular reporting.'),
@@ -123,35 +127,116 @@ export function ServicePage({ onNavigate, onOpenQuote }: ServicePageProps) {
 
           <div className="section-content relative">
             <div className="container -mb-20">
-              <div className="row pb-20 gy-8">
-                {services.map((svc, idx) => (
-                  <div key={idx} className="xl:column-4 md:column-6">
+              <div className="pb-20 flex flex-col gap-6 lg:gap-7.5">
+                {/* Linha Superior — Bento Flexbox Assimétrico */}
+                <div className="flex flex-col lg:flex-row items-stretch gap-6 lg:gap-7.5">
+                  {/* Card Destaque à Esquerda — Energia Solar e Sistemas Híbridos */}
+                  <div
+                    onClick={() => onNavigate('contact', featuredService.title)}
+                    className="reveal-item reveal-delay-100 flex flex-col lg:w-[46%] xl:w-[45%] shrink-0 bg-white shadow-[0_2px_26px_0_rgba(0,0,0,.07)] rounded-2xl border border-lighter cursor-pointer overflow-hidden border-b-4 border-b-primary group hover:shadow-2xl transition-all duration-300"
+                  >
+                    <div className="relative overflow-hidden bg-white border-b border-gray-100 aspect-[3/2] lg:aspect-auto lg:h-60 xl:h-64 p-3 flex items-center justify-center">
+                      <img
+                        alt={featuredService.title}
+                        width={1080}
+                        height={720}
+                        className="w-full h-full object-contain"
+                        src={featuredService.image}
+                      />
+                    </div>
+                    <div className="p-7 xl:p-8 flex flex-col flex-1 justify-between">
+                      <div>
+                        <h5 className="text-2xl xl:text-[1.75rem] leading-snug font-semibold text-darker group-hover:text-primary transition-colors tracking-[-0.5px] mb-3">
+                          {featuredService.title}
+                        </h5>
+                        <div className="space-y-3 text-sm sm:text-base leading-relaxed text-body">
+                          {featuredService.desc.split('\n\n').map((paragraph, pIdx) => (
+                            <p key={pIdx}>{paragraph}</p>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="pt-5 mt-6 border-t border-gray-100 flex items-center justify-between gap-3">
+                        <span className="text-sm font-semibold text-primary group-hover:text-primary-dark transition-colors">
+                          {t('Solicitar Informações / Cotação')}
+                        </span>
+                        <span className="size-8 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover:translate-x-1">
+                          <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                          </svg>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Coluna Direita — 2 Cards Horizontais Empilhados em Flexbox */}
+                  <div className="flex flex-col flex-1 gap-6 lg:gap-7.5">
+                    {sideServices.map((svc, idx) => (
+                      <div
+                        key={svc.title}
+                        onClick={() => onNavigate('contact', svc.title)}
+                        className={`reveal-item ${idx === 0 ? 'reveal-delay-200' : 'reveal-delay-300'} flex flex-col sm:flex-row flex-1 bg-white shadow-[0_2px_26px_0_rgba(0,0,0,.07)] rounded-2xl border border-lighter cursor-pointer overflow-hidden border-b-4 border-b-primary group hover:shadow-2xl transition-all duration-300`}
+                      >
+                        <div className="relative overflow-hidden h-56 sm:h-auto sm:w-[42%] lg:w-[40%] xl:w-[42%] sm:min-h-[240px] shrink-0">
+                          <img
+                            alt={svc.title}
+                            width={840}
+                            height={520}
+                            className="absolute inset-0 w-full h-full object-cover object-center"
+                            src={svc.image}
+                          />
+                        </div>
+                        <div className="p-6 xl:p-7 flex flex-col flex-1 justify-between">
+                          <div>
+                            <h5 className="text-xl xl:text-2xl leading-snug font-semibold text-darker group-hover:text-primary transition-colors tracking-[-0.5px] mb-2.5">
+                              {svc.title}
+                            </h5>
+                            <p className="text-sm sm:text-base leading-relaxed text-body">
+                              {svc.desc}
+                            </p>
+                          </div>
+                          <div className="pt-4 mt-5 border-t border-gray-100 flex items-center justify-between gap-3">
+                            <span className="text-sm font-semibold text-primary group-hover:text-primary-dark transition-colors">
+                              {t('Solicitar Informações / Cotação')}
+                            </span>
+                            <span className="size-8 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover:translate-x-1">
+                              <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                              </svg>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Linha Inferior — 3 Cards Equilibrados em Flexbox */}
+                <div className="flex flex-col md:flex-row md:flex-wrap lg:flex-nowrap items-stretch gap-6 lg:gap-7.5">
+                  {bottomServices.map((svc, idx) => (
                     <div
+                      key={svc.title}
                       onClick={() => onNavigate('contact', svc.title)}
-                      className="reveal-item flex flex-col bg-white shadow-[0_2px_26px_0_rgba(0,0,0,.07)] rounded-2xl h-full border border-lighter cursor-pointer overflow-hidden border-b-4 border-b-primary group hover:shadow-2xl hover:scale-[1.01] transition-all duration-300"
+                      className={`reveal-item ${idx === 0 ? 'reveal-delay-100' : idx === 1 ? 'reveal-delay-200' : 'reveal-delay-300'} flex flex-col flex-1 md:basis-[calc(50%-1rem)] lg:basis-0 bg-white shadow-[0_2px_26px_0_rgba(0,0,0,.07)] rounded-2xl border border-lighter cursor-pointer overflow-hidden border-b-4 border-b-primary group hover:shadow-2xl transition-all duration-300`}
                     >
-                      <div className="overflow-hidden h-56">
+                      <div className="relative overflow-hidden h-56 shrink-0">
                         <img
                           alt={svc.title}
                           width={840}
                           height={520}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          className="w-full h-full object-cover object-center"
                           src={svc.image}
                         />
                       </div>
-                      <div className="p-8 flex flex-col flex-1 justify-between">
+                      <div className="p-7 xl:p-8 flex flex-col flex-1 justify-between">
                         <div>
-                          <h5 className="text-2xl xl:text-3xl leading-normal font-semibold text-darker group-hover:text-primary transition-colors tracking-[-1px] mb-3">
+                          <h5 className="text-xl xl:text-2xl leading-snug font-semibold text-darker group-hover:text-primary transition-colors tracking-[-0.5px] mb-3">
                             {svc.title}
                           </h5>
-                          <div className="space-y-3 text-base/relaxed text-body">
-                            {svc.desc.split('\n\n').map((paragraph, pIdx) => (
-                              <p key={pIdx}>{paragraph}</p>
-                            ))}
-                          </div>
+                          <p className="text-sm sm:text-base leading-relaxed text-body">
+                            {svc.desc}
+                          </p>
                         </div>
-
-                        <div className="pt-6 mt-6 border-t border-gray-100 flex items-center justify-between">
+                        <div className="pt-5 mt-6 border-t border-gray-100 flex items-center justify-between gap-3">
                           <span className="text-sm font-semibold text-primary group-hover:text-primary-dark transition-colors">
                             {t('Solicitar Informações / Cotação')}
                           </span>
@@ -163,8 +248,8 @@ export function ServicePage({ onNavigate, onOpenQuote }: ServicePageProps) {
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           </div>

@@ -722,49 +722,27 @@ export function App() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-7.5">
-                    <div
-                      onClick={() => navigateTo('contact', t('Residential Solar'))}
-                      className="reveal-item flex flex-col bg-white border border-gray-100 shadow-[0_2px_26px_0_rgba(0,0,0,.06)] rounded-2xl reveal-delay-100 cursor-pointer overflow-hidden border-b-4 border-b-primary group hover:shadow-2xl hover:scale-[1.01] transition-all duration-300"
-                    >
-                      <div className="overflow-hidden h-60">
-                        <img alt="Residential Solar" width={840} height={520} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/lecasu/engineering-procurement-construction.jpeg" />
-                      </div>
-                      <div className="p-8 flex flex-col flex-1 justify-between">
-                        <div>
-                          <h5 className="text-2xl xl:text-3xl leading-normal font-semibold text-darker group-hover:text-primary transition-colors mb-3">
-                            {t('Residential Solar')}
-                          </h5>
-                          <p className="text-base leading-relaxed text-body">
-                            {t('Advanced solar arrays tailored for modern homeowners who prioritize sustainability and economic independence.')}
-                          </p>
-                        </div>
-                        <div className="pt-6 mt-6 border-t border-gray-100 flex items-center justify-between">
-                          <span className="text-sm font-semibold text-primary group-hover:text-primary-dark transition-colors">
-                            {t('Solicitar Informações / Cotação')}
-                          </span>
-                          <span className="size-8 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover:translate-x-1">
-                            <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                            </svg>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
+                  <div className="flex flex-col lg:flex-row items-stretch gap-6 lg:gap-7.5">
+                    {/* Coluna Esquerda (Card Destaque) — Energia Solar e Sistemas Híbridos */}
                     <div
                       onClick={() => navigateTo('contact', t('Energia Solar e Sistemas Híbridos'))}
-                      className="reveal-item flex flex-col bg-white border border-gray-100 shadow-[0_2px_26px_0_rgba(0,0,0,.06)] rounded-2xl reveal-delay-200 cursor-pointer overflow-hidden border-b-4 border-b-primary group hover:shadow-2xl hover:scale-[1.01] transition-all duration-300"
+                      className="reveal-item reveal-delay-100 flex flex-col lg:w-[46%] xl:w-[45%] shrink-0 bg-white border border-gray-100 shadow-[0_2px_26px_0_rgba(0,0,0,.06)] rounded-2xl cursor-pointer overflow-hidden border-b-4 border-b-primary group hover:shadow-2xl transition-all duration-300"
                     >
-                      <div className="overflow-hidden h-60">
-                        <img alt="Energia Solar e Sistemas Híbridos" width={840} height={520} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/lecasu/energy-as-a-service-ppa.jpeg" />
+                      <div className="relative overflow-hidden bg-white border-b border-gray-100 aspect-[3/2] lg:aspect-auto lg:h-60 xl:h-64 p-3 flex items-center justify-center">
+                        <img
+                          alt="Energia Solar e Sistemas Híbridos"
+                          width={1080}
+                          height={720}
+                          className="w-full h-full object-contain"
+                          src="/lecasu/energy-as-a-service-ppa.jpeg"
+                        />
                       </div>
-                      <div className="p-8 flex flex-col flex-1 justify-between">
+                      <div className="p-7 xl:p-8 flex flex-col flex-1 justify-between">
                         <div>
-                          <h5 className="text-2xl xl:text-3xl leading-normal font-semibold text-darker group-hover:text-primary transition-colors mb-3">
+                          <h5 className="text-2xl xl:text-[1.75rem] leading-snug font-semibold text-darker group-hover:text-primary transition-colors mb-3">
                             {t('Energia Solar e Sistemas Híbridos')}
                           </h5>
-                          <div className="space-y-3 text-base leading-relaxed text-body">
+                          <div className="space-y-3 text-sm sm:text-base leading-relaxed text-body">
                             <p>
                               {t('Ajudamos famílias e empresas a produzir e gerir a sua própria energia, com soluções solares e híbridas adaptadas às suas necessidades.')}
                             </p>
@@ -776,7 +754,7 @@ export function App() {
                             </p>
                           </div>
                         </div>
-                        <div className="pt-6 mt-6 border-t border-gray-100 flex items-center justify-between">
+                        <div className="pt-5 mt-6 border-t border-gray-100 flex items-center justify-between gap-3">
                           <span className="text-sm font-semibold text-primary group-hover:text-primary-dark transition-colors">
                             {t('Solicitar Informações / Cotação')}
                           </span>
@@ -789,31 +767,77 @@ export function App() {
                       </div>
                     </div>
 
-                    <div
-                      onClick={() => navigateTo('contact', t('Energy-as-a-Service (PPA)'))}
-                      className="reveal-item flex flex-col bg-white border border-gray-100 shadow-[0_2px_26px_0_rgba(0,0,0,.06)] rounded-2xl reveal-delay-300 cursor-pointer overflow-hidden border-b-4 border-b-primary group hover:shadow-2xl hover:scale-[1.01] transition-all duration-300"
-                    >
-                      <div className="overflow-hidden h-60">
-                        <img alt="Energy-as-a-Service" width={840} height={520} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="/lecasu/official-service-hybrid.jpeg" />
-                      </div>
-                      <div className="p-8 flex flex-col flex-1 justify-between">
-                        <div>
-                          <h5 className="text-2xl xl:text-3xl leading-normal font-semibold text-darker group-hover:text-primary transition-colors mb-3">
-                            {t('Energy-as-a-Service (PPA)')}
-                          </h5>
-                          <p className="text-base leading-relaxed text-body">
-                            {t('No upfront capital investment required. Pay only for the clean kilowatt-hours you consume with guaranteed availability and covered maintenance.')}
-                          </p>
+                    {/* Coluna Direita — 2 Cards Horizontais Empilhados em Flexbox */}
+                    <div className="flex flex-col flex-1 gap-6 lg:gap-7.5">
+                      {/* Card A — Solar Residencial */}
+                      <div
+                        onClick={() => navigateTo('contact', t('Residential Solar'))}
+                        className="reveal-item reveal-delay-200 flex flex-col sm:flex-row flex-1 bg-white border border-gray-100 shadow-[0_2px_26px_0_rgba(0,0,0,.06)] rounded-2xl cursor-pointer overflow-hidden border-b-4 border-b-primary group hover:shadow-2xl transition-all duration-300"
+                      >
+                        <div className="relative overflow-hidden h-56 sm:h-auto sm:w-[42%] lg:w-[40%] xl:w-[42%] sm:min-h-[240px] shrink-0">
+                          <img
+                            alt="Residential Solar"
+                            width={800}
+                            height={445}
+                            className="absolute inset-0 w-full h-full object-cover object-center"
+                            src="/lecasu/engineering-procurement-construction.jpeg"
+                          />
                         </div>
-                        <div className="pt-6 mt-6 border-t border-gray-100 flex items-center justify-between">
-                          <span className="text-sm font-semibold text-primary group-hover:text-primary-dark transition-colors">
-                            {t('Solicitar Informações / Cotação')}
-                          </span>
-                          <span className="size-8 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover:translate-x-1">
-                            <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                            </svg>
-                          </span>
+                        <div className="p-6 xl:p-7 flex flex-col flex-1 justify-between">
+                          <div>
+                            <h5 className="text-xl xl:text-2xl leading-snug font-semibold text-darker group-hover:text-primary transition-colors mb-2.5">
+                              {t('Residential Solar')}
+                            </h5>
+                            <p className="text-sm sm:text-base leading-relaxed text-body">
+                              {t('Advanced solar arrays tailored for modern homeowners who prioritize sustainability and economic independence.')}
+                            </p>
+                          </div>
+                          <div className="pt-4 mt-5 border-t border-gray-100 flex items-center justify-between gap-3">
+                            <span className="text-sm font-semibold text-primary group-hover:text-primary-dark transition-colors">
+                              {t('Solicitar Informações / Cotação')}
+                            </span>
+                            <span className="size-8 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover:translate-x-1">
+                              <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                              </svg>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Card B — Energy-as-a-Service (PPA) */}
+                      <div
+                        onClick={() => navigateTo('contact', t('Energy-as-a-Service (PPA)'))}
+                        className="reveal-item reveal-delay-300 flex flex-col sm:flex-row flex-1 bg-white border border-gray-100 shadow-[0_2px_26px_0_rgba(0,0,0,.06)] rounded-2xl cursor-pointer overflow-hidden border-b-4 border-b-primary group hover:shadow-2xl transition-all duration-300"
+                      >
+                        <div className="relative overflow-hidden h-56 sm:h-auto sm:w-[42%] lg:w-[40%] xl:w-[42%] sm:min-h-[240px] shrink-0">
+                          <img
+                            alt="Energy-as-a-Service"
+                            width={1200}
+                            height={675}
+                            className="absolute inset-0 w-full h-full object-cover object-center"
+                            src="/lecasu/official-service-hybrid.jpeg"
+                          />
+                        </div>
+                        <div className="p-6 xl:p-7 flex flex-col flex-1 justify-between">
+                          <div>
+                            <h5 className="text-xl xl:text-2xl leading-snug font-semibold text-darker group-hover:text-primary transition-colors mb-2.5">
+                              {t('Energy-as-a-Service (PPA)')}
+                            </h5>
+                            <p className="text-sm sm:text-base leading-relaxed text-body">
+                              {t('No upfront capital investment required. Pay only for the clean kilowatt-hours you consume with guaranteed availability and covered maintenance.')}
+                            </p>
+                          </div>
+                          <div className="pt-4 mt-5 border-t border-gray-100 flex items-center justify-between gap-3">
+                            <span className="text-sm font-semibold text-primary group-hover:text-primary-dark transition-colors">
+                              {t('Solicitar Informações / Cotação')}
+                            </span>
+                            <span className="size-8 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-xs transition-transform group-hover:translate-x-1">
+                              <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                              </svg>
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -832,24 +856,18 @@ export function App() {
                         onClick={() => openProjectDetail('skm-engineering')}
                         className="reveal-item reveal-delay-300 relative w-full h-full flex flex-col flex-1 max-w-lg lg:max-w-none mx-auto cursor-pointer"
                       >
-                        <div className="relative w-full h-full min-h-[380px] lg:min-h-0 rounded-2xl overflow-hidden shadow-xl border-b-6 border-primary group flex-1">
+                        <div className="relative w-full h-full min-h-[380px] lg:min-h-0 rounded-2xl overflow-hidden shadow-xl border-b-6 border-primary flex-1">
                           <img
                             alt="Commercial Solar Panels - SKM Engineering"
                             width={968}
                             height={900}
-                            className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
+                            className="absolute inset-0 w-full h-full object-cover object-center"
                             src="/lecasu/official-project-skm.jpg"
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none"></div>
-                          <div className="absolute bottom-5 left-5 right-5 z-20 flex items-center justify-between">
+                          <div className="absolute bottom-5 left-5 z-20 flex items-center">
                             <span className="px-3 py-1 rounded-full bg-primary text-white text-xs font-semibold shadow-md">
                               SKM Engineering &mdash; 80 kWp
-                            </span>
-                            <span className="px-3 py-1 rounded-full bg-white/95 text-darker text-xs font-semibold shadow-md group-hover:bg-primary group-hover:text-white transition-colors flex items-center gap-1.5">
-                              <span>{lang === 'pt' ? 'Ver projecto & galeria' : 'View project & gallery'}</span>
-                              <svg className="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                              </svg>
                             </span>
                           </div>
                         </div>
@@ -909,24 +927,18 @@ export function App() {
                         onClick={() => openProjectDetail('incubox-2')}
                         className="reveal-item reveal-delay-100 relative w-full h-full flex flex-col flex-1 max-w-lg lg:max-w-none mx-auto cursor-pointer"
                       >
-                        <div className="relative w-full h-full min-h-[380px] lg:min-h-0 rounded-2xl overflow-hidden shadow-xl border-b-6 border-primary group flex-1">
+                        <div className="relative w-full h-full min-h-[380px] lg:min-h-0 rounded-2xl overflow-hidden shadow-xl border-b-6 border-primary flex-1">
                           <img
                             alt="INCUBOX 2 Off-Grid Modular Solar Cabins"
                             width={968}
                             height={840}
-                            className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
+                            className="absolute inset-0 w-full h-full object-cover object-center"
                             src="/lecasu/official-project-incubox.jpeg"
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none"></div>
-                          <div className="absolute bottom-5 left-5 right-5 z-20 flex items-center justify-between">
+                          <div className="absolute bottom-5 left-5 z-20 flex items-center">
                             <span className="px-3 py-1 rounded-full bg-primary text-white text-xs font-semibold shadow-md">
                               INCUBOX 2 &mdash; 68.2 kWp
-                            </span>
-                            <span className="px-3 py-1 rounded-full bg-white/95 text-darker text-xs font-semibold shadow-md group-hover:bg-primary group-hover:text-white transition-colors flex items-center gap-1.5">
-                              <span>{lang === 'pt' ? 'Ver projecto & galeria' : 'View project & gallery'}</span>
-                              <svg className="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                              </svg>
                             </span>
                           </div>
                         </div>
@@ -1139,7 +1151,7 @@ export function App() {
                           {lang === 'pt' ? 'Soluções energéticas' : 'Energy solutions'}
                         </span>
                         <h2 className="text-white font-bold text-2xl sm:text-3xl md:text-4xl lg:text-[2.6rem] leading-[1.2] drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)]">
-                          {t('Power your facility with reliable energy infrastructure')}
+                          {lang === 'pt' ? 'Inteligentes e Fiáveis' : 'Smart & Reliable'}
                         </h2>
                         <div className="mt-8 sm:mt-10 flex justify-center">
                           <a
